@@ -1,16 +1,11 @@
 import React, { useContext } from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import SignedInHeader from "./screens/Header";
 import Header from "./screens/PreSignInHeader";
 import { SignIn } from "./screens/SignIn";
 import { UserContext } from "./contexts/UserContext";
 
-export default function () {
+export default function Routes() {
   const { token } = useContext(UserContext);
 
   return (

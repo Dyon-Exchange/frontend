@@ -3,6 +3,7 @@ export const colors = {
   highlight: "#C9FFE5",
 };
 
-export default {
+const config = {
   backendUrl: "http://localhost:8080",
 };
+export default config;

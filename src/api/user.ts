@@ -1,6 +1,6 @@
 import instance from "./instance";
 
-export default {
+const userRequests = {
   login: async (
     email: string,
     password: string
@@ -17,3 +17,5 @@ export default {
     return res.data;
   },
 };
+
+export default userRequests;

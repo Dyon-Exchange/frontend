@@ -10,7 +10,6 @@ import {
   Menu,
   MenuList,
   MenuItem,
-  color,
 } from "@chakra-ui/react";
 import { chakra } from "@chakra-ui/react";
 import logo from "../assets/dyon.png";
