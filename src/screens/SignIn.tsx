@@ -8,11 +8,16 @@ import {
   Stack,
   Input,
   InputGroup,
-  InputLeftElement,
+  HStack,
+  chakra,
+  Select,
+  VStack,
+  Checkbox,
+  Link,
 } from "@chakra-ui/react";
-import { BsFillLockFill, BsPersonFill } from "react-icons/bs";
 import { UserContext } from "../contexts/UserContext";
 import { useForm } from "react-hook-form";
+import logo from "../assets/dyon.png";
 
 export const SignIn = () => {
   const { login } = useContext(UserContext);
@@ -47,67 +52,64 @@ export const SignIn = () => {
           marginBottom="10px"
           flexDirection="row"
         >
-          <Heading
-            textAlign="center"
-            alignSelf="center"
-            pt="5"
-            mt="10px"
-            verticalAlign="center"
-            fontWeight="500"
-          >
-            Sign In
-          </Heading>
+          <HStack style={{ justifyContent: "center", alignItems: "flex-end" }}>
+            <Heading
+              textAlign="center"
+              pt="5"
+              mt="10px"
+              verticalAlign="center"
+              fontWeight="500"
+            >
+              Sign In to
+            </Heading>
+            <chakra.img src={logo} style={{ height: 50, width: 50 }} />
+            <Heading
+              textAlign="center"
+              pt="5"
+              mt="10px"
+              verticalAlign="center"
+              fontWeight="500"
+            >
+              Dyon
+            </Heading>
+          </HStack>
         </Box>
         <Box>
           <Flex d="column" align="center" pt="5" flexWrap="wrap">
             <form onSubmit={handleSubmit(onSubmit)}>
               <FormControl>
                 <Stack
-                  maxWidth="80%"
-                  px="20"
+                  maxWidth="85%"
                   margin="auto"
                   padding="0"
                   marginBottom="20px"
+                  alignItems="center"
                 >
-                  <InputGroup>
-                    <InputLeftElement pointerEvents="none">
-                      <BsPersonFill
-                        fontSize="26px"
-                        style={{
-                          borderRight: "1px solid grey",
-                          paddingRight: "6px",
-                        }}
-                      />
-                    </InputLeftElement>
-                    <Input
+                  <InputGroup width="80%">
+                    <Select
                       id="email"
-                      type="email"
                       backgroundColor="gray.200"
                       fontSize="1rem"
                       rounded="7px"
                       border="none"
-                      placeholder="Email Address"
                       {...register("email")}
-                    ></Input>
+                    >
+                      <option value="jeremy@dyon.com">jeremey@dyon.com</option>
+                      <option value="conor@labrys.io">conor@labrys.io</option>
+                      <option value="matilda@labrys.io">
+                        matilda@labrys.io
+                      </option>
+                    </Select>
                   </InputGroup>
                 </Stack>
                 <Stack
-                  maxWidth="80%"
-                  px="20"
+                  maxWidth="85%"
                   margin="auto"
                   padding="0"
                   marginBottom="20px"
+                  alignItems="center"
                 >
-                  <InputGroup>
-                    <InputLeftElement pointerEvents="none">
-                      <BsFillLockFill
-                        fontSize="26px"
-                        style={{
-                          borderRight: "1px solid grey",
-                          paddingRight: "6px",
-                        }}
-                      />
-                    </InputLeftElement>
+                  <InputGroup width="80%">
                     <Input
                       type="password"
                       backgroundColor="gray.200"
@@ -119,17 +121,29 @@ export const SignIn = () => {
                     />
                   </InputGroup>
                 </Stack>
-                <Stack align="center" pt="4" marginBottom="20px">
+                <Checkbox px="20" alignSelf="flex-start">
+                  Remember my email address
+                </Checkbox>
+                <HStack
+                  pt="5"
+                  px="20"
+                  marginBottom="20px"
+                  justifyContent="space-between"
+                >
                   <Button
                     variantColor="blue"
                     type="submit"
                     border="none"
-                    width="80%"
+                    width="50%"
                     isLoading={loading}
                   >
                     Sign in
                   </Button>
-                </Stack>{" "}
+                  <VStack>
+                    <Link style={{ fontSize: 12 }}>Create new account</Link>
+                    <Link style={{ fontSize: 12 }}>Reset your password</Link>
+                  </VStack>
+                </HStack>
               </FormControl>
             </form>
           </Flex>

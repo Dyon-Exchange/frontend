@@ -8,7 +8,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { chakra } from "@chakra-ui/react";
-import logo from "../assets/dyon.png";
+import logo from "../assets/dyon-white-text.png";
 import { NavLink } from "react-router-dom";
 import { colors } from "../config";
 
@@ -28,7 +28,11 @@ const Header = (props: any) => {
     >
       <Flex align="center" mr={5}>
         <NavLink to="/">
-          <chakra.img src={logo} {...props} style={{ height: 50, width: 50 }} />
+          <chakra.img
+            src={logo}
+            {...props}
+            style={{ width: 156.6, height: 54.5 }}
+          />
         </NavLink>
       </Flex>
       <Stack
