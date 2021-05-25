@@ -1,4 +1,4 @@
-import React, { createContext, ReactChild } from "react";
+import React, { createContext, ReactChild, useEffect, useState } from "react";
 import useLocalStorage from "react-use-localstorage";
 import user from "../api/user";
 
@@ -6,6 +6,7 @@ interface IUserContext {
   token: string;
   refreshToken: string;
   email: string;
+  fullName: string;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -13,9 +14,22 @@ interface IUserContext {
 export const UserContext = createContext(null as any as IUserContext);
 
 export const UserContextProvider = ({ children }: { children: ReactChild }) => {
-  const [email, setEmail] = useLocalStorage("username", "");
+  const [email, setEmail] = useLocalStorage("email", "");
   const [token, setToken] = useLocalStorage("token", "");
   const [refreshToken, setRefreshToken] = useLocalStorage("refreshToken", "");
+  const [fullName, setFullName] = useState("");
+
+  // UseEffect to run whenever a user is logged in
+  useEffect(() => {
+    if (token === "") {
+      return;
+    }
+
+    (async () => {
+      const { fullName } = await user.get();
+      setFullName(fullName);
+    })();
+  }, [token]);
 
   const login = async (email: string, password: string) => {
     const data = await user.login(email, password);
@@ -36,6 +50,7 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
         email,
         token,
         refreshToken,
+        fullName,
         login,
         logout,
       }}

@@ -5,22 +5,28 @@ import {
   Flex,
   Text,
   Button,
-  useDisclosure,
   MenuButton,
+  MenuDivider,
   Menu,
   MenuList,
-  Divider,
   MenuItem,
+  color,
 } from "@chakra-ui/react";
 import { chakra } from "@chakra-ui/react";
 import logo from "../assets/dyon.png";
-import { NavLink } from "react-router-dom";
+import { NavLink, Redirect } from "react-router-dom";
 import { BsPerson } from "react-icons/bs";
-import { BiTransfer } from "react-icons/bi";
+import { BiDollar, BiTransfer } from "react-icons/bi";
 import { UserContext } from "../contexts/UserContext";
+import { colors } from "../config";
 
 const Header = (props: any) => {
-  const { logout } = useContext(UserContext);
+  const { logout, fullName } = useContext(UserContext);
+
+  const logoutPress = async () => {
+    logout();
+    return <Redirect to="/signin" />;
+  };
 
   return (
     <Flex
@@ -29,12 +35,14 @@ const Header = (props: any) => {
       justify="space-between"
       wrap="wrap"
       padding={2}
-      bg="#000029"
+      bg={colors.brand}
       color="white"
       {...props}
     >
       <Flex align="center" mr={5}>
-        <chakra.img src={logo} {...props} style={{ height: 50, width: 50 }} />
+        <NavLink to="/">
+          <chakra.img src={logo} {...props} style={{ height: 50, width: 50 }} />
+        </NavLink>
       </Flex>
       <Stack
         direction={{ base: "column", md: "row" }}
@@ -45,10 +53,22 @@ const Header = (props: any) => {
         mt={{ base: 4, md: 0 }}
         style={{ fontWeight: "bold" }}
       >
-        <NavLink to="/market">
+        <NavLink
+          to="/market"
+          activeStyle={{
+            borderBottomColor: colors.highlight,
+            borderBottomWidth: "3px",
+          }}
+        >
           <Text px="1">Market</Text>
         </NavLink>
-        <NavLink to="/portfolio">
+        <NavLink
+          to="/portfolio"
+          activeStyle={{
+            borderBottomColor: colors.highlight,
+            borderBottomWidth: "3px",
+          }}
+        >
           <Text px="1">Portfolio</Text>
         </NavLink>
       </Stack>
@@ -63,22 +83,72 @@ const Header = (props: any) => {
             variant="outline"
             _hover={{
               bg: "white",
-              textColor: "#000029",
+              textColor: colors.brand,
             }}
             _active={{
               bg: "white",
-              textColor: "#000029",
+              textColor: colors.brand,
+            }}
+            as={Button}
+            leftIcon={<BiDollar />}
+          >
+            USD
+          </MenuButton>
+          <MenuList style={{ background: colors.brand }}>
+            <MenuItem
+              _hover={{ bg: "white", textColor: colors.brand }}
+              _focus={{ bg: "white", textColor: colors.brand }}
+            >
+              SGD
+            </MenuItem>
+            <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
+              USD
+            </MenuItem>
+            <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
+              AUD
+            </MenuItem>
+            <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
+              CAD
+            </MenuItem>
+            <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
+              EUR
+            </MenuItem>
+            <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
+              GBP
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      </Box>
+
+      <Box
+        display={{ base: "none", md: "block" }}
+        mt={{ base: 4, md: 0 }}
+        px="2"
+      >
+        <Menu closeOnBlur={true}>
+          <MenuButton
+            variant="outline"
+            _hover={{
+              bg: "white",
+              textColor: colors.brand,
+            }}
+            _active={{
+              bg: "white",
+              textColor: colors.brand,
             }}
             as={Button}
             leftIcon={<BiTransfer />}
           >
             Transfer
           </MenuButton>
-          <MenuList style={{ background: "#000029" }}>
-            <MenuItem _hover={{ bg: "white", textColor: "#000029" }}>
+          <MenuList style={{ background: colors.brand }}>
+            <MenuItem
+              _hover={{ bg: "white", textColor: colors.brand }}
+              _focus={{ bg: "white", textColor: colors.brand }}
+            >
               Deposit
             </MenuItem>
-            <MenuItem _hover={{ bg: "white", textColor: "#000029" }}>
+            <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
               Withdraw
             </MenuItem>
           </MenuList>
@@ -90,40 +160,47 @@ const Header = (props: any) => {
             variant="outline"
             _hover={{
               bg: "white",
-              textColor: "#000029",
+              textColor: colors.brand,
             }}
             _active={{
               bg: "white",
-              textColor: "#000029",
+              textColor: colors.brand,
             }}
             as={Button}
             leftIcon={<BsPerson />}
           >
             Account
           </MenuButton>
-          <MenuList style={{ background: "#000029" }}>
-            <Text padding="2" fontWeight="bold" color="light-grey">
-              Conor Brosnan
+          <MenuList style={{ background: colors.brand }}>
+            <Text py="1" px="2" fontWeight="bold" color="light-grey">
+              {fullName}
             </Text>
-            <Divider style={{ color: "grey" }} />
-            <MenuItem _hover={{ bg: "white", textColor: "#000029" }}>
+            <MenuDivider />
+            <MenuItem
+              _hover={{ bg: "white", textColor: colors.brand }}
+              _focus={{ bg: "white", textColor: colors.brand }}
+            >
               Settings
             </MenuItem>
-            <MenuItem _hover={{ bg: "white", textColor: "#000029" }}>
-              Balances
-            </MenuItem>
-            <MenuItem _hover={{ bg: "white", textColor: "#000029" }}>
-              Redeem
-            </MenuItem>
-            <MenuItem _hover={{ bg: "white", textColor: "#000029" }}>
+            <NavLink to="/balances">
+              <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
+                Balances
+              </MenuItem>
+            </NavLink>
+            <NavLink to="/redeem">
+              <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
+                Redeem
+              </MenuItem>
+            </NavLink>
+            <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
               FAQ
             </MenuItem>
-            <MenuItem _hover={{ bg: "white", textColor: "#000029" }}>
+            <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
               Legal
             </MenuItem>
             <MenuItem
-              _hover={{ bg: "white", textColor: "#000029" }}
-              onClick={logout}
+              _hover={{ bg: "white", textColor: colors.brand }}
+              onClick={logoutPress}
             >
               Logout
             </MenuItem>
