@@ -7,11 +7,10 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
-import {
-  chakra,
-} from "@chakra-ui/react";
+import { chakra } from "@chakra-ui/react";
 import logo from "../assets/dyon.png";
 import { NavLink } from "react-router-dom";
+import { colors } from "../config";
 
 const Header = (props: any) => {
   const { isOpen } = useDisclosure();
@@ -23,7 +22,7 @@ const Header = (props: any) => {
       justify="space-between"
       wrap="wrap"
       padding={2}
-      bg="#000029"
+      bg={colors.brand}
       color="white"
       {...props}
     >

@@ -8,4 +8,12 @@ export default {
     const res = await instance.post("/user/login", { email, password });
     return res.data;
   },
+  get: async (): Promise<{
+    fullName: string;
+    balance: number;
+    email: string;
+  }> => {
+    const res = await instance.get("/user/");
+    return res.data;
+  },
 };
