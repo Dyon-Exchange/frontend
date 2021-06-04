@@ -1,12 +1,16 @@
 import React, { createContext, ReactChild, useEffect, useState } from "react";
 import useLocalStorage from "react-use-localstorage";
+import { Asset } from "../index.d";
 import user from "../api/user";
+import assetApi from "../api/asset";
 
 interface IUserContext {
   token: string;
   refreshToken: string;
   email: string;
   fullName: string;
+  cashBalance: number;
+  assets: Asset[];
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -18,6 +22,16 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
   const [token, setToken] = useLocalStorage("token", "");
   const [refreshToken, setRefreshToken] = useLocalStorage("refreshToken", "");
   const [fullName, setFullName] = useState("");
+  const [cashBalance, setCashBalance] = useState(0);
+  //const [portfolioValue, setPortfolioValue] = useState(10);
+  const [assets, setAssets] = useState<Asset[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const a = await assetApi.get();
+      setAssets(a);
+    })();
+  }, []);
 
   // UseEffect to run whenever a user is logged in
   useEffect(() => {
@@ -26,8 +40,9 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
     }
 
     (async () => {
-      const { fullName } = await user.get();
+      const { fullName, cashBalance } = await user.get();
       setFullName(fullName);
+      setCashBalance(cashBalance);
     })();
   }, [token]);
 
@@ -51,7 +66,9 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
         token,
         refreshToken,
         fullName,
+        cashBalance,
         login,
+        assets,
         logout,
       }}
     >

@@ -92,13 +92,16 @@ export const SignIn = () => {
                       fontSize="1rem"
                       rounded="7px"
                       border="none"
-                      {...register("email")}
+                      {...register("email", { required: true })}
                     >
-                      <option value="jeremy@dyon.com">jeremey@dyon.com</option>
+                      <option value="jeremy@dyon.com">jeremy@dyon.com</option>
                       <option value="conor@labrys.io">conor@labrys.io</option>
                       <option value="matilda@labrys.io">
                         matilda@labrys.io
                       </option>
+                      <option value="john@dyon.com">john@dyon.com</option>
+                      <option value="bob@dyon.com">bobo@dyon.com</option>
+                      <option value="alice@dyon.com">alice@dyon.com</option>
                     </Select>
                   </InputGroup>
                 </Stack>
@@ -117,7 +120,7 @@ export const SignIn = () => {
                       border="none"
                       fontSize="1rem"
                       placeholder="Password"
-                      {...register("password")}
+                      {...register("password", { required: true })}
                     />
                   </InputGroup>
                 </Stack>

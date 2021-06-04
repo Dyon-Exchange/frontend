@@ -23,6 +23,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-use-localstorage": "^3.5.3",
+    "recharts": "^2.0.9",
     "typescript": "^3.9.9",
     "web-vitals": "^0.2.4"
   },
@@ -48,6 +49,12 @@
     ]
   },
   "devDependencies": {
-    "@types/react-router-dom": "^5.1.7"
+    "@types/react-router-dom": "^5.1.7",
+    "husky": "^6.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged && CI='true' npm run build"
+    }
   }
 }

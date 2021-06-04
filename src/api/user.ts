@@ -10,7 +10,7 @@ const userRequests = {
   },
   get: async (): Promise<{
     fullName: string;
-    balance: number;
+    cashBalance: number;
     email: string;
   }> => {
     const res = await instance.get("/user/");
