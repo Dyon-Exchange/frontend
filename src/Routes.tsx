@@ -6,6 +6,7 @@ import { SignIn } from "./screens/SignIn";
 import { UserContext } from "./contexts/UserContext";
 import Market from "./screens/Market";
 import Mint from "./screens/Mint";
+import Portfolio from "./screens/Portfolio";
 
 export default function Routes() {
   const { token } = useContext(UserContext);
@@ -17,7 +18,7 @@ export default function Routes() {
         {token ? (
           <>
             <Route path="/market" component={Market} />
-            {/* <Route path="/portfolio" component={Portfolio} /> */}
+            <Route path="/portfolio" component={Portfolio} />
             <Route path="/mint" component={Mint} />
           </>
         ) : (

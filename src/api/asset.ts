@@ -1,10 +1,14 @@
-import { Asset } from "../index.d";
+import { Asset, UserAsset } from "../index.d";
 import instance from "./instance";
 
 const assetApi = {
   get: async (): Promise<Asset[]> => {
     const { data } = await instance.get("/asset/");
     return data.assets;
+  },
+  getUserAssets: async (): Promise<{assets: UserAsset[], portfolioBalance: number}> => {
+    const { data } = await instance.get("/asset/user");
+    return data;
   },
   image: async (productIdentifier: string, formData: any) => {
     const { data } = await instance.put(
