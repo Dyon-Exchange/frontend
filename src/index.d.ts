@@ -5,6 +5,7 @@ export type Asset = {
   image: string;
   createdAt: Date;
   updatedAt: Date;
+  marketPrice?: number;
 };
 
 export type Token = {
@@ -15,4 +16,10 @@ export type Token = {
   conditionCode: string;
   tokenId: string;
   productIdentifier: string;
+};
+
+export type UserAsset = {
+  quantity: number;
+  asset: Asset;
+  portfolioShare: number;
 };

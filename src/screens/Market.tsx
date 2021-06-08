@@ -64,7 +64,7 @@ const TableHeaderButton = (props: {
 };
 
 const Market = () => {
-  const { assets } = useContext(UserContext);
+  const { allAssets } = useContext(UserContext);
 
   const [tableFilter, setTableFilter] = useState<TableFilter>("All");
 
@@ -72,11 +72,13 @@ const Market = () => {
 
   useEffect(() => {
     if (tableFilter === "Recently added") {
-      setAssetRows(assets.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1)));
+      setAssetRows(
+        allAssets.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+      );
     } else {
-      setAssetRows(assets);
+      setAssetRows(allAssets);
     }
-  }, [tableFilter, assets]);
+  }, [tableFilter, allAssets]);
 
   return (
     <Flex flexDirection="row">
