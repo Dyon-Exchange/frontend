@@ -29,16 +29,9 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
   const [allAssets, setAllAssets] = useState<Asset[]>([]);
   const [assets, setAssets] = useState<UserAsset[]>([]);
 
-  useEffect(() => {
-    (async () => {
-      const a = await assetApi.get();
-      setAllAssets(a);
-    })();
-  }, []);
-
   // UseEffect to run whenever a user is logged in
   useEffect(() => {
-    if (token === "") {
+    if (token === "" || !token) {
       return;
     }
 
@@ -49,6 +42,9 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
       const { assets, portfolioBalance } = await assetApi.getUserAssets();
       setAssets(assets);
       setPortfolioValue(portfolioBalance);
+
+      const a = await assetApi.get();
+      setAllAssets(a);
     })();
   }, [token]);
 

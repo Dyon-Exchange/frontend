@@ -16,6 +16,9 @@ import { UserContext } from "../contexts/UserContext";
 import { Asset } from "../index.d";
 
 const TableRow = (props: { asset: Asset }) => {
+  const [sellChange] = useState(10.23);
+  const [buyChange] = useState(15.38);
+
   return (
     <Tr>
       <Td>
@@ -30,8 +33,8 @@ const TableRow = (props: { asset: Asset }) => {
       </Td>
       <Td>$130.01</Td>
       <Td>$152.01</Td>
-      <Td>+10.23%</Td>
-      <Td>+15.38%</Td>
+      <Td>{sellChange}</Td>
+      <Td>{buyChange}</Td>
       <Td>
         <NavLink to={`/asset/${props.asset.productIdentifier}`}>
           <Button>View details</Button>

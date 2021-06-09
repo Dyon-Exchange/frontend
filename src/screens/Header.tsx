@@ -181,11 +181,6 @@ const Header = (props: any) => {
             >
               Settings
             </MenuItem>
-            <NavLink to="/balances">
-              <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
-                Balances
-              </MenuItem>
-            </NavLink>
             <NavLink to="/redeem">
               <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
                 Redeem
