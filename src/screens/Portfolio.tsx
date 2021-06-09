@@ -17,21 +17,26 @@ const TableRow = (props: { userAsset: UserAsset }) => {
   return (
     <Tr>
       <Td>
-        <chakra.img style={{height: 50, width: 50}} src={props.userAsset.asset.image} />
+        <chakra.img
+          style={{ height: 50, width: 50 }}
+          src={props.userAsset.asset.image}
+        />
       </Td>
       <Td>
         {props.userAsset.asset.name} {props.userAsset.asset.year}
       </Td>
-      <Td>
-      ${props.userAsset.asset.marketPrice}
-      </Td>
+      <Td>${props.userAsset.asset.marketPrice}</Td>
       <Td>
         <Text>{props.userAsset.quantity}</Text>
-        <Text>{props.userAsset.asset.marketPrice * props.userAsset.quantity} USD</Text>
+        <Text>
+          {props.userAsset.asset.marketPrice * props.userAsset.quantity} USD
+        </Text>
       </Td>
       <Td>
         <Progress value={props.userAsset.portfolioShare} />
-      <Text style={{fontSize: 14, paddingTop: "3%"}}>{props.userAsset.portfolioShare.toFixed(0)}%</Text>
+        <Text style={{ fontSize: 14, paddingTop: "3%" }}>
+          {props.userAsset.portfolioShare.toFixed(0)}%
+        </Text>
       </Td>
     </Tr>
   );
@@ -81,8 +86,10 @@ const Portfolio = () => {
                 <Td></Td>
                 <Td>{cashBalance} USD</Td>
                 <Td>
-                    <Progress value={((cashBalance / portfolioValue)*100)} />
-                    <Text style={{fontSize: 14, paddingTop: "3%"}}>{((cashBalance / portfolioValue)*100).toFixed(0)}%</Text>
+                  <Progress value={(cashBalance / portfolioValue) * 100} />
+                  <Text style={{ fontSize: 14, paddingTop: "3%" }}>
+                    {((cashBalance / portfolioValue) * 100).toFixed(0)}%
+                  </Text>
                 </Td>
               </Tr>
               {assets.map((a) => (
@@ -92,10 +99,6 @@ const Portfolio = () => {
           </Table>
         </Box>
       </VStack>
-
-      <Container>
-        <Heading size="lg">Completed transactions</Heading>
-      </Container>
     </VStack>
   );
 };

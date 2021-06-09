@@ -6,6 +6,8 @@ export type Asset = {
   createdAt: Date;
   updatedAt: Date;
   marketPrice?: number;
+  unitSize: string;
+  details: { blurb: string };
 };
 
 export type Token = {
