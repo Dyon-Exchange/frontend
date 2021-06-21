@@ -50,7 +50,7 @@ const Portfolio = () => {
       <Container>
         <Heading size="lg">My portfolio</Heading>
         <Text py="2" style={{ fontSize: 30 }}>
-          ${portfolioValue}
+          ${portfolioValue.toLocaleString()}
         </Text>
         <Box style={{ background: "#D3D3D3", width: "40%", borderRadius: 10 }}>
           <Text py="3%" px="5%" style={{ fontWeight: "bold" }}>

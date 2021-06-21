@@ -8,6 +8,8 @@ import Market from "./screens/Market";
 import Mint from "./screens/Mint";
 import Portfolio from "./screens/Portfolio";
 import Asset from "./screens/Asset";
+import PendingOrders from "./screens/PendingOrders";
+import CompletedOrders from "./screens/CompletedOrders";
 
 export default function Routes() {
   const { token } = useContext(UserContext);
@@ -22,6 +24,8 @@ export default function Routes() {
             <Route path="/portfolio" component={Portfolio} />
             <Route path="/mint" component={Mint} />
             <Route path="/asset/:id" component={Asset} />
+            <Route path="/pendingorders" component={PendingOrders} />
+            <Route path="/completedorders" component={CompletedOrders} />
           </>
         ) : (
           <Route path="/signin" component={SignIn}></Route>

@@ -20,14 +20,14 @@ import { useForm } from "react-hook-form";
 import logo from "../assets/dyon.png";
 
 export const SignIn = () => {
-  const { login } = useContext(UserContext);
+  const { methods } = useContext(UserContext);
   const { handleSubmit, register } = useForm();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data: any) => {
     setLoading(true);
     try {
-      await login(data.email, data.password);
+      await methods.login(data.email, data.password);
     } catch (e) {
       if (e.response.status === 401) {
         window.alert("Your password was incorrect");

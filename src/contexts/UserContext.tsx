@@ -1,8 +1,9 @@
 import React, { createContext, ReactChild, useEffect, useState } from "react";
 import useLocalStorage from "react-use-localstorage";
-import { Asset, UserAsset } from "../index.d";
+import { Asset, UserAsset, LimitOrder } from "../index.d";
 import user from "../api/user";
 import assetApi from "../api/asset";
+import orderApi from "../api/order";
 
 interface IUserContext {
   token: string;
@@ -13,8 +14,15 @@ interface IUserContext {
   portfolioValue: number;
   allAssets: Asset[];
   assets: UserAsset[];
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
+  userOrders: LimitOrder[];
+
+  methods: {
+    login: (email: string, password: string) => Promise<void>;
+    logout: () => Promise<void>;
+
+    refreshUserPortfolio: () => Promise<void>;
+    refreshUserOrders: () => Promise<void>;
+  };
 }
 
 export const UserContext = createContext(null as any as IUserContext);
@@ -28,6 +36,7 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
   const [portfolioValue, setPortfolioValue] = useState(0);
   const [allAssets, setAllAssets] = useState<Asset[]>([]);
   const [assets, setAssets] = useState<UserAsset[]>([]);
+  const [userOrders, setUserOrders] = useState<LimitOrder[]>([]);
 
   // UseEffect to run whenever a user is logged in
   useEffect(() => {
@@ -36,15 +45,13 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
     }
 
     (async () => {
-      const { fullName, cashBalance } = await user.get();
-      setFullName(fullName);
-      setCashBalance(cashBalance);
-      const { assets, portfolioBalance } = await assetApi.getUserAssets();
-      setAssets(assets);
-      setPortfolioValue(portfolioBalance);
+      refreshUserPortfolio();
+      refreshUserOrders();
 
       const a = await assetApi.get();
       setAllAssets(a);
+
+      refreshUserOrders();
     })();
   }, [token]);
 
@@ -61,6 +68,34 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
     setRefreshToken("");
   };
 
+  const refreshUserPortfolio = async () => {
+    (async () => {
+      const { fullName, cashBalance } = await user.get();
+      setFullName(fullName);
+      setCashBalance(cashBalance);
+    })();
+
+    const { assets, portfolioBalance } = await assetApi.getUserAssets();
+    setAssets(assets);
+    setPortfolioValue(portfolioBalance);
+  };
+
+  const refreshUserOrders = async () => {
+    const userOrders = await orderApi.get();
+    setUserOrders(userOrders.limitOrders);
+  };
+
+  useEffect(() => {
+    let interval = setInterval(() => {
+      if (token === "" || !token) {
+        return;
+      }
+
+      refreshUserOrders();
+    }, 5 * 1000);
+    return () => clearInterval(interval);
+  });
+
   return (
     <UserContext.Provider
       value={{
@@ -70,10 +105,16 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
         fullName,
         cashBalance,
         portfolioValue,
-        login,
         allAssets,
+        userOrders,
         assets,
-        logout,
+        methods: {
+          login,
+          logout,
+
+          refreshUserOrders,
+          refreshUserPortfolio,
+        },
       }}
     >
       {children}

@@ -17,8 +17,6 @@ import Trade from "./Trade";
 import { UserContext } from "../contexts/UserContext";
 
 const AssetScreen = (props: any) => {
-  console.log(props.match.params.id);
-
   const [asset, setAsset] = useState<Asset | undefined>();
   const [quantity, setQuantity] = useState(0);
   const { assets } = useContext(UserContext);
