@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Box,
   Button,
@@ -23,6 +23,9 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
+import { UserContext } from "../contexts/UserContext";
+import orderApi from "../api/order";
+
 const Trade = (props: {
   productIdentifier: string;
   marketPrice: number;
@@ -32,11 +35,19 @@ const Trade = (props: {
   const [amount, setAmount] = useState<number>(1);
   const [stepperValue, setStepperValue] = useState(0);
   const [total, setTotal] = useState(stepperValue * amount);
+  const [loading, setLoading] = useState(false);
+  const [orderStatus, setOrderStatus] = useState<
+    "pending" | "error" | "submitted"
+  >("pending");
+  const [error, setError] = useState("");
 
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const { methods } = useContext(UserContext);
 
-  const confirmOrder = async () => {
-    // { productIdentifier, quantity, }
+  const doClose = () => {
+    setOrderStatus("pending");
+    setError("");
+    onClose();
   };
 
   useEffect(() => {
@@ -50,6 +61,25 @@ const Trade = (props: {
     }
     setTotal(total);
   }, [stepperValue, amount]);
+
+  const submitLimitOrder = async () => {
+    setLoading(true);
+    try {
+      await orderApi.putLimitOrder({
+        price: stepperValue,
+        quantity: amount,
+        side: orderType === "BUY" ? "BID" : "ASK",
+        productIdentifier: props.productIdentifier,
+      });
+      setOrderStatus("submitted");
+      methods.refreshUserOrders();
+    } catch (e) {
+      window.alert("Error: There was an error processing your order");
+      setError(e.response.text);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Box>
@@ -96,7 +126,7 @@ const Trade = (props: {
       </HStack>
       <HStack py="2" justifyContent="space-between">
         <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-          Not {orderType === "BUY" ? "Less" : "More"} than
+          Not {orderType === "BUY" ? "More" : "Less"} than
         </Text>
         <NumberInput
           width="35%"
@@ -142,7 +172,7 @@ const Trade = (props: {
         </Button>
       </Stack>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={doClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader style={{ textAlign: "center" }}>
@@ -150,13 +180,31 @@ const Trade = (props: {
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text style={{ textAlign: "center" }}>
-              {orderType} {amount} {props.assetName} at ${stepperValue} for $
-              {total}
-            </Text>
+            {orderStatus === "pending" && (
+              <Text style={{ textAlign: "center" }}>
+                {orderType} {amount} {props.assetName} at ${stepperValue} for $
+                {total}
+              </Text>
+            )}
+
+            {orderStatus === "error" && (
+              <Text style={{ textAlign: "center" }}>
+                There was an error with your order: {{ error }}
+              </Text>
+            )}
+
+            {orderStatus === "submitted" && (
+              <Text style={{ textAlign: "center" }}>
+                Your order has been submitted
+              </Text>
+            )}
           </ModalBody>
           <ModalFooter style={{ justifyContent: "center" }}>
-            <Button onClick={confirmOrder}>Confirm</Button>
+            {orderStatus === "pending" && (
+              <Button onClick={submitLimitOrder} isLoading={loading}>
+                Confirm
+              </Button>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>

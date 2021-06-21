@@ -1,3 +1,25 @@
+// Types/Interfaces representing domain models from database
+
+type OrderStatus = "PENDING" | "COMPLETE" | "CANCELED";
+type OrderSide = "BID" | "ASK";
+
+interface Order {
+  status: OrderStatus;
+  productIdentifier: string;
+  filled: number;
+  quantity: number;
+  side: OrderSide;
+  orderId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface LimitOrder extends Order {
+  price: number;
+}
+
+export interface MarketOrder extends Order {}
+
 export type Asset = {
   productIdentifier: string;
   year: string;
