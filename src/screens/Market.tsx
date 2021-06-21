@@ -67,7 +67,7 @@ const TableHeaderButton = (props: {
 };
 
 const Market = () => {
-  const { allAssets } = useContext(UserContext);
+  const { allAssets, portfolioValue } = useContext(UserContext);
 
   const [tableFilter, setTableFilter] = useState<TableFilter>("All");
 
@@ -89,7 +89,7 @@ const Market = () => {
         <Heading size="md">My Portfolio</Heading>
         <HStack>
           <Text style={{ fontSize: 30, fontWeight: "bold" }}>
-            ${Number(9908032).toLocaleString()}
+            ${Number(portfolioValue).toLocaleString()}
           </Text>
           <Text>USD</Text>
         </HStack>
