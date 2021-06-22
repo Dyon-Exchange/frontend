@@ -25,17 +25,25 @@ const TableRow = (props: { userAsset: UserAsset }) => {
       <Td>
         {props.userAsset.asset.name} {props.userAsset.asset.year}
       </Td>
-      <Td>${props.userAsset.asset.marketPrice}</Td>
+      <Td>
+        {props.userAsset.asset.marketPrice &&
+          `$${props.userAsset.asset.marketPrice}`}
+      </Td>
       <Td>
         <Text>{props.userAsset.quantity}</Text>
         <Text>
-          {props.userAsset.asset.marketPrice * props.userAsset.quantity} USD
+          {props.userAsset.asset.marketPrice &&
+            `${
+              props.userAsset.asset.marketPrice * props.userAsset.quantity
+            } USD`}
         </Text>
       </Td>
       <Td>
         <Progress value={props.userAsset.portfolioShare} />
         <Text style={{ fontSize: 14, paddingTop: "3%" }}>
-          {props.userAsset.portfolioShare.toFixed(0)}%
+          {props.userAsset.portfolioShare &&
+            props.userAsset.portfolioShare.toFixed(0)}
+          %
         </Text>
       </Td>
     </Tr>
