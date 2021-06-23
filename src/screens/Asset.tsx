@@ -53,7 +53,10 @@ const AssetScreen = (props: any) => {
                 <Heading size="lg">{asset?.name}</Heading>
               </HStack>
               <HStack width="100%">
-                <Text style={{ fontSize: 30 }}>${asset?.marketPrice}</Text>
+                <Text style={{ fontSize: 30 }}>
+                  {asset?.askMarketPrice &&
+                    `$${asset.askMarketPrice.toFixed(2)}`}
+                </Text>
                 <Text>USD</Text>
               </HStack>
             </Box>
@@ -67,7 +70,8 @@ const AssetScreen = (props: any) => {
           <Box style={{ padding: "2%" }}>
             <Trade
               productIdentifier={asset?.productIdentifier as string}
-              marketPrice={asset?.marketPrice as number}
+              askMarketPrice={asset?.askMarketPrice as number}
+              bidMarketPrice={asset?.bidMarketPrice as number}
               assetName={asset?.name as string}
             />
           </Box>
@@ -97,7 +101,10 @@ const AssetScreen = (props: any) => {
                   <Td>
                     {asset?.name} {asset?.year}
                   </Td>
-                  <Td>{quantity * (asset?.marketPrice as number)} USD</Td>
+                  <Td>
+                    {asset?.askMarketPrice &&
+                      `${(quantity * asset?.askMarketPrice).toFixed(2)} USD`}
+                  </Td>
                   <Td>{quantity}</Td>
                 </Tr>
               </Tbody>

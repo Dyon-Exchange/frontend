@@ -36,10 +36,10 @@ const TableRow = (props: { asset: Asset }) => {
       <Td>
         {props.asset.name} {props.asset.year}
       </Td>
-      <Td>$130.01</Td>
-      <Td>$152.01</Td>
-      <Td>{sellChange}</Td>
-      <Td>{buyChange}</Td>
+      <Td>{props.asset.askMarketPrice && `$${props.asset.askMarketPrice}`}</Td>
+      <Td>{props.asset.bidMarketPrice && `$${props.asset.bidMarketPrice}`}</Td>
+      <Td style={{ color: "#90EE90", fontWeight: "bold" }}>+{sellChange}%</Td>
+      <Td style={{ color: "red", fontWeight: "bold" }}>-{buyChange}%</Td>
       <Td>
         <Button>View details</Button>
       </Td>

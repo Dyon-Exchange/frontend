@@ -28,10 +28,12 @@ import orderApi from "../api/order";
 
 const Trade = (props: {
   productIdentifier: string;
-  marketPrice: number;
+  askMarketPrice: number;
+  bidMarketPrice: number;
   assetName: string;
 }) => {
-  const [orderType, setOrderType] = useState<"BUY" | "SELL">("BUY");
+  const [orderSide, setOrderSide] = useState<"BUY" | "SELL">("BUY");
+  const [orderType, setOrderType] = useState<"MARKET" | "LIMIT">("MARKET");
   const [amount, setAmount] = useState<number>(1);
   const [stepperValue, setStepperValue] = useState(0);
   const [total, setTotal] = useState(stepperValue * amount);
@@ -51,8 +53,23 @@ const Trade = (props: {
   };
 
   useEffect(() => {
-    setStepperValue(props.marketPrice);
-  }, [props.marketPrice]);
+    if (orderSide === "SELL") {
+      setStepperValue(props.askMarketPrice);
+    } else {
+      setStepperValue(props.bidMarketPrice);
+    }
+  }, [props.askMarketPrice, props.bidMarketPrice, orderSide]);
+
+  useEffect(() => {
+    const marketPrice =
+      orderSide === "SELL" ? props.askMarketPrice : props.bidMarketPrice;
+
+    if (stepperValue === marketPrice) {
+      setOrderType("MARKET");
+    } else {
+      setOrderType("LIMIT");
+    }
+  }, [stepperValue, props.askMarketPrice, props.bidMarketPrice, orderSide]);
 
   useEffect(() => {
     let total = stepperValue * amount;
@@ -68,7 +85,7 @@ const Trade = (props: {
       await orderApi.putLimitOrder({
         price: stepperValue,
         quantity: amount,
-        side: orderType === "BUY" ? "BID" : "ASK",
+        side: orderSide === "BUY" ? "BID" : "ASK",
         productIdentifier: props.productIdentifier,
       });
       setOrderStatus("submitted");
@@ -92,9 +109,9 @@ const Trade = (props: {
       <HStack width="100%">
         <Button
           width="100%"
-          onClick={() => setOrderType("BUY")}
-          bgColor={orderType === "BUY" ? "black" : undefined}
-          textColor={orderType === "BUY" ? "white" : undefined}
+          onClick={() => setOrderSide("BUY")}
+          bgColor={orderSide === "BUY" ? "black" : undefined}
+          textColor={orderSide === "BUY" ? "white" : undefined}
           _hover={{
             bgColor: "black",
             textColor: "white",
@@ -103,14 +120,14 @@ const Trade = (props: {
           Buy
         </Button>
         <Button
-          bgColor={orderType === "SELL" ? "black" : undefined}
-          textColor={orderType === "SELL" ? "white" : undefined}
+          bgColor={orderSide === "SELL" ? "black" : undefined}
+          textColor={orderSide === "SELL" ? "white" : undefined}
           _hover={{
             bgColor: "black",
             textColor: "white",
           }}
           width="100%"
-          onClick={() => setOrderType("SELL")}
+          onClick={() => setOrderSide("SELL")}
         >
           Sell
         </Button>
@@ -120,16 +137,25 @@ const Trade = (props: {
       </Text>
       <HStack py="2" justifyContent="space-between">
         <Text style={{ fontWeight: "bold", fontSize: 16 }}>Market price</Text>
-        <Button onClick={() => setStepperValue(props.marketPrice)}>
-          <Text style={{ fontSize: 16 }}>US $ {props.marketPrice}</Text>
+        <Button
+          onClick={() =>
+            setStepperValue(
+              orderSide === "BUY" ? props.bidMarketPrice : props.askMarketPrice
+            )
+          }
+        >
+          <Text style={{ fontSize: 16 }}>
+            US ${" "}
+            {orderSide === "BUY" ? props.bidMarketPrice : props.askMarketPrice}
+          </Text>
         </Button>
       </HStack>
       <HStack py="2" justifyContent="space-between">
         <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-          Not {orderType === "BUY" ? "More" : "Less"} than
+          Not {orderSide === "BUY" ? "More" : "Less"} than
         </Text>
         <NumberInput
-          width="35%"
+          width="40%"
           value={stepperValue}
           onChange={(e) => setStepperValue(parseFloat(e))}
         >
@@ -158,7 +184,7 @@ const Trade = (props: {
       <HStack py="4" justifyContent="space-between">
         <Text style={{ fontSize: 16, fontWeight: "bold" }}>Total: </Text>
         <Text px="3" style={{ fontSize: 16 }}>
-          ${total}
+          ${total.toFixed(2)}
         </Text>
       </HStack>
       <Stack>
@@ -168,7 +194,7 @@ const Trade = (props: {
           style={{ justifySelf: "center" }}
           onClick={onOpen}
         >
-          Review order
+          Review {orderType === "MARKET" ? "market" : "limit"} order
         </Button>
       </Stack>
 

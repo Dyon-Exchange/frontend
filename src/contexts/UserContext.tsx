@@ -92,6 +92,7 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
       }
 
       refreshUserOrders();
+      refreshUserPortfolio();
     }, 5 * 1000);
     return () => clearInterval(interval);
   });

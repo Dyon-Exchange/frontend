@@ -27,7 +27,8 @@ export type Asset = {
   image: string;
   createdAt: Date;
   updatedAt: Date;
-  marketPrice?: number;
+  askMarketPrice?: number;
+  bidMarketPrice?: number;
   unitSize: string;
   details: { blurb: string };
 };
