@@ -42,6 +42,9 @@ const Trade = (props: {
     "pending" | "error" | "submitted"
   >("pending");
   const [error, setError] = useState("");
+  const [submittedText, setSubmittedText] = useState(
+    "Your order has been submitted"
+  );
 
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { methods } = useContext(UserContext);
@@ -79,21 +82,41 @@ const Trade = (props: {
     setTotal(total);
   }, [stepperValue, amount]);
 
-  const submitLimitOrder = async () => {
+  const submitOrder = async () => {
     setLoading(true);
     try {
-      await orderApi.putLimitOrder({
-        price: stepperValue,
-        quantity: amount,
-        side: orderSide === "BUY" ? "BID" : "ASK",
-        productIdentifier: props.productIdentifier,
-      });
-      setOrderStatus("submitted");
-      methods.refreshUserOrders();
+      if (orderType === "LIMIT") {
+        await orderApi.putLimitOrder({
+          price: stepperValue,
+          quantity: amount,
+          side: orderSide === "BUY" ? "BID" : "ASK",
+          productIdentifier: props.productIdentifier,
+        });
+        setOrderStatus("submitted");
+        setSubmittedText("Your order has been submitted");
+      } else {
+        const order = await orderApi.putMarketOrder({
+          quantity: amount,
+          side: orderSide === "BUY" ? "BID" : "ASK",
+          productIdentifier: props.productIdentifier,
+        });
+        if (order.status === "NOT-FILLED") {
+          setOrderStatus("error");
+          setSubmittedText(
+            "There is not enough liquidity to complete your order"
+          );
+        } else {
+          setOrderStatus("submitted");
+          setSubmittedText(
+            `Your order was completed. ${order.filled}/${amount}`
+          );
+        }
+      }
     } catch (e) {
       window.alert("Error: There was an error processing your order");
       setError(e.response.text);
     } finally {
+      methods.refreshUserOrders();
       setLoading(false);
     }
   };
@@ -220,14 +243,12 @@ const Trade = (props: {
             )}
 
             {orderStatus === "submitted" && (
-              <Text style={{ textAlign: "center" }}>
-                Your order has been submitted
-              </Text>
+              <Text style={{ textAlign: "center" }}>{submittedText}</Text>
             )}
           </ModalBody>
           <ModalFooter style={{ justifyContent: "center" }}>
             {orderStatus === "pending" && (
-              <Button onClick={submitLimitOrder} isLoading={loading}>
+              <Button onClick={submitOrder} isLoading={loading}>
                 Confirm
               </Button>
             )}

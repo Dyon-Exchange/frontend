@@ -46,7 +46,7 @@ const TableRow = (props: { order: LimitOrder }) => {
       <Td> {props.order.filled}</Td>
       <Td>{props.order.quantity}</Td>
       <Td>${props.order.price}</Td>
-      <Td>${props.order.price * props.order.quantity}</Td>
+      <Td>${(props.order.price * props.order.quantity).toFixed(2)}</Td>
       <Td>
         <Button onClick={cancelOrder} isLoading={loading}>
           Cancel Order
@@ -59,15 +59,15 @@ const TableRow = (props: { order: LimitOrder }) => {
 const PendingOrders = () => {
   const [showOrderSide, setShowOrderSide] = useState<OrderSide>("BID");
   const [orders, setOrders] = useState<LimitOrder[]>([]);
-  const { userOrders } = useContext(UserContext);
+  const { userLimitOrders } = useContext(UserContext);
 
   useEffect(() => {
     setOrders(
-      userOrders.filter(
+      userLimitOrders.filter(
         (o) => o.side === showOrderSide && o.status === "PENDING"
       )
     );
-  }, [showOrderSide, userOrders]);
+  }, [showOrderSide, userLimitOrders]);
 
   return (
     <VStack py="5%" width="100%">
