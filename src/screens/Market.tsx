@@ -11,7 +11,7 @@ import {
   chakra,
   Text,
 } from "@chakra-ui/react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { Asset } from "../index.d";
 
@@ -19,8 +19,13 @@ const TableRow = (props: { asset: Asset }) => {
   const [sellChange] = useState(10.23);
   const [buyChange] = useState(15.38);
 
+  const history = useHistory();
+  const handleRowClick = () => {
+    history.push(`/asset/${props.asset.productIdentifier}`);
+  };
+
   return (
-    <Tr>
+    <Tr onClick={handleRowClick} style={{ cursor: "pointer" }}>
       <Td>
         <chakra.img
           src={props.asset.image}
@@ -31,14 +36,12 @@ const TableRow = (props: { asset: Asset }) => {
       <Td>
         {props.asset.name} {props.asset.year}
       </Td>
-      <Td>$130.01</Td>
-      <Td>$152.01</Td>
-      <Td>{sellChange}</Td>
-      <Td>{buyChange}</Td>
+      <Td>{props.asset.askMarketPrice && `$${props.asset.askMarketPrice}`}</Td>
+      <Td>{props.asset.bidMarketPrice && `$${props.asset.bidMarketPrice}`}</Td>
+      <Td style={{ color: "#90EE90", fontWeight: "bold" }}>+{sellChange}%</Td>
+      <Td style={{ color: "red", fontWeight: "bold" }}>-{buyChange}%</Td>
       <Td>
-        <NavLink to={`/asset/${props.asset.productIdentifier}`}>
-          <Button>View details</Button>
-        </NavLink>
+        <Button>View details</Button>
       </Td>
     </Tr>
   );

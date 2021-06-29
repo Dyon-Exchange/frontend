@@ -18,6 +18,14 @@ const orders = {
     const response = await instance.put("/order/limitOrder", order);
     return response.data;
   },
+  putMarketOrder: async function (order: {
+    quantity: number;
+    side: OrderSide;
+    productIdentifier: string;
+  }): Promise<MarketOrder> {
+    const response = await instance.put("/order/marketOrder", order);
+    return response.data;
+  },
   cancelOrder: async function (orderId: string): Promise<void> {
     const response = await instance.post("/order/cancelOrder", { orderId });
     return response.data;
