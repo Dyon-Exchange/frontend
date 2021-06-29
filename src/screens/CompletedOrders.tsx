@@ -2,10 +2,10 @@ import React, { useContext, useState, useEffect } from "react";
 import { VStack, HStack, Heading, Box } from "@chakra-ui/layout";
 import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 
-import { LimitOrder, Asset } from "../index.d";
+import { LimitOrder, Asset, MarketOrder } from "../index.d";
 import { UserContext } from "../contexts/UserContext";
 
-const TableRow = (props: { order: LimitOrder }) => {
+const TableRow = (props: { order: LimitOrder | MarketOrder }) => {
   const { allAssets } = useContext(UserContext);
 
   const asset: Asset = allAssets.filter(
@@ -16,11 +16,14 @@ const TableRow = (props: { order: LimitOrder }) => {
     <Tr>
       <Td>{new Date(props.order.createdAt).toLocaleDateString()}</Td>
       <Td>{new Date(props.order.updatedAt).toLocaleDateString()}</Td>
-      <Td>{props.order.side} - Limit</Td>
-      <Td>${props.order.price}</Td>
-      <Td>{props.order.price * props.order.quantity}</Td>
+      <Td>{props.order.side}</Td>
+      <Td>${props.order?.price}</Td>
       <Td>
-        {props.order.quantity} {asset.name} {asset.year}
+        {props.order.price &&
+          (props.order?.price * props.order.filled).toFixed(2)}
+      </Td>
+      <Td>
+        {props.order.quantity} {asset?.name} {asset?.year}
       </Td>
       <Td></Td>
     </Tr>
@@ -28,12 +31,24 @@ const TableRow = (props: { order: LimitOrder }) => {
 };
 
 const CompletedOrders = function () {
-  const { userOrders } = useContext(UserContext);
-  const [orders, setOrders] = useState<LimitOrder[]>([]);
+  const { userLimitOrders, userMarketOrders } = useContext(UserContext);
+  const [orders, setOrders] = useState<(LimitOrder | MarketOrder)[]>([]);
 
   useEffect(() => {
-    setOrders(userOrders.filter((o) => o.status === "COMPLETE"));
-  }, [userOrders]);
+    const limitOrders = userLimitOrders.filter((o) => o.status === "COMPLETE");
+    const marketOrders = userMarketOrders.filter(
+      (o) => o.status === "COMPLETE"
+    );
+    const all = [...limitOrders, ...marketOrders];
+    all.sort((a: MarketOrder | LimitOrder, b: MarketOrder | LimitOrder) => {
+      if (a.createdAt < b.createdAt) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
+    setOrders(all);
+  }, [userLimitOrders, userMarketOrders]);
 
   return (
     <VStack py="5%" width="100%">
@@ -56,7 +71,7 @@ const CompletedOrders = function () {
               </Tr>
             </Thead>
             <Tbody>
-              {orders.map((o, i) => (
+              {orders.map((o: MarketOrder | LimitOrder, i: number) => (
                 <TableRow order={o} key={i} />
               ))}
             </Tbody>

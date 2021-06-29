@@ -1,6 +1,6 @@
 import React, { createContext, ReactChild, useEffect, useState } from "react";
 import useLocalStorage from "react-use-localstorage";
-import { Asset, UserAsset, LimitOrder } from "../index.d";
+import { Asset, UserAsset, LimitOrder, MarketOrder } from "../index.d";
 import user from "../api/user";
 import assetApi from "../api/asset";
 import orderApi from "../api/order";
@@ -14,7 +14,8 @@ interface IUserContext {
   portfolioValue: number;
   allAssets: Asset[];
   assets: UserAsset[];
-  userOrders: LimitOrder[];
+  userLimitOrders: LimitOrder[];
+  userMarketOrders: MarketOrder[];
 
   methods: {
     login: (email: string, password: string) => Promise<void>;
@@ -36,7 +37,8 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
   const [portfolioValue, setPortfolioValue] = useState(0);
   const [allAssets, setAllAssets] = useState<Asset[]>([]);
   const [assets, setAssets] = useState<UserAsset[]>([]);
-  const [userOrders, setUserOrders] = useState<LimitOrder[]>([]);
+  const [userLimitOrders, setUserLimitOrders] = useState<LimitOrder[]>([]);
+  const [userMarketOrders, setUserMarketOrders] = useState<MarketOrder[]>([]);
 
   // UseEffect to run whenever a user is logged in
   useEffect(() => {
@@ -82,7 +84,8 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
 
   const refreshUserOrders = async () => {
     const userOrders = await orderApi.get();
-    setUserOrders(userOrders.limitOrders);
+    setUserLimitOrders(userOrders.limitOrders);
+    setUserMarketOrders(userOrders.marketOrders);
   };
 
   useEffect(() => {
@@ -92,6 +95,7 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
       }
 
       refreshUserOrders();
+      refreshUserPortfolio();
     }, 5 * 1000);
     return () => clearInterval(interval);
   });
@@ -106,7 +110,8 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
         cashBalance,
         portfolioValue,
         allAssets,
-        userOrders,
+        userLimitOrders,
+        userMarketOrders,
         assets,
         methods: {
           login,

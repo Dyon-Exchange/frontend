@@ -10,6 +10,7 @@ import {
   chakra,
   Progress,
 } from "@chakra-ui/react";
+import { NavLink } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { UserAsset } from "../index.d";
 
@@ -25,17 +26,25 @@ const TableRow = (props: { userAsset: UserAsset }) => {
       <Td>
         {props.userAsset.asset.name} {props.userAsset.asset.year}
       </Td>
-      <Td>${props.userAsset.asset.marketPrice}</Td>
+      <Td>
+        {props.userAsset.asset.askMarketPrice &&
+          `$${props.userAsset.asset.askMarketPrice.toFixed(2)}`}
+      </Td>
       <Td>
         <Text>{props.userAsset.quantity}</Text>
         <Text>
-          {props.userAsset.asset.marketPrice * props.userAsset.quantity} USD
+          {props.userAsset.asset.askMarketPrice &&
+            `${(
+              props.userAsset.asset.askMarketPrice * props.userAsset.quantity
+            ).toFixed(2)} USD`}
         </Text>
       </Td>
       <Td>
         <Progress value={props.userAsset.portfolioShare} />
         <Text style={{ fontSize: 14, paddingTop: "3%" }}>
-          {props.userAsset.portfolioShare.toFixed(0)}%
+          {props.userAsset.portfolioShare &&
+            props.userAsset.portfolioShare.toFixed(0)}
+          %
         </Text>
       </Td>
     </Tr>
@@ -56,12 +65,16 @@ const Portfolio = () => {
           <Text py="3%" px="5%" style={{ fontWeight: "bold" }}>
             Quick links
           </Text>
-          <Text py="1%" px="5%" style={{ fontSize: 14 }}>
-            Completed transactions
-          </Text>
-          <Text pb="3%" px="5%" style={{ fontSize: 14 }}>
-            Pending orders
-          </Text>
+          <NavLink to="/completedorders">
+            <Text py="1%" px="5%" style={{ fontSize: 14 }}>
+              Completed transactions
+            </Text>
+          </NavLink>
+          <NavLink to="/pendingorders">
+            <Text pb="3%" px="5%" style={{ fontSize: 14 }}>
+              Pending orders
+            </Text>
+          </NavLink>
         </Box>
       </Container>
 
