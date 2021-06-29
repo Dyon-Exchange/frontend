@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import assetApi from "../api/asset";
 import { Asset } from "../index.d";
-import Trade from "./Trade";
+import Trade from "../components/Trade";
 import { UserContext } from "../contexts/UserContext";
 
 const AssetScreen = (props: any) => {
