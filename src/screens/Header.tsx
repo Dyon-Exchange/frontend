@@ -20,10 +20,10 @@ import { UserContext } from "../contexts/UserContext";
 import { colors } from "../config";
 
 const Header = (props: any) => {
-  const { logout, fullName } = useContext(UserContext);
+  const { methods, fullName } = useContext(UserContext);
 
   const logoutPress = async () => {
-    logout();
+    methods.logout();
     return <Redirect to="/signin" />;
   };
 
@@ -39,7 +39,7 @@ const Header = (props: any) => {
       {...props}
     >
       <Flex align="center" mr={5}>
-        <NavLink to="/">
+        <NavLink to="/market">
           <chakra.img src={logo} {...props} style={{ height: 50, width: 50 }} />
         </NavLink>
       </Flex>
@@ -181,9 +181,14 @@ const Header = (props: any) => {
             >
               Settings
             </MenuItem>
-            <NavLink to="/balances">
+            <NavLink to="/pendingorders">
               <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
-                Balances
+                Pending Orders
+              </MenuItem>
+            </NavLink>
+            <NavLink to="/completedorders">
+              <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
+                Completed Orders
               </MenuItem>
             </NavLink>
             <NavLink to="/redeem">
