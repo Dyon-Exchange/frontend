@@ -47,7 +47,7 @@ const TableRow = (props: { asset: Asset }) => {
   );
 };
 
-type TableFilter = "All" | "Top Movers" | "Recently added" | "Top traded";
+type TableFilter = "All" | "Top Movers" | "Recently Added" | "Top Traded";
 
 const TableHeaderButton = (props: {
   filter: TableFilter;
@@ -77,7 +77,7 @@ const Market = () => {
   const [assetRows, setAssetRows] = useState<Asset[]>([]);
 
   useEffect(() => {
-    if (tableFilter === "Recently added") {
+    if (tableFilter === "Recently Added") {
       setAssetRows(
         allAssets.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
       );
@@ -119,12 +119,12 @@ const Market = () => {
             func={setTableFilter}
           />
           <TableHeaderButton
-            filter="Recently added"
+            filter="Recently Added"
             currentFilter={tableFilter}
             func={setTableFilter}
           />
           <TableHeaderButton
-            filter="Top traded"
+            filter="Top Traded"
             currentFilter={tableFilter}
             func={setTableFilter}
           />
