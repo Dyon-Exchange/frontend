@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import SignedInHeader from "./screens/Header";
-import Header from "./screens/PreSignInHeader";
+import SignedInHeader from "./components/Header";
+import Header from "./components/PreSignInHeader";
 import { SignIn } from "./screens/SignIn";
 import { UserContext } from "./contexts/UserContext";
 import Market from "./screens/Market";

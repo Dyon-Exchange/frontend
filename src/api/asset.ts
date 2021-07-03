@@ -6,9 +6,11 @@ const assetApi = {
     const { data } = await instance.get("/asset/");
     return data.assets;
   },
-  getAssetData: async (productIdentifier: string): Promise<Asset> => {
+  getAssetData: async (
+    productIdentifier: string
+  ): Promise<{ asset: Asset; priceEvents: any }> => {
     const { data } = await instance.get(`/asset/data/${productIdentifier}`);
-    return data.asset;
+    return data;
   },
   getUserAssets: async (): Promise<{
     assets: UserAsset[];
