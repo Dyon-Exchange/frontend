@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { UserContext } from "../contexts/UserContext";
 import { useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
 import logo from "../assets/dyon.png";
 
 export const SignIn = () => {
@@ -24,10 +25,13 @@ export const SignIn = () => {
   const { handleSubmit, register } = useForm();
   const [loading, setLoading] = useState(false);
 
+  const history = useHistory();
+
   const onSubmit = async (data: any) => {
     setLoading(true);
     try {
       await methods.login(data.email, data.password);
+      history.push(`/market`);
     } catch (e) {
       if (e.response.status === 401) {
         window.alert("Your password was incorrect");

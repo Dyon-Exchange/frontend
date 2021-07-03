@@ -79,7 +79,7 @@ const Market = () => {
   useEffect(() => {
     if (tableFilter === "Recently Added") {
       setAssetRows(
-        allAssets.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+        [...allAssets].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
       );
     } else {
       setAssetRows(allAssets);
@@ -87,7 +87,7 @@ const Market = () => {
   }, [tableFilter, allAssets]);
 
   return (
-    <Flex flexDirection="row">
+    <Flex flexDirection="row" justifyContent="center">
       <VStack px="10" py="10" alignItems="flex-start">
         <Heading size="md">My Portfolio</Heading>
         <HStack>

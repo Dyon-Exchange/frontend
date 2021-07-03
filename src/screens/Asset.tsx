@@ -87,7 +87,7 @@ const AssetScreen = (props: any) => {
           </Box>
         </HStack>
 
-        <Box width="100%">
+        <Box width="100%" pl="2%">
           <Heading size="md" style={{ paddingBottom: "1%" }}>
             About {asset?.name} {asset?.year}
           </Heading>
@@ -95,7 +95,7 @@ const AssetScreen = (props: any) => {
         </Box>
 
         {quantity > 0 && (
-          <Box width="100%" pt="2%">
+          <Box width="100%" pt="2%" pl="2%">
             <Heading size="md" style={{ paddingBottom: "1%" }}>
               My {asset?.name} {asset?.year}
             </Heading>
