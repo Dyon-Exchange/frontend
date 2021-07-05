@@ -99,7 +99,7 @@ const PendingOrders = () => {
         </HStack>
       </HStack>
 
-      <Box py="5%" px="10%">
+      <Box py="5%">
         {orders.length > 0 && (
           <Table>
             <Thead>

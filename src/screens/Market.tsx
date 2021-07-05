@@ -76,13 +76,29 @@ const Market = () => {
 
   const [assetRows, setAssetRows] = useState<Asset[]>([]);
 
+  const sortRecentlyAdded = (a: Asset, b: Asset) => {
+    return a.createdAt < b.createdAt ? 1 : -1;
+  };
+
+  const sortTopTraded = (a: Asset, b: Asset) => {
+    return a.volume < b.volume ? 1 : -1;
+  };
+
+  const sortTopMovers = (a: Asset, b: Asset) => {};
+
+  const sortAll = (a: Asset, b: Asset) => {
+    return a.marketCap < b.marketCap ? 1 : -1;
+  };
+
+  console.log(assetRows);
+
   useEffect(() => {
     if (tableFilter === "Recently Added") {
-      setAssetRows(
-        [...allAssets].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
-      );
+      setAssetRows([...allAssets].sort(sortRecentlyAdded));
+    } else if (tableFilter === "Top Traded") {
+      setAssetRows([...allAssets].sort(sortTopTraded));
     } else {
-      setAssetRows(allAssets);
+      setAssetRows([...allAssets].sort(sortAll));
     }
   }, [tableFilter, allAssets]);
 
