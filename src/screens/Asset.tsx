@@ -13,7 +13,8 @@ import {
 } from "@chakra-ui/react";
 import assetApi from "../api/asset";
 import { Asset } from "../index.d";
-import Trade from "./Trade";
+import Trade from "../components/Trade";
+import Chart from "../components/Chart";
 import { UserContext } from "../contexts/UserContext";
 
 const AssetScreen = (props: any) => {
@@ -21,10 +22,16 @@ const AssetScreen = (props: any) => {
   const [quantity, setQuantity] = useState(0);
   const { assets } = useContext(UserContext);
 
+  const [priceEventsData, setPriceEventsData] = useState([]);
+
   useEffect(() => {
     (async () => {
-      const asset = await assetApi.getAssetData(props.match.params.id);
+      const { asset, priceEvents } = await assetApi.getAssetData(
+        props.match.params.id
+      );
       setAsset(asset);
+      setPriceEventsData(priceEvents);
+
       const a = assets.filter(
         (a) => asset.productIdentifier === a.asset.productIdentifier
       )[0];
@@ -37,37 +44,40 @@ const AssetScreen = (props: any) => {
     <Flex style={{ paddingTop: "5%", paddingLeft: "2%" }}>
       <VStack style={{ width: "80%" }}>
         <HStack width="100%" style={{ alignItems: "start" }}>
-          <HStack
-            style={{
-              justifyContent: "space-between",
-              width: "100%",
-              padding: "2%",
-            }}
-          >
-            <Box>
-              <HStack>
-                <chakra.img
-                  src={asset?.image}
-                  style={{ height: 50, width: 50 }}
-                />
-                <Heading size="lg">{asset?.name}</Heading>
-              </HStack>
-              <HStack width="100%">
-                <Text style={{ fontSize: 30 }}>
-                  {asset?.askMarketPrice &&
-                    `$${asset.askMarketPrice.toFixed(2)}`}
-                </Text>
-                <Text>USD</Text>
-              </HStack>
-            </Box>
-            <Box>
-              <HStack>
-                <Button>Watch</Button>
-                <Button>Bell</Button>
-              </HStack>
-            </Box>
-          </HStack>
-          <Box style={{ padding: "2%" }}>
+          <VStack style={{ flex: 3 }}>
+            <HStack
+              style={{
+                justifyContent: "space-between",
+                width: "100%",
+                padding: "2%",
+              }}
+            >
+              <Box>
+                <HStack>
+                  <chakra.img
+                    src={asset?.image}
+                    style={{ height: 50, width: 50 }}
+                  />
+                  <Heading size="lg">{asset?.name}</Heading>
+                </HStack>
+                <HStack width="100%">
+                  <Text style={{ fontSize: 30 }}>
+                    {asset?.askMarketPrice &&
+                      `$${asset.askMarketPrice.toFixed(2)}`}
+                  </Text>
+                  <Text>USD</Text>
+                </HStack>
+              </Box>
+              <Box>
+                <HStack>
+                  <Button>Watch</Button>
+                  <Button>Bell</Button>
+                </HStack>
+              </Box>
+            </HStack>
+            <Chart data={priceEventsData} />
+          </VStack>
+          <Box style={{ padding: "2%", flex: 1 }}>
             <Trade
               productIdentifier={asset?.productIdentifier as string}
               askMarketPrice={asset?.askMarketPrice as number}
@@ -76,7 +86,8 @@ const AssetScreen = (props: any) => {
             />
           </Box>
         </HStack>
-        <Box width="100%">
+
+        <Box width="100%" pl="2%">
           <Heading size="md" style={{ paddingBottom: "1%" }}>
             About {asset?.name} {asset?.year}
           </Heading>
@@ -84,7 +95,7 @@ const AssetScreen = (props: any) => {
         </Box>
 
         {quantity > 0 && (
-          <Box width="100%" pt="2%">
+          <Box width="100%" pt="2%" pl="2%">
             <Heading size="md" style={{ paddingBottom: "1%" }}>
               My {asset?.name} {asset?.year}
             </Heading>

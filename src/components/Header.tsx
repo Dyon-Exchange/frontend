@@ -12,8 +12,9 @@ import {
   MenuItem,
 } from "@chakra-ui/react";
 import { chakra } from "@chakra-ui/react";
+import { useHistory } from "react-router-dom";
 import logo from "../assets/dyon.png";
-import { NavLink, Redirect } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { BsPerson } from "react-icons/bs";
 import { BiDollar, BiTransfer } from "react-icons/bi";
 import { UserContext } from "../contexts/UserContext";
@@ -21,10 +22,11 @@ import { colors } from "../config";
 
 const Header = (props: any) => {
   const { methods, fullName } = useContext(UserContext);
+  const history = useHistory();
 
   const logoutPress = async () => {
     methods.logout();
-    return <Redirect to="/signin" />;
+    history.push("/signin");
   };
 
   return (

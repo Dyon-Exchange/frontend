@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Container, Heading, VStack, Text, Box } from "@chakra-ui/layout";
+import { Heading, VStack, Text, Box } from "@chakra-ui/layout";
 import {
   Table,
   Thead,
@@ -19,18 +19,23 @@ const TableRow = (props: { userAsset: UserAsset }) => {
     <Tr>
       <Td>
         <chakra.img
-          style={{ height: 50, width: 50 }}
+          style={{
+            height: 50,
+            width: 50,
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
           src={props.userAsset.asset.image}
         />
       </Td>
-      <Td>
+      <Td style={{ textAlign: "center" }}>
         {props.userAsset.asset.name} {props.userAsset.asset.year}
       </Td>
-      <Td>
+      <Td style={{ textAlign: "center" }}>
         {props.userAsset.asset.askMarketPrice &&
           `$${props.userAsset.asset.askMarketPrice.toFixed(2)}`}
       </Td>
-      <Td>
+      <Td style={{ textAlign: "center" }}>
         <Text>{props.userAsset.quantity}</Text>
         <Text>
           {props.userAsset.asset.askMarketPrice &&
@@ -39,7 +44,7 @@ const TableRow = (props: { userAsset: UserAsset }) => {
             ).toFixed(2)} USD`}
         </Text>
       </Td>
-      <Td>
+      <Td style={{ textAlign: "center" }}>
         <Progress value={props.userAsset.portfolioShare} />
         <Text style={{ fontSize: 14, paddingTop: "3%" }}>
           {props.userAsset.portfolioShare &&
@@ -56,7 +61,7 @@ const Portfolio = () => {
 
   return (
     <VStack spacing="15px" py="10">
-      <Container>
+      <Box style={{ width: "65%", paddingLeft: "5%" }}>
         <Heading size="lg">My portfolio</Heading>
         <Text py="2" style={{ fontSize: 30 }}>
           ${portfolioValue.toLocaleString()}
@@ -76,29 +81,34 @@ const Portfolio = () => {
             </Text>
           </NavLink>
         </Box>
-      </Container>
+      </Box>
 
-      <VStack py="10" alignContent="center">
+      <Box
+        style={{
+          width: "65%",
+          paddingLeft: "5%",
+          marginTop: "2%",
+        }}
+      >
         <Heading size="lg">Balances</Heading>
-
         <Box py="10">
-          <Table variant="simple">
+          <Table variant="striped">
             <Thead>
               <Tr>
                 <Th></Th>
-                <Th>Asset</Th>
-                <Th>Current price</Th>
-                <Th>My balance</Th>
-                <Th>Trading portfolio</Th>
+                <Th style={{ textAlign: "center" }}>Asset</Th>
+                <Th style={{ textAlign: "center" }}>Current price</Th>
+                <Th style={{ textAlign: "center" }}>My balance</Th>
+                <Th style={{ textAlign: "center" }}>Trading portfolio</Th>
               </Tr>
             </Thead>
             <Tbody>
               <Tr>
-                <Td>US$ Cash</Td>
+                <Td style={{ textAlign: "center" }}>US$ Cash</Td>
                 <Td></Td>
                 <Td></Td>
-                <Td>{cashBalance} USD</Td>
-                <Td>
+                <Td style={{ textAlign: "center" }}>{cashBalance} USD</Td>
+                <Td style={{ textAlign: "center" }}>
                   <Progress value={(cashBalance / portfolioValue) * 100} />
                   <Text style={{ fontSize: 14, paddingTop: "3%" }}>
                     {((cashBalance / portfolioValue) * 100).toFixed(0)}%
@@ -111,7 +121,7 @@ const Portfolio = () => {
             </Tbody>
           </Table>
         </Box>
-      </VStack>
+      </Box>
     </VStack>
   );
 };

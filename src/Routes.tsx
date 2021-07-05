@@ -1,7 +1,12 @@
 import React, { useContext } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import SignedInHeader from "./screens/Header";
-import Header from "./screens/PreSignInHeader";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
+import SignedInHeader from "./components/Header";
+import Header from "./components/PreSignInHeader";
 import { SignIn } from "./screens/SignIn";
 import { UserContext } from "./contexts/UserContext";
 import Market from "./screens/Market";
@@ -20,6 +25,9 @@ export default function Routes() {
       <Switch>
         {token ? (
           <>
+            <Route exact path="/">
+              <Redirect to="/market" />
+            </Route>
             <Route path="/market" component={Market} />
             <Route path="/portfolio" component={Portfolio} />
             <Route path="/mint" component={Mint} />
@@ -28,7 +36,12 @@ export default function Routes() {
             <Route path="/completedorders" component={CompletedOrders} />
           </>
         ) : (
-          <Route path="/signin" component={SignIn}></Route>
+          <>
+            <Route exact path="/">
+              <Redirect to="/signin" />
+            </Route>
+            <Route path="/signin" component={SignIn}></Route>
+          </>
         )}
       </Switch>
     </Router>

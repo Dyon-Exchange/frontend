@@ -50,3 +50,9 @@ export type UserAsset = {
   asset: Asset;
   portfolioShare: number;
 };
+
+export type PriceEvent = {
+  time: Date;
+  price: number;
+  productIdentifier: string;
+};
