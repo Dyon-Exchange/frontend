@@ -10,6 +10,7 @@ import {
   Td,
   chakra,
 } from "@chakra-ui/react";
+import { useHistory } from "react-router-dom";
 
 import orderApi from "../api/order";
 import { OrderSide, Asset, LimitOrder } from "../index.d";
@@ -35,13 +36,18 @@ const TableRow = (props: { order: LimitOrder }) => {
     }
   };
 
+  const history = useHistory();
+  const handleRowClick = () => {
+    history.push(`/asset/${asset.productIdentifier}`);
+  };
+
   return (
-    <Tr>
-      <Td>
+    <Tr onClick={handleRowClick} style={{ cursor: "pointer" }}>
+      <Td style={{ textAlign: "center" }}>
         <chakra.img src={asset?.image} style={{ height: 50, width: 50 }} />
       </Td>
-      <Td>
-        {asset.name} {asset.year}
+      <Td style={{ textAlign: "center" }}>
+        {asset?.name} {asset?.year}
       </Td>
       <Td> {props.order.filled}</Td>
       <Td>{props.order.quantity}</Td>

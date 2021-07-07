@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { VStack, HStack, Heading, Box } from "@chakra-ui/layout";
 import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
+import { useHistory } from "react-router-dom";
 
 import { LimitOrder, Asset, MarketOrder } from "../index.d";
 import { UserContext } from "../contexts/UserContext";
@@ -12,8 +13,13 @@ const TableRow = (props: { order: LimitOrder | MarketOrder }) => {
     (a) => props.order.productIdentifier === a.productIdentifier
   )[0];
 
+  const history = useHistory();
+  const handleRowClick = () => {
+    history.push(`/asset/${asset.productIdentifier}`);
+  };
+
   return (
-    <Tr>
+    <Tr onClick={handleRowClick} style={{ cursor: "pointer" }}>
       <Td>{new Date(props.order.createdAt).toLocaleDateString()}</Td>
       <Td>{new Date(props.order.updatedAt).toLocaleDateString()}</Td>
       <Td>{props.order.side}</Td>
