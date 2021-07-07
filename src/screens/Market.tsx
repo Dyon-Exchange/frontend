@@ -15,10 +15,31 @@ import { NavLink, useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { Asset } from "../index.d";
 
-const TableRow = (props: { asset: Asset }) => {
-  const [sellChange] = useState(10.23);
-  const [buyChange] = useState(15.38);
+const ChangeCell = (props: { change: number }) => {
+  const red = "#FF0000";
+  const green = "#90EE90";
+  const black = "#000000";
+  let prelude = "";
+  let color = "";
 
+  if (props.change > 0) {
+    color = green;
+    prelude = "+";
+  } else if (props.change < 0) {
+    color = red;
+  } else {
+    color = black;
+  }
+
+  return (
+    <Td style={{ color, fontWeight: "bold" }}>
+      {prelude}
+      {props.change}%
+    </Td>
+  );
+};
+
+const TableRow = (props: { asset: Asset }) => {
   const history = useHistory();
   const handleRowClick = () => {
     history.push(`/asset/${props.asset.productIdentifier}`);
@@ -38,8 +59,7 @@ const TableRow = (props: { asset: Asset }) => {
       </Td>
       <Td>{props.asset.askMarketPrice && `$${props.asset.askMarketPrice}`}</Td>
       <Td>{props.asset.bidMarketPrice && `$${props.asset.bidMarketPrice}`}</Td>
-      <Td style={{ color: "#90EE90", fontWeight: "bold" }}>+{sellChange}%</Td>
-      <Td style={{ color: "red", fontWeight: "bold" }}>-{buyChange}%</Td>
+      <ChangeCell change={props.asset.change} />
       <Td>
         <Button>View details</Button>
       </Td>
@@ -76,6 +96,8 @@ const Market = () => {
 
   const [assetRows, setAssetRows] = useState<Asset[]>([]);
 
+  console.log({ allAssets });
+
   const sortRecentlyAdded = (a: Asset, b: Asset) => {
     return a.createdAt < b.createdAt ? 1 : -1;
   };
@@ -84,19 +106,21 @@ const Market = () => {
     return a.volume < b.volume ? 1 : -1;
   };
 
-  const sortTopMovers = (a: Asset, b: Asset) => {};
+  const sortTopMovers = (a: Asset, b: Asset) => {
+    return a.change < b.change ? 1 : -1;
+  };
 
   const sortAll = (a: Asset, b: Asset) => {
     return a.marketCap < b.marketCap ? 1 : -1;
   };
-
-  console.log(assetRows);
 
   useEffect(() => {
     if (tableFilter === "Recently Added") {
       setAssetRows([...allAssets].sort(sortRecentlyAdded));
     } else if (tableFilter === "Top Traded") {
       setAssetRows([...allAssets].sort(sortTopTraded));
+    } else if (tableFilter === "Top Movers") {
+      setAssetRows([...allAssets].sort(sortTopMovers));
     } else {
       setAssetRows([...allAssets].sort(sortAll));
     }
@@ -112,8 +136,7 @@ const Market = () => {
           </Text>
           <Text>USD</Text>
         </HStack>
-        <Text style={{ color: "red" }}>-$2,877.12 (-3.40%)</Text>
-
+        {/* <Text style={{ color: "red" }}>-$2,877.12 (-3.40%)</Text> */}
         <NavLink
           to="/portfolio"
           style={{ alignSelf: "center", paddingTop: "10px" }}
