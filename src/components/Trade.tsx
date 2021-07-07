@@ -231,7 +231,7 @@ const Trade = (props: {
           <ModalBody>
             {orderStatus === "pending" && (
               <Text style={{ textAlign: "center" }}>
-                {orderType} {amount} {props.assetName} at ${stepperValue} for $
+                {orderSide} {amount} {props.assetName} at ${stepperValue} for $
                 {total}
               </Text>
             )}

@@ -10,13 +10,18 @@ import {
   chakra,
   Progress,
 } from "@chakra-ui/react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { UserAsset } from "../index.d";
 
 const TableRow = (props: { userAsset: UserAsset }) => {
+  const history = useHistory();
+  const handleRowClick = () => {
+    history.push(`/asset/${props.userAsset.asset.productIdentifier}`);
+  };
+
   return (
-    <Tr>
+    <Tr onClick={handleRowClick} style={{ cursor: "pointer" }}>
       <Td>
         <chakra.img
           style={{

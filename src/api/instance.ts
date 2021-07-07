@@ -16,4 +16,18 @@ instance.interceptors.request.use(
   }
 );
 
+instance.interceptors.response.use(
+  function (response) {
+    return response;
+  },
+  function (error) {
+    if (error.response && 401 === error.response.status) {
+      localStorage.setItem("email", "");
+      localStorage.setItem("token", "");
+      localStorage.setItem("refreshToken", "");
+    } else {
+      return Promise.reject(error);
+    }
+  }
+);
 export default instance;
