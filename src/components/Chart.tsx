@@ -34,14 +34,18 @@ export default function Chart({ data }: any) {
     >
       <XAxis
         dataKey="time"
-        tickFormatter={(date: string) =>
-          new Date(date).toLocaleDateString("en", {
-            month: "numeric",
-            day: "numeric",
-          })
-        }
+        tickFormatter={(date: string, i: number) => {
+          if (i % 2 === 0) {
+            return new Date(date).toLocaleDateString("en", {
+              month: "numeric",
+              day: "numeric",
+            });
+          } else {
+            return "";
+          }
+        }}
       />
-      <YAxis dataKey="price" />
+      <YAxis dataKey="price" tickFormatter={(price: any) => `$${price}`} />
       <Tooltip content={<CustomTooltip />} />
       <Line
         type="monotone"

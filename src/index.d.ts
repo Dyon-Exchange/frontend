@@ -33,6 +33,9 @@ export type Asset = {
   bidMarketPrice?: number;
   unitSize: string;
   details: { blurb: string };
+  volume: number;
+  marketCap: number;
+  change: number;
 };
 
 export type Token = {

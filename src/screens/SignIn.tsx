@@ -103,7 +103,7 @@ export const SignIn = () => {
                       <option value="matilda@labrys.io">
                         matilda@labrys.io
                       </option>
-                      <option value="john@dyon.com">john@dyon.com</option>
+                      <option value="bob@dyon.com">bob@dyon.com</option>
                       <option value="alice@dyon.com">alice@dyon.com</option>
                     </Select>
                   </InputGroup>
