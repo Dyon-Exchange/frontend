@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Flex, VStack, Heading, HStack, Box } from "@chakra-ui/layout";
+import { BellIcon, StarIcon } from "@chakra-ui/icons";
 import {
   Text,
   Button,
@@ -70,8 +71,19 @@ const AssetScreen = (props: any) => {
               </Box>
               <Box>
                 <HStack>
-                  <Button>Watch</Button>
-                  <Button>Bell</Button>
+                  <Button>
+                    Watch{" "}
+                    <StarIcon
+                      style={{
+                        marginLeft: "7%",
+                      }}
+                      w={3}
+                      h={3}
+                    />
+                  </Button>
+                  <Button>
+                    <BellIcon />
+                  </Button>
                 </HStack>
               </Box>
             </HStack>
