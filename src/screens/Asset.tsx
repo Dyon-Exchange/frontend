@@ -19,11 +19,13 @@ import Chart from "../components/Chart";
 import { UserContext } from "../contexts/UserContext";
 
 const AssetScreen = (props: any) => {
+  const { assets } = useContext(UserContext);
   const [asset, setAsset] = useState<Asset | undefined>();
   const [quantity, setQuantity] = useState(0);
-  const { assets } = useContext(UserContext);
-
   const [priceEventsData, setPriceEventsData] = useState([]);
+
+  const [color, setColor] = useState("green");
+  const [prelude, setPrelude] = useState("-");
 
   useEffect(() => {
     (async () => {
@@ -38,6 +40,14 @@ const AssetScreen = (props: any) => {
       )[0];
 
       setQuantity(a ? a.quantity : 0);
+
+      if (asset.changePercentage > 0) {
+        setColor("green");
+        setPrelude("+");
+      } else {
+        setColor("red");
+        setPrelude("-");
+      }
     })();
   }, [props.match.params.id, assets]);
 
@@ -68,6 +78,12 @@ const AssetScreen = (props: any) => {
                   </Text>
                   <Text>USD</Text>
                 </HStack>
+                <Text style={{ fontWeight: "bold", color }}>
+                  {prelude}${Math.abs(asset?.changeAmount as number)}{" "}
+                  {`(${prelude}${Math.abs(
+                    asset?.changePercentage as number
+                  )}%)`}
+                </Text>
               </Box>
               <Box>
                 <HStack>

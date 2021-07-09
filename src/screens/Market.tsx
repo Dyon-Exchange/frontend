@@ -59,7 +59,7 @@ const TableRow = (props: { asset: Asset }) => {
       </Td>
       <Td>{props.asset.askMarketPrice && `$${props.asset.askMarketPrice}`}</Td>
       <Td>{props.asset.bidMarketPrice && `$${props.asset.bidMarketPrice}`}</Td>
-      <ChangeCell change={props.asset.change} />
+      <ChangeCell change={props.asset.changePercentage} />
       <Td>
         <Button>View details</Button>
       </Td>
@@ -96,8 +96,6 @@ const Market = () => {
 
   const [assetRows, setAssetRows] = useState<Asset[]>([]);
 
-  console.log({ allAssets });
-
   const sortRecentlyAdded = (a: Asset, b: Asset) => {
     return a.createdAt < b.createdAt ? 1 : -1;
   };
@@ -107,7 +105,7 @@ const Market = () => {
   };
 
   const sortTopMovers = (a: Asset, b: Asset) => {
-    return a.change < b.change ? 1 : -1;
+    return a.changePercentage < b.changePercentage ? 1 : -1;
   };
 
   const sortAll = (a: Asset, b: Asset) => {

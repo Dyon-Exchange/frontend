@@ -35,7 +35,8 @@ export type Asset = {
   details: { blurb: string };
   volume: number;
   marketCap: number;
-  change: number;
+  changePercentage: number;
+  changeAmount: number;
 };
 
 export type Token = {
