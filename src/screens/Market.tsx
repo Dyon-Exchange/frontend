@@ -177,7 +177,7 @@ const Market = () => {
                 <Th>Sell</Th>
                 <Th>Buy</Th>
                 <Th>Change</Th>
-                <Th>Change</Th>
+                <Th></Th>
                 <Th></Th>
               </Tr>
             </Thead>
