@@ -45,7 +45,10 @@ export default function Chart({ data }: any) {
           }
         }}
       />
-      <YAxis dataKey="price" tickFormatter={(price: any) => `$${price}`} />
+      <YAxis
+        dataKey="price"
+        tickFormatter={(price: any) => `$${price}`}
+      ></YAxis>
       <Tooltip content={<CustomTooltip />} />
       <Line
         type="monotone"

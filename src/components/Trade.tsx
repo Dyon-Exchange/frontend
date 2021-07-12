@@ -252,6 +252,7 @@ const Trade = (props: {
                 Confirm
               </Button>
             )}
+            {/* orderStatus === "submitted" && <Button>View</Button> */}
           </ModalFooter>
         </ModalContent>
       </Modal>
