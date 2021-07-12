@@ -109,7 +109,7 @@ const Portfolio = () => {
             </Thead>
             <Tbody>
               <Tr>
-                <Td style={{ textAlign: "center" }}>US$ Cash</Td>
+                <Td style={{ textAlign: "center" }}>USD Cash</Td>
                 <Td></Td>
                 <Td></Td>
                 <Td style={{ textAlign: "center" }}>{cashBalance} USD</Td>

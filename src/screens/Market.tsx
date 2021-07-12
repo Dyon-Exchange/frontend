@@ -109,7 +109,11 @@ const Market = () => {
   };
 
   const sortAll = (a: Asset, b: Asset) => {
-    return a.marketCap < b.marketCap ? 1 : -1;
+    if (a.marketCap < b.marketCap) return 1;
+    if (a.marketCap > b.marketCap) return -1;
+
+    if (a.name > b.name) return 1;
+    return -1;
   };
 
   useEffect(() => {
