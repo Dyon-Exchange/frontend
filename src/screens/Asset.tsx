@@ -17,6 +17,7 @@ import assetApi from "../api/asset";
 import { Asset } from "../index.d";
 import Trade from "../components/Trade";
 import Chart from "../components/Chart";
+import { toCurrency } from "../formatting";
 import { UserContext } from "../contexts/UserContext";
 
 const AssetScreen = (props: any) => {
@@ -79,12 +80,13 @@ const AssetScreen = (props: any) => {
                   <HStack width="100%">
                     <Text style={{ fontSize: 30 }}>
                       {asset?.askMarketPrice &&
-                        `$${asset.askMarketPrice.toFixed(2)}`}
+                        toCurrency(asset.askMarketPrice)}
                     </Text>
                     <Text>USD</Text>
                   </HStack>
                   <Text style={{ fontWeight: "bold", color }}>
-                    {prelude}${Math.abs(asset?.changeAmount as number)}{" "}
+                    {prelude}
+                    {toCurrency(Math.abs(asset?.changeAmount as number))}{" "}
                     {`(${prelude}${Math.abs(
                       asset?.changePercentage as number
                     )}%)`}
@@ -156,7 +158,7 @@ const AssetScreen = (props: any) => {
                   </Td>
                   <Td>
                     {asset?.askMarketPrice &&
-                      `${(quantity * asset?.askMarketPrice).toFixed(2)} USD`}
+                      `${toCurrency(quantity * asset?.askMarketPrice)}`}
                   </Td>
                   <Td>{quantity}</Td>
                 </Tr>

@@ -22,7 +22,7 @@ import {
   ModalBody,
   useDisclosure,
 } from "@chakra-ui/react";
-
+import { toCurrency } from "../formatting";
 import { UserContext } from "../contexts/UserContext";
 import orderApi from "../api/order";
 
@@ -168,8 +168,10 @@ const Trade = (props: {
           }
         >
           <Text style={{ fontSize: 16 }}>
-            US ${" "}
-            {orderSide === "BUY" ? props.bidMarketPrice : props.askMarketPrice}
+            US{" "}
+            {orderSide === "BUY"
+              ? toCurrency(props.bidMarketPrice)
+              : toCurrency(props.askMarketPrice)}
           </Text>
         </Button>
       </HStack>
@@ -207,7 +209,7 @@ const Trade = (props: {
       <HStack py="4" justifyContent="space-between">
         <Text style={{ fontSize: 16, fontWeight: "bold" }}>Total: </Text>
         <Text px="3" style={{ fontSize: 16 }}>
-          ${total.toFixed(2)}
+          {toCurrency(total)}
         </Text>
       </HStack>
       <Stack>
@@ -220,7 +222,6 @@ const Trade = (props: {
           Review {orderType === "MARKET" ? "market" : "limit"} order
         </Button>
       </Stack>
-
       <Modal isOpen={isOpen} onClose={doClose}>
         <ModalOverlay />
         <ModalContent>
@@ -235,13 +236,11 @@ const Trade = (props: {
                 {total}
               </Text>
             )}
-
             {orderStatus === "error" && (
               <Text style={{ textAlign: "center" }}>
                 There was an error with your order: {{ error }}
               </Text>
             )}
-
             {orderStatus === "submitted" && (
               <Text style={{ textAlign: "center" }}>{submittedText}</Text>
             )}

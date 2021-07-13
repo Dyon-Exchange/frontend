@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
 
+import { toCurrency } from "../formatting";
 import orderApi from "../api/order";
 import { OrderSide, Asset, LimitOrder } from "../index.d";
 import { UserContext } from "../contexts/UserContext";
@@ -51,8 +52,8 @@ const TableRow = (props: { order: LimitOrder }) => {
       </Td>
       <Td> {props.order.filled}</Td>
       <Td>{props.order.quantity}</Td>
-      <Td>${props.order.price}</Td>
-      <Td>${(props.order.price * props.order.quantity).toFixed(2)}</Td>
+      <Td>{toCurrency(props.order.price)}</Td>
+      <Td>{toCurrency(props.order.price * props.order.quantity)}</Td>
       <Td>
         <Button onClick={cancelOrder} isLoading={loading}>
           Cancel Order
