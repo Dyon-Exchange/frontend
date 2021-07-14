@@ -2,11 +2,9 @@ import React, { useState, useEffect, useContext } from "react";
 import {
   Box,
   Button,
-  Input,
   Heading,
   Stack,
   HStack,
-  InputGroup,
   Text,
   NumberInput,
   NumberInputField,
@@ -32,11 +30,16 @@ const Trade = (props: {
   bidMarketPrice: number;
   assetName: string;
 }) => {
+  const format = (val: string) => `$` + val;
+  const parse = (val: string) => val.replace(/^\$/, "");
+
   const [orderSide, setOrderSide] = useState<"BUY" | "SELL">("BUY");
   const [orderType, setOrderType] = useState<"MARKET" | "LIMIT">("MARKET");
-  const [amount, setAmount] = useState<number>(1);
-  const [stepperValue, setStepperValue] = useState(0);
-  const [total, setTotal] = useState(stepperValue * amount);
+  const [amount, setAmount] = useState("1.00");
+  const [stepperValue, setStepperValue] = useState("0.00");
+  const [total, setTotal] = useState(
+    parseFloat(stepperValue) * parseFloat(amount)
+  );
   const [loading, setLoading] = useState(false);
   const [orderStatus, setOrderStatus] = useState<
     "pending" | "error" | "submitted"
@@ -57,9 +60,9 @@ const Trade = (props: {
 
   useEffect(() => {
     if (orderSide === "SELL") {
-      setStepperValue(props.askMarketPrice);
+      setStepperValue(props.askMarketPrice.toString());
     } else {
-      setStepperValue(props.bidMarketPrice);
+      setStepperValue(props.bidMarketPrice.toString());
     }
   }, [props.askMarketPrice, props.bidMarketPrice, orderSide]);
 
@@ -67,7 +70,7 @@ const Trade = (props: {
     const marketPrice =
       orderSide === "SELL" ? props.askMarketPrice : props.bidMarketPrice;
 
-    if (stepperValue === marketPrice) {
+    if (parseFloat(stepperValue) === marketPrice) {
       setOrderType("MARKET");
     } else {
       setOrderType("LIMIT");
@@ -75,7 +78,7 @@ const Trade = (props: {
   }, [stepperValue, props.askMarketPrice, props.bidMarketPrice, orderSide]);
 
   useEffect(() => {
-    let total = stepperValue * amount;
+    let total = parseFloat(stepperValue) * parseFloat(amount);
     if (Number.isNaN(total)) {
       total = 0;
     }
@@ -87,8 +90,8 @@ const Trade = (props: {
     try {
       if (orderType === "LIMIT") {
         await orderApi.putLimitOrder({
-          price: stepperValue,
-          quantity: amount,
+          price: parseFloat(stepperValue),
+          quantity: parseFloat(amount),
           side: orderSide === "BUY" ? "BID" : "ASK",
           productIdentifier: props.productIdentifier,
         });
@@ -96,7 +99,7 @@ const Trade = (props: {
         setSubmittedText("Your order has been submitted");
       } else {
         const order = await orderApi.putMarketOrder({
-          quantity: amount,
+          quantity: parseFloat(amount),
           side: orderSide === "BUY" ? "BID" : "ASK",
           productIdentifier: props.productIdentifier,
         });
@@ -108,7 +111,7 @@ const Trade = (props: {
         } else {
           setOrderStatus("submitted");
           setSubmittedText(
-            `Your order was completed. ${order.filled}/${amount}`
+            `Your order was completed. ${order.filled.toFixed(2)}/${amount}`
           );
         }
       }
@@ -163,7 +166,9 @@ const Trade = (props: {
         <Button
           onClick={() =>
             setStepperValue(
-              orderSide === "BUY" ? props.bidMarketPrice : props.askMarketPrice
+              orderSide === "BUY"
+                ? props.bidMarketPrice.toString()
+                : props.askMarketPrice.toString()
             )
           }
         >
@@ -180,9 +185,12 @@ const Trade = (props: {
           Not {orderSide === "BUY" ? "More" : "Less"} than
         </Text>
         <NumberInput
+          precision={2}
           width="40%"
-          value={stepperValue}
-          onChange={(e) => setStepperValue(parseFloat(e))}
+          value={format(stepperValue)}
+          onChange={(e) => {
+            setStepperValue(parse(e));
+          }}
         >
           <NumberInputField />
           <NumberInputStepper>
@@ -195,17 +203,20 @@ const Trade = (props: {
       <Text style={{ fontSize: 16, fontWeight: "bold" }} py="2">
         How many units?
       </Text>
-      <InputGroup>
-        <Input
-          type="number"
-          rounded="7px"
-          borderColor="grey"
-          fontSize="1rem"
-          placeholder="0"
-          value={amount}
-          onChange={(e) => setAmount(parseFloat(e.target.value))}
-        />
-      </InputGroup>
+      <NumberInput
+        precision={2}
+        rounded="7px"
+        borderColor="grey"
+        fontSize="1rem"
+        width="100%"
+        value={amount}
+        onChange={(e) => {
+          setAmount(parse(e));
+        }}
+      >
+        <NumberInputField />
+      </NumberInput>
+
       <HStack py="4" justifyContent="space-between">
         <Text style={{ fontSize: 16, fontWeight: "bold" }}>Total: </Text>
         <Text px="3" style={{ fontSize: 16 }}>
