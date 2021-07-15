@@ -10,7 +10,7 @@ import {
   Td,
   chakra,
 } from "@chakra-ui/react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 import { toCurrency } from "../formatting";
 import orderApi from "../api/order";
@@ -67,6 +67,16 @@ const PendingOrders = () => {
   const [showOrderSide, setShowOrderSide] = useState<OrderSide>("BID");
   const [orders, setOrders] = useState<LimitOrder[]>([]);
   const { userLimitOrders } = useContext(UserContext);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const query = new URLSearchParams(location.search);
+    const side = query.get("side");
+    if (side && ["buy", "sell"].includes(side)) {
+      side === "buy" ? setShowOrderSide("BID") : setShowOrderSide("ASK");
+    }
+  }, [location.search]);
 
   useEffect(() => {
     setOrders(

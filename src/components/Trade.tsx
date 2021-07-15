@@ -20,6 +20,7 @@ import {
   ModalBody,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useHistory } from "react-router-dom";
 import { toCurrency } from "../formatting";
 import { UserContext } from "../contexts/UserContext";
 import orderApi from "../api/order";
@@ -30,6 +31,7 @@ const Trade = (props: {
   bidMarketPrice: number;
   assetName: string;
 }) => {
+  const history = useHistory();
   const format = (val: string) => `$` + val;
   const parse = (val: string) => val.replace(/^\$/, "");
 
@@ -42,8 +44,8 @@ const Trade = (props: {
   );
   const [loading, setLoading] = useState(false);
   const [orderStatus, setOrderStatus] = useState<
-    "pending" | "error" | "submitted"
-  >("pending");
+    "Pending" | "Error" | "Submitted" | "Completed"
+  >("Pending");
   const [error, setError] = useState("");
   const [submittedText, setSubmittedText] = useState(
     "Your order has been submitted"
@@ -53,9 +55,21 @@ const Trade = (props: {
   const { methods } = useContext(UserContext);
 
   const doClose = () => {
-    setOrderStatus("pending");
+    setOrderStatus("Pending");
     setError("");
     onClose();
+  };
+
+  const viewClick = () => {
+    if (orderStatus === "Submitted") {
+      history.push(`/pendingorders?side=${orderSide.toLowerCase()}`);
+    } else if (orderStatus === "Completed") {
+      history.push("/completedorders");
+    } else {
+      throw new Error(
+        "Should not be able to click view if status is not `Submitted` or `Completed`"
+      );
+    }
   };
 
   useEffect(() => {
@@ -89,14 +103,20 @@ const Trade = (props: {
     setLoading(true);
     try {
       if (orderType === "LIMIT") {
-        await orderApi.putLimitOrder({
+        const order = await orderApi.putLimitOrder({
           price: parseFloat(stepperValue),
           quantity: parseFloat(amount),
           side: orderSide === "BUY" ? "BID" : "ASK",
           productIdentifier: props.productIdentifier,
         });
-        setOrderStatus("submitted");
-        setSubmittedText("Your order has been submitted");
+
+        if (order.status === "COMPLETE") {
+          setOrderStatus("Completed");
+          setSubmittedText("Your order has been completed");
+        } else {
+          setOrderStatus("Submitted");
+          setSubmittedText("Your order has been submitted");
+        }
       } else {
         const order = await orderApi.putMarketOrder({
           quantity: parseFloat(amount),
@@ -104,12 +124,12 @@ const Trade = (props: {
           productIdentifier: props.productIdentifier,
         });
         if (order.status === "NOT-FILLED") {
-          setOrderStatus("error");
+          setOrderStatus("Error");
           setSubmittedText(
             "There is not enough liquidity to complete your order"
           );
         } else {
-          setOrderStatus("submitted");
+          setOrderStatus("Completed");
           setSubmittedText(
             `Your order was completed. ${order.filled.toFixed(2)}/${amount}`
           );
@@ -237,32 +257,41 @@ const Trade = (props: {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader style={{ textAlign: "center" }}>
-            Review Order
+            {orderStatus === "Pending" && "Review Order"}
+            {orderStatus !== "Pending" && orderStatus}
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            {orderStatus === "pending" && (
+            {orderStatus === "Pending" && (
               <Text style={{ textAlign: "center" }}>
                 {orderSide} {amount} {props.assetName} at ${stepperValue} for $
                 {total}
               </Text>
             )}
-            {orderStatus === "error" && (
+            {orderStatus === "Error" && (
               <Text style={{ textAlign: "center" }}>
-                There was an error with your order: {{ error }}
+                There was an Error with your order: {{ error }}
               </Text>
             )}
-            {orderStatus === "submitted" && (
+            {(orderStatus === "Completed" || orderStatus === "Submitted") && (
               <Text style={{ textAlign: "center" }}>{submittedText}</Text>
             )}
           </ModalBody>
           <ModalFooter style={{ justifyContent: "center" }}>
-            {orderStatus === "pending" && (
+            {orderStatus === "Pending" && (
               <Button onClick={submitOrder} isLoading={loading}>
                 Confirm
               </Button>
             )}
-            {/* orderStatus === "submitted" && <Button>View</Button> */}
+
+            {orderStatus !== "Pending" && (
+              <>
+                <Button onClick={doClose} style={{ margin: "2%" }}>
+                  OK
+                </Button>
+                <Button onClick={viewClick}>View</Button>
+              </>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>
