@@ -58,14 +58,8 @@ const TableRow = (props: { asset: Asset }) => {
       <Td>
         {props.asset.name} {props.asset.year}
       </Td>
-      <Td>
-        {props.asset.askMarketPrice &&
-          `${toCurrency(props.asset.askMarketPrice)}`}
-      </Td>
-      <Td>
-        {props.asset.bidMarketPrice &&
-          `${toCurrency(props.asset.bidMarketPrice)}`}
-      </Td>
+      <Td>{props.asset.sell && `${toCurrency(props.asset.sell)}`}</Td>
+      <Td>{props.asset.buy && `${toCurrency(props.asset.buy)}`}</Td>
       <ChangeCell change={props.asset.changePercentage} />
       <Td>
         <Button>View details</Button>

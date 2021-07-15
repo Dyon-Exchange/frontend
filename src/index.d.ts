@@ -31,6 +31,8 @@ export type Asset = {
   updatedAt: Date;
   askMarketPrice?: number;
   bidMarketPrice?: number;
+  buy?: number;
+  sell?: number;
   unitSize: string;
   details: { blurb: string };
   volume: number;

@@ -74,9 +74,13 @@ const Trade = (props: {
 
   useEffect(() => {
     if (orderSide === "SELL") {
-      setStepperValue(props.askMarketPrice.toString());
+      if (props.askMarketPrice) {
+        setStepperValue(props.askMarketPrice.toString());
+      }
     } else {
-      setStepperValue(props.bidMarketPrice.toString());
+      if (props.bidMarketPrice) {
+        setStepperValue(props.bidMarketPrice.toString());
+      }
     }
   }, [props.askMarketPrice, props.bidMarketPrice, orderSide]);
 
