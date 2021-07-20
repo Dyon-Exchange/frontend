@@ -75,11 +75,11 @@ const Trade = (props: {
   useEffect(() => {
     if (orderSide === "SELL") {
       if (props.askMarketPrice) {
-        setStepperValue(props.askMarketPrice.toString());
+        setStepperValue(props.askMarketPrice.toFixed(2));
       }
     } else {
       if (props.bidMarketPrice) {
-        setStepperValue(props.bidMarketPrice.toString());
+        setStepperValue(props.bidMarketPrice.toFixed(2));
       }
     }
   }, [props.askMarketPrice, props.bidMarketPrice, orderSide]);
@@ -140,8 +140,12 @@ const Trade = (props: {
         }
       }
     } catch (e) {
-      window.alert("Error: There was an error processing your order");
-      setError(e.response.text);
+      if (e.response.status === 500) {
+        setError("Could not process order.");
+      } else {
+        setError(e.response.data);
+      }
+      setOrderStatus("Error");
     } finally {
       methods.refreshUserOrders();
       setLoading(false);
@@ -191,8 +195,8 @@ const Trade = (props: {
           onClick={() =>
             setStepperValue(
               orderSide === "BUY"
-                ? props.bidMarketPrice.toString()
-                : props.askMarketPrice.toString()
+                ? props.bidMarketPrice.toFixed(2)
+                : props.askMarketPrice.toFixed(2)
             )
           }
         >
@@ -268,13 +272,13 @@ const Trade = (props: {
           <ModalBody>
             {orderStatus === "Pending" && (
               <Text style={{ textAlign: "center" }}>
-                {orderSide} {amount} {props.assetName} at ${stepperValue} for $
-                {total}
+                {orderSide} {amount} {props.assetName} at $
+                {Number(stepperValue).toFixed(2)} for ${total.toFixed(2)}
               </Text>
             )}
             {orderStatus === "Error" && (
               <Text style={{ textAlign: "center" }}>
-                There was an Error with your order: {{ error }}
+                There was an error with your order: {error}
               </Text>
             )}
             {(orderStatus === "Completed" || orderStatus === "Submitted") && (
@@ -288,7 +292,7 @@ const Trade = (props: {
               </Button>
             )}
 
-            {orderStatus !== "Pending" && (
+            {!["Pending", "Error"].includes(orderStatus) && (
               <>
                 <Button onClick={doClose} style={{ margin: "2%" }}>
                   OK

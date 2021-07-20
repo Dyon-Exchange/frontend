@@ -34,8 +34,7 @@ const ChangeCell = (props: { change: number }) => {
 
   return (
     <Td style={{ color, fontWeight: "bold" }}>
-      {prelude}
-      {props.change}%
+      {props.change && `${prelude}${props.change}%`}
     </Td>
   );
 };
