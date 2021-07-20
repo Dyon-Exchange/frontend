@@ -43,11 +43,17 @@ const TableRow = (props: { order: LimitOrder }) => {
   };
 
   return (
-    <Tr onClick={handleRowClick} style={{ cursor: "pointer" }}>
-      <Td style={{ textAlign: "center" }}>
+    <Tr>
+      <Td
+        style={{ textAlign: "center", cursor: "pointer" }}
+        onClick={handleRowClick}
+      >
         <chakra.img src={asset?.image} style={{ height: 50, width: 50 }} />
       </Td>
-      <Td style={{ textAlign: "center" }}>
+      <Td
+        style={{ cursor: "pointer", textAlign: "center", textJustify: "auto" }}
+        onClick={handleRowClick}
+      >
         {asset?.name} {asset?.year}
       </Td>
       <Td> {props.order.filled}</Td>
