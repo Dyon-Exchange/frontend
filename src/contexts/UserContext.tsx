@@ -47,13 +47,8 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
     }
 
     (async () => {
+      refreshUserOrders();
       refreshUserPortfolio();
-      refreshUserOrders();
-
-      const a = await assetApi.get();
-      setAllAssets(a);
-
-      refreshUserOrders();
     })();
   }, [token]);
 
@@ -77,6 +72,11 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
       setCashBalance(cashBalance);
     })();
 
+    (async () => {
+      const a = await assetApi.get();
+      setAllAssets(a);
+    })();
+
     const { assets, portfolioBalance } = await assetApi.getUserAssets();
     setAssets(assets);
     setPortfolioValue(portfolioBalance);
@@ -96,7 +96,7 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
 
       refreshUserOrders();
       refreshUserPortfolio();
-    }, 5 * 1000);
+    }, 3 * 1000);
     return () => clearInterval(interval);
   });
 
@@ -116,7 +116,6 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
         methods: {
           login,
           logout,
-
           refreshUserOrders,
           refreshUserPortfolio,
         },

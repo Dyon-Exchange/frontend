@@ -13,6 +13,7 @@ import {
 import { NavLink, useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { UserAsset } from "../index.d";
+import { toCurrency } from "../formatting";
 
 const TableRow = (props: { userAsset: UserAsset }) => {
   const history = useHistory();
@@ -38,15 +39,15 @@ const TableRow = (props: { userAsset: UserAsset }) => {
       </Td>
       <Td style={{ textAlign: "center" }}>
         {props.userAsset.asset.askMarketPrice &&
-          `$${props.userAsset.asset.askMarketPrice.toFixed(2)}`}
+          toCurrency(props.userAsset.asset.askMarketPrice)}
       </Td>
       <Td style={{ textAlign: "center" }}>
         <Text>{props.userAsset.quantity}</Text>
         <Text>
           {props.userAsset.asset.askMarketPrice &&
-            `${(
+            toCurrency(
               props.userAsset.asset.askMarketPrice * props.userAsset.quantity
-            ).toFixed(2)} USD`}
+            )}
         </Text>
       </Td>
       <Td style={{ textAlign: "center" }}>
@@ -69,7 +70,7 @@ const Portfolio = () => {
       <Box style={{ width: "65%", paddingLeft: "5%" }}>
         <Heading size="lg">My portfolio</Heading>
         <Text py="2" style={{ fontSize: 30 }}>
-          ${portfolioValue.toLocaleString()}
+          {toCurrency(portfolioValue)}
         </Text>
         <Box style={{ background: "#D3D3D3", width: "40%", borderRadius: 10 }}>
           <Text py="3%" px="5%" style={{ fontWeight: "bold" }}>
@@ -109,10 +110,12 @@ const Portfolio = () => {
             </Thead>
             <Tbody>
               <Tr>
-                <Td style={{ textAlign: "center" }}>US$ Cash</Td>
+                <Td style={{ textAlign: "center" }}>USD Cash</Td>
                 <Td></Td>
                 <Td></Td>
-                <Td style={{ textAlign: "center" }}>{cashBalance} USD</Td>
+                <Td style={{ textAlign: "center" }}>
+                  {toCurrency(cashBalance)}
+                </Td>
                 <Td style={{ textAlign: "center" }}>
                   <Progress value={(cashBalance / portfolioValue) * 100} />
                   <Text style={{ fontSize: 14, paddingTop: "3%" }}>

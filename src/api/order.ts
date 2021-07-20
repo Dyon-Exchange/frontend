@@ -14,7 +14,7 @@ const orders = {
     side: OrderSide;
     productIdentifier: string;
     price: number;
-  }): Promise<void> {
+  }): Promise<LimitOrder> {
     const response = await instance.put("/order/limitOrder", order);
     return response.data;
   },

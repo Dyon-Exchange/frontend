@@ -4,6 +4,7 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
 
 import { LimitOrder, Asset, MarketOrder } from "../index.d";
+import { toCurrency } from "../formatting";
 import { UserContext } from "../contexts/UserContext";
 
 const TableRow = (props: { order: LimitOrder | MarketOrder }) => {
@@ -23,10 +24,10 @@ const TableRow = (props: { order: LimitOrder | MarketOrder }) => {
       <Td>{new Date(props.order.createdAt).toLocaleDateString()}</Td>
       <Td>{new Date(props.order.updatedAt).toLocaleDateString()}</Td>
       <Td>{props.order.side}</Td>
-      <Td>${props.order?.price}</Td>
+      <Td>{toCurrency(props.order?.price as number)}</Td>
       <Td>
         {props.order.price &&
-          (props.order?.price * props.order.filled).toFixed(2)}
+          toCurrency(props.order?.price * props.order.filled)}
       </Td>
       <Td>
         {props.order.quantity} {asset?.name} {asset?.year}

@@ -14,6 +14,7 @@ import {
 import { NavLink, useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { Asset } from "../index.d";
+import { toCurrency } from "../formatting";
 
 const ChangeCell = (props: { change: number }) => {
   const red = "#FF0000";
@@ -33,8 +34,7 @@ const ChangeCell = (props: { change: number }) => {
 
   return (
     <Td style={{ color, fontWeight: "bold" }}>
-      {prelude}
-      {props.change}%
+      {props.change && `${prelude}${props.change}%`}
     </Td>
   );
 };
@@ -57,8 +57,8 @@ const TableRow = (props: { asset: Asset }) => {
       <Td>
         {props.asset.name} {props.asset.year}
       </Td>
-      <Td>{props.asset.askMarketPrice && `$${props.asset.askMarketPrice}`}</Td>
-      <Td>{props.asset.bidMarketPrice && `$${props.asset.bidMarketPrice}`}</Td>
+      <Td>{props.asset.sell && `${toCurrency(props.asset.sell)}`}</Td>
+      <Td>{props.asset.buy && `${toCurrency(props.asset.buy)}`}</Td>
       <ChangeCell change={props.asset.changePercentage} />
       <Td>
         <Button>View details</Button>
@@ -109,7 +109,8 @@ const Market = () => {
   };
 
   const sortAll = (a: Asset, b: Asset) => {
-    return a.marketCap < b.marketCap ? 1 : -1;
+    if (a.name > b.name) return 1;
+    return -1;
   };
 
   useEffect(() => {
@@ -130,7 +131,7 @@ const Market = () => {
         <Heading size="md">My Portfolio</Heading>
         <HStack>
           <Text style={{ fontSize: 30, fontWeight: "bold" }}>
-            ${Number(portfolioValue).toLocaleString()}
+            {toCurrency(portfolioValue)}
           </Text>
           <Text>USD</Text>
         </HStack>

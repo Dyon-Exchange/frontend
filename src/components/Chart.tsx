@@ -1,5 +1,6 @@
 import React from "react";
-import { LineChart, Line, XAxis, YAxis, Tooltip } from "recharts";
+import { Text } from "@chakra-ui/react";
+import { LineChart, Line, XAxis, YAxis, Tooltip, Label } from "recharts";
 
 export default function Chart({ data }: any) {
   const CustomTooltip = ({ active, payload }: any) => {
@@ -21,38 +22,45 @@ export default function Chart({ data }: any) {
   };
 
   return (
-    <LineChart
-      width={1000}
-      height={500}
-      data={data}
-      margin={{
-        top: 5,
-        right: 30,
-        left: 20,
-        bottom: 5,
-      }}
-    >
-      <XAxis
-        dataKey="time"
-        tickFormatter={(date: string, i: number) => {
-          if (i % 2 === 0) {
-            return new Date(date).toLocaleDateString("en", {
-              month: "numeric",
-              day: "numeric",
-            });
-          } else {
-            return "";
-          }
+    <>
+      <LineChart
+        width={1000}
+        height={500}
+        data={data}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
         }}
-      />
-      <YAxis dataKey="price" tickFormatter={(price: any) => `$${price}`} />
-      <Tooltip content={<CustomTooltip />} />
-      <Line
-        type="monotone"
-        dataKey="price"
-        stroke="#8884d8"
-        activeDot={{ r: 8 }}
-      />
-    </LineChart>
+      >
+        <XAxis
+          dataKey="time"
+          tickFormatter={(date: string, i: number) => {
+            if (i % 2 === 0) {
+              return new Date(date).toLocaleDateString("en", {
+                month: "numeric",
+                day: "numeric",
+              });
+            } else {
+              return "";
+            }
+          }}
+        ></XAxis>
+        <YAxis dataKey="price" tickFormatter={(price: any) => `$${price}`}>
+          <Label angle={270} position="left" style={{ textAnchor: "middle" }}>
+            Price
+          </Label>
+        </YAxis>
+        <Tooltip content={<CustomTooltip />} />
+        <Line
+          type="monotone"
+          dataKey="price"
+          stroke="#8884d8"
+          activeDot={{ r: 8 }}
+        />
+      </LineChart>
+      <Text>Time</Text>
+    </>
   );
 }
