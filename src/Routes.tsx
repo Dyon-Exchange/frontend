@@ -15,6 +15,7 @@ import Portfolio from "./screens/Portfolio";
 import Asset from "./screens/Asset";
 import PendingOrders from "./screens/PendingOrders";
 import CompletedOrders from "./screens/CompletedOrders";
+import Redeem from "./screens/Redeem";
 
 export default function Routes() {
   const { token } = useContext(UserContext);
@@ -34,6 +35,7 @@ export default function Routes() {
             <Route path="/asset/:id" component={Asset} />
             <Route path="/pendingorders" component={PendingOrders} />
             <Route path="/completedorders" component={CompletedOrders} />
+            <Route path="/redeem" component={Redeem} />
           </>
         ) : (
           <>

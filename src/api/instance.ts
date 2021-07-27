@@ -3,6 +3,9 @@ import config from "../config";
 
 const instance = axios.create({ baseURL: config.backendUrl });
 
+/**
+    Add auth token to Authorization header if exists
+ */
 instance.interceptors.request.use(
   function (config) {
     const token = localStorage.getItem("token");
@@ -16,6 +19,9 @@ instance.interceptors.request.use(
   }
 );
 
+/**
+    Remove tokens from local storage if it has expired or is incorrect
+ */
 instance.interceptors.response.use(
   function (response) {
     return response;

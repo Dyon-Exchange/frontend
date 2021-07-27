@@ -51,11 +51,11 @@ export type Token = {
   productIdentifier: string;
 };
 
-export type UserAsset = {
+export interface UserAsset {
   quantity: number;
   asset: Asset;
   portfolioShare: number;
-};
+}
 
 export type PriceEvent = {
   time: Date;

@@ -8,6 +8,9 @@ const userRequests = {
     const res = await instance.post("/user/login", { email, password });
     return res.data;
   },
+  /*
+   * Get details for logged in user
+   */
   get: async (): Promise<{
     fullName: string;
     cashBalance: number;
