@@ -1,7 +1,11 @@
 import { Asset, Token } from "../index.d";
 import instance from "./instance";
+import { Redeemed } from "../screens/Redeem";
 
 const tokens = {
+  /*
+   * Add a token
+   */
   put: async (
     productCode: string,
     caseId: string,
@@ -24,5 +28,15 @@ const tokens = {
     });
     return response.data;
   },
+  /*
+   * Redeem tokens
+   */
+  redeem: async (
+    toRedeem: { productIdentifier: string; units: number }[]
+  ): Promise<Redeemed[]> => {
+    const { data } = await instance.post("/token/redeem", { toRedeem });
+    return data.redeemed;
+  },
 };
+
 export default tokens;
