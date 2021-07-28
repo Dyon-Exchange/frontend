@@ -43,6 +43,8 @@ const TableRow = (props: { userAsset: UserAsset }) => {
       </Td>
       <Td style={{ textAlign: "center" }}>
         <Text>{props.userAsset.quantity}</Text>
+      </Td>
+      <Td style={{ textAlign: "center" }}>
         <Text>
           {props.userAsset.asset.askMarketPrice &&
             toCurrency(
@@ -52,11 +54,16 @@ const TableRow = (props: { userAsset: UserAsset }) => {
       </Td>
       <Td style={{ textAlign: "center" }}>
         <Progress value={props.userAsset.portfolioShare} />
-        <Text style={{ fontSize: 14, paddingTop: "3%" }}>
-          {props.userAsset.portfolioShare &&
-            props.userAsset.portfolioShare.toFixed(0)}
-          %
-        </Text>
+        {props.userAsset.portfolioShare && (
+          <>
+            <Text style={{ fontSize: 14, paddingTop: "3%" }}>
+              {props.userAsset.portfolioShare &&
+              props.userAsset.portfolioShare < 1
+                ? "<1%"
+                : `${props.userAsset.portfolioShare.toFixed(2)}%`}
+            </Text>
+          </>
+        )}
       </Td>
     </Tr>
   );
@@ -98,13 +105,14 @@ const Portfolio = () => {
       >
         <Heading size="lg">Balances</Heading>
         <Box py="10">
-          <Table variant="striped">
+          <Table variant="simple">
             <Thead>
               <Tr>
                 <Th></Th>
                 <Th style={{ textAlign: "center" }}>Asset</Th>
                 <Th style={{ textAlign: "center" }}>Current price</Th>
                 <Th style={{ textAlign: "center" }}>My balance</Th>
+                <Th style={{ textAlign: "center" }}>Value</Th>
                 <Th style={{ textAlign: "center" }}>Trading portfolio</Th>
               </Tr>
             </Thead>

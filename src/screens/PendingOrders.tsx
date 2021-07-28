@@ -56,10 +56,10 @@ const TableRow = (props: { order: LimitOrder }) => {
       >
         {asset?.name} {asset?.year}
       </Td>
-      <Td> {props.order.filled}</Td>
+      <Td> {props.order.filled.toFixed(2)}</Td>
       <Td>{props.order.quantity}</Td>
       <Td>{toCurrency(props.order.price)}</Td>
-      <Td>{toCurrency(props.order.price * props.order.quantity)}</Td>
+      <Td>{toCurrency(props.order.filledPrice)}</Td>
       <Td>
         <Button onClick={cancelOrder} isLoading={loading}>
           Cancel Order

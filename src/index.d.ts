@@ -25,6 +25,7 @@ interface Order {
   orderId: string;
   createdAt: Date;
   updatedAt: Date;
+  filledPrice: number;
 }
 
 export interface LimitOrder extends Order {

@@ -190,7 +190,7 @@ const Trade = (props: {
         What price?
       </Text>
       <HStack py="2" justifyContent="space-between">
-        <Text style={{ fontWeight: "bold", fontSize: 16 }}>Market price</Text>
+        <Text style={{ fontSize: 16 }}>Market price</Text>
         <Button
           onClick={() =>
             setStepperValue(
@@ -209,7 +209,7 @@ const Trade = (props: {
         </Button>
       </HStack>
       <HStack py="2" justifyContent="space-between">
-        <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+        <Text style={{ fontSize: 16 }}>
           Not {orderSide === "BUY" ? "More" : "Less"} than
         </Text>
         <NumberInput
@@ -246,7 +246,9 @@ const Trade = (props: {
       </NumberInput>
 
       <HStack py="4" justifyContent="space-between">
-        <Text style={{ fontSize: 16, fontWeight: "bold" }}>Total: </Text>
+        <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+          Estimated Total:{" "}
+        </Text>
         <Text px="3" style={{ fontSize: 16 }}>
           {toCurrency(total)}
         </Text>
@@ -272,8 +274,9 @@ const Trade = (props: {
           <ModalBody>
             {orderStatus === "Pending" && (
               <Text style={{ textAlign: "center" }}>
-                {orderSide} {amount} {props.assetName} at $
-                {Number(stepperValue).toFixed(2)} for ${total.toFixed(2)}
+                {orderSide} {amount} {props.assetName} at no{" "}
+                {orderSide === "BUY" ? "more" : "less"} than $
+                {Number(stepperValue).toFixed(2)}
               </Text>
             )}
             {orderStatus === "Error" && (
