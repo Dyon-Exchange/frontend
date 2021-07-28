@@ -14,7 +14,8 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import assetApi from "../api/asset";
-import { Asset } from "../index.d";
+import orderApi from "../api/order";
+import { Asset, GetOrdersResponse, OrderBookOrder } from "../index.d";
 import Trade from "../components/Trade";
 import Chart from "../components/Chart";
 import { toCurrency } from "../formatting";
@@ -25,6 +26,13 @@ const AssetScreen = (props: any) => {
   const [asset, setAsset] = useState<Asset | undefined>();
   const [quantity, setQuantity] = useState(0);
   const [priceEventsData, setPriceEventsData] = useState([]);
+  const [orders, setOrders] = useState<GetOrdersResponse>({
+    buy: [],
+    sell: [],
+  });
+  const [rows, setRows] = useState<{ b: OrderBookOrder; s: OrderBookOrder }[]>(
+    []
+  );
 
   const [color, setColor] = useState("green");
   const [prelude, setPrelude] = useState("-");
@@ -33,6 +41,8 @@ const AssetScreen = (props: any) => {
 
   useEffect(() => {
     (async () => {
+      setOrders(await orderApi.getOrders(props.match.params.id));
+
       const { asset, priceEvents } = await assetApi.getAssetData(
         props.match.params.id
       );
@@ -55,6 +65,24 @@ const AssetScreen = (props: any) => {
       setLoading(false);
     })();
   }, [props.match.params.id, assets]);
+
+  useEffect(() => {
+    let interval = setInterval(async () => {
+      const r: any[] = [];
+      setOrders(await orderApi.getOrders(props.match.params.id));
+      const length =
+        orders.buy.length > orders.sell.length
+          ? orders.buy.length
+          : orders.sell.length;
+      for (let i = 0; i < length; i++) {
+        const b = orders.buy.pop();
+        const s = orders.sell.pop();
+        r.push({ s, b });
+      }
+      setRows(r);
+    }, 1 * 1000);
+    return () => clearInterval(interval);
+  });
 
   return (
     <Flex style={{ paddingTop: "5%", paddingLeft: "2%" }}>
@@ -166,6 +194,40 @@ const AssetScreen = (props: any) => {
             </Table>
           </Box>
         )}
+
+        <Box width="100%" pt="2%" pl="2%" pb="5%">
+          <Heading size="md" style={{ paddingBottom: "1%" }}>
+            Orders
+          </Heading>
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th style={{ textAlign: "center" }}></Th>
+                <Th style={{ textAlign: "center" }}>Buy</Th>
+                <Th style={{ textAlign: "center" }}></Th>
+                <Th style={{ textAlign: "center" }}>Sell</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {rows.map((r) => (
+                <Tr>
+                  <Td style={{ textAlign: "center" }}>
+                    {r.b && new Date(r.b.timestamp).toLocaleString()}
+                  </Td>
+                  <Td style={{ textAlign: "center" }}>
+                    {r.b && `$${r.b.price}`}
+                  </Td>
+                  <Td style={{ textAlign: "center" }}>
+                    {r.s && new Date(r.s.timestamp).toLocaleString()}
+                  </Td>
+                  <Td style={{ textAlign: "center" }}>
+                    {r.s && `$${r.s.price}`}
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Box>
       </VStack>
     </Flex>
   );

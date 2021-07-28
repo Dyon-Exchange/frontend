@@ -3,6 +3,19 @@
 type OrderStatus = "PENDING" | "COMPLETE" | "CANCELED" | "NOT-FILLED";
 type OrderSide = "BID" | "ASK";
 
+export type OrderBookOrder = {
+  side: "buy" | "sell";
+  id: string;
+  timestamp: Date;
+  quantity: number;
+  price: number;
+};
+
+export type GetOrdersResponse = {
+  buy: OrderBookOrder[];
+  sell: OrderBookOrder[];
+};
+
 interface Order {
   status: OrderStatus;
   productIdentifier: string;

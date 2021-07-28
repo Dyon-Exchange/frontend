@@ -11,7 +11,6 @@ import {
   chakra,
   Text,
 } from "@chakra-ui/react";
-import { RedeemStage } from "../../screens/Redeem";
 import { UserContext } from "../../contexts/UserContext";
 import { Asset } from "../../index.d";
 import { toCurrency } from "../../formatting";

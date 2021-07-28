@@ -1,4 +1,9 @@
-import { LimitOrder, MarketOrder, OrderSide } from "../index.d";
+import {
+  LimitOrder,
+  MarketOrder,
+  OrderSide,
+  GetOrdersResponse,
+} from "../index.d";
 import instance from "./instance";
 
 const orders = {
@@ -56,6 +61,15 @@ const orders = {
       side,
     });
     return response.data.price;
+  },
+
+  getOrders: async function (
+    productIdentifier: string
+  ): Promise<GetOrdersResponse> {
+    const { data } = await instance.get(
+      `/order/orderbook/${productIdentifier}`
+    );
+    return data;
   },
 };
 
