@@ -215,13 +215,13 @@ const AssetScreen = (props: any) => {
                     {r.b && new Date(r.b.timestamp).toLocaleString()}
                   </Td>
                   <Td style={{ textAlign: "center" }}>
-                    {r.b && `$${r.b.price}`}
+                    {r.b && `$${Number(r.b.price).toFixed(2)}`}
                   </Td>
                   <Td style={{ textAlign: "center" }}>
                     {r.s && new Date(r.s.timestamp).toLocaleString()}
                   </Td>
                   <Td style={{ textAlign: "center" }}>
-                    {r.s && `$${r.s.price}`}
+                    {r.s && `$${Number(r.s.price).toFixed(2)}`}
                   </Td>
                 </Tr>
               ))}

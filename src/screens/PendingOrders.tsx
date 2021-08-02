@@ -59,7 +59,7 @@ const TableRow = (props: { order: LimitOrder }) => {
       <Td> {props.order.filled.toFixed(2)}</Td>
       <Td>{props.order.quantity}</Td>
       <Td>{toCurrency(props.order.price)}</Td>
-      <Td>{toCurrency(props.order.filledPrice)}</Td>
+      <Td>{toCurrency(props.order.filledPriceTotal)}</Td>
       <Td>
         <Button onClick={cancelOrder} isLoading={loading}>
           Cancel Order

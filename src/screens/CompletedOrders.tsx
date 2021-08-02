@@ -25,7 +25,10 @@ const TableRow = (props: { order: LimitOrder | MarketOrder }) => {
       <Td>{new Date(props.order.updatedAt).toLocaleDateString()}</Td>
       <Td>{props.order.side}</Td>
       <Td>{toCurrency(props.order?.price as number)}</Td>
-      <Td>{props.order.filledPrice && toCurrency(props.order.filledPrice)}</Td>
+      <Td>
+        {props.order.filledPriceTotal &&
+          toCurrency(props.order.filledPriceTotal)}
+      </Td>
       <Td>
         {props.order.quantity} {asset?.name} {asset?.year}
       </Td>

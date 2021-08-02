@@ -107,7 +107,7 @@ function Select(props: {
   };
 
   return (
-    <Flex flexDirection="row" justifyContent="center" width="50%">
+    <Flex flexDirection="row" justifyContent="center">
       <VStack width="100%">
         <HStack justifyContent="space-between" width="100%">
           <Heading size="lg">Redeem</Heading>
