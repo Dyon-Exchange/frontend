@@ -32,7 +32,7 @@ const TableRow = (props: {
     if (!checked) {
       removeToRedeemAsset(r.asset.productIdentifier);
     } else {
-      let num = Number(units);
+      let num = Math.round(Number(units));
       if (num > Math.floor(r.quantity)) {
         num = Math.floor(r.quantity);
       }
