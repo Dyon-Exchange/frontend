@@ -58,7 +58,7 @@ const TableRow = (props: { order: LimitOrder }) => {
       </Td>
       <Td> {props.order.filled.toFixed(2)}</Td>
       <Td>{props.order.quantity}</Td>
-      <Td>{toCurrency(props.order.price)}</Td>
+      <Td>{toCurrency(props.order.filledPriceAverage)}</Td>
       <Td>{toCurrency(props.order.filledPriceTotal)}</Td>
       <Td>
         <Button onClick={cancelOrder} isLoading={loading}>
@@ -131,7 +131,7 @@ const PendingOrders = () => {
                 <Th></Th>
                 <Th>Filled</Th>
                 <Th>Quantity to {showOrderSide === "ASK" ? "sell" : "buy"}</Th>
-                <Th>Order Price</Th>
+                <Th>Avg. Price</Th>
                 <Th>Order Total</Th>
                 <Th></Th>
               </Tr>

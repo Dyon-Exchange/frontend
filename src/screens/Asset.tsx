@@ -21,6 +21,66 @@ import Chart from "../components/Chart";
 import { toCurrency } from "../formatting";
 import { UserContext } from "../contexts/UserContext";
 
+function AboutTable() {
+  return (
+    <HStack width="90%" style={{ backgroundColor: "lightgrey" }}>
+      <Table style={{ fontWeight: "bold" }} variant="unstyled">
+        <Tr>
+          <Td>Year</Td>
+          <Td>2009</Td>
+        </Tr>
+        <Tr>
+          <Td>Colour</Td>
+          <Td>Red</Td>
+        </Tr>
+        <Tr>
+          <Td>Country</Td>
+          <Td>France</Td>
+        </Tr>
+        <Tr>
+          <Td>Region</Td>
+          <Td>Bordeaux</Td>
+        </Tr>
+        <Tr>
+          <Td>Sub Region</Td>
+          <Td>Pauillac</Td>
+        </Tr>
+        <Tr>
+          <Td>Unit Size</Td>
+          <Td>(6x75cl)</Td>
+        </Tr>
+      </Table>
+      <Table
+        style={{ fontWeight: "bold" }}
+        variant="unstyled"
+        alignSelf="start"
+      >
+        <Tr>
+          <Td>Wine Advocate</Td>
+          <Td>98-100</Td>
+        </Tr>
+        <Tr>
+          <Td>Decanter</Td>
+          <Td>98-100</Td>
+        </Tr>
+        <Tr>
+          <Td>James Suckling</Td>
+          <Td>99</Td>
+        </Tr>
+        <Tr>
+          <Td>Jeb Dunnuck</Td>
+          <Td>98</Td>
+        </Tr>
+        <Tr>
+          <Td>Vinous</Td>
+          <Td>96</Td>
+        </Tr>
+      </Table>
+      ;
+    </HStack>
+  );
+}
+
 const AssetScreen = (props: any) => {
   const { assets } = useContext(UserContext);
   const [asset, setAsset] = useState<Asset | undefined>();
@@ -158,12 +218,15 @@ const AssetScreen = (props: any) => {
         </HStack>
 
         {!loading && (
-          <Box width="100%" pl="2%">
-            <Heading size="md" style={{ paddingBottom: "1%" }}>
-              About {asset?.name} {asset?.year}
-            </Heading>
-            <Text style={{ paddingLeft: "1%" }}>{asset?.details?.blurb}</Text>
-          </Box>
+          <>
+            <Box width="100%" pl="2%" py="5">
+              <Heading size="md" style={{ paddingBottom: "1%" }}>
+                About {asset?.name} {asset?.year}
+              </Heading>
+              <Text style={{ paddingLeft: "1%" }}>{asset?.details?.blurb}</Text>
+            </Box>
+            <AboutTable />
+          </>
         )}
 
         {quantity > 0 && (

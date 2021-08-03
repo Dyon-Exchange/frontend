@@ -22,17 +22,16 @@ const TableRow = (props: { order: LimitOrder | MarketOrder }) => {
   return (
     <Tr onClick={handleRowClick} style={{ cursor: "pointer" }}>
       <Td>{new Date(props.order.createdAt).toLocaleDateString()}</Td>
-      <Td>{new Date(props.order.updatedAt).toLocaleDateString()}</Td>
       <Td>{props.order.side}</Td>
-      <Td>{toCurrency(props.order?.price as number)}</Td>
+      <Td>
+        {props.order.quantity} {asset?.name} {asset?.year}
+      </Td>
+      <Td>{toCurrency(props.order?.filledPriceAverage as number)}</Td>
       <Td>
         {props.order.filledPriceTotal &&
           toCurrency(props.order.filledPriceTotal)}
       </Td>
-      <Td>
-        {props.order.quantity} {asset?.name} {asset?.year}
-      </Td>
-      <Td></Td>
+      <Td>{new Date(props.order.updatedAt).toLocaleDateString()}</Td>
     </Tr>
   );
 };
@@ -68,13 +67,12 @@ const CompletedOrders = function () {
           <Table>
             <Thead>
               <Tr>
-                <Th>Created</Th>
-                <Th>Completed</Th>
-                <Th>Side</Th>
-                <Th>Price</Th>
-                <Th>Total</Th>
-                <Th>Amount</Th>
-                <Th></Th>
+                <Th>Date</Th>
+                <Th>Type</Th>
+                <Th>Volume</Th>
+                <Th>Avg. Price</Th>
+                <Th>Value</Th>
+                <Th>Settle date</Th>
               </Tr>
             </Thead>
             <Tbody>
