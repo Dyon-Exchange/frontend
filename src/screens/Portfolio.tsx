@@ -124,6 +124,7 @@ const Portfolio = () => {
                 <Td style={{ textAlign: "center" }}>
                   {toCurrency(cashBalance)}
                 </Td>
+                <Td></Td>
                 <Td style={{ textAlign: "center" }}>
                   <Progress value={(cashBalance / portfolioValue) * 100} />
                   <Text style={{ fontSize: 14, paddingTop: "3%" }}>
