@@ -1,8 +1,7 @@
 import React, { useContext, useState } from "react";
-import { Flex, VStack, Heading } from "@chakra-ui/layout";
+import { VStack, Heading } from "@chakra-ui/layout";
 import {
   Text,
-  Box,
   Table,
   Thead,
   Tbody,
@@ -10,13 +9,14 @@ import {
   Th,
   Td,
   chakra,
+  Link,
 } from "@chakra-ui/react";
 import { Asset } from "../../index.d";
 import { UserContext } from "../../contexts/UserContext";
 import { Redeemed } from "../../screens/Redeem";
 
-const TableRow = (props: { asset: Asset; units: number }) => {
-  const { asset, units } = props;
+const TableRow = (props: { asset: Asset; units: number; hash: string }) => {
+  const { asset, units, hash } = props;
   return (
     <Tr>
       <Td style={{ textAlign: "center" }}>
@@ -27,6 +27,15 @@ const TableRow = (props: { asset: Asset; units: number }) => {
       </Td>
       <Td style={{ textAlign: "center" }}>{units}</Td>
       <Td style={{ textAlign: "center" }}>WineTrust London City Bond</Td>
+      <Td style={{ textAlign: "center" }}>
+        <Link
+          color="blue"
+          href={`https://kovan.etherscan.io/tx/${hash}`}
+          target="_blank"
+        >
+          View on Etherscan
+        </Link>
+      </Td>
     </Tr>
   );
 };
@@ -41,7 +50,6 @@ function Complete(props: { redeemed: Redeemed[] }) {
   const [rows] = useState<Row[]>(() => {
     const arr: Row[] = [];
 
-    console.log(redeemed);
     allAssets.forEach(function (a) {
       const index = redeemed.findIndex(
         (r) => r.productIdentifier === a.productIdentifier
@@ -54,41 +62,48 @@ function Complete(props: { redeemed: Redeemed[] }) {
   });
 
   return (
-    <Flex flexDirection="row" justifyContent="center" width="50%">
-      <VStack width="100%">
-        <Heading size="lg">Redemption Confirmation</Heading>
-        <Text width="50%" py="10">
-          These cases will now be delivered to a WineTrust warehouse and will no
-          longer be part of the WineBit ecosystem. The unique tokens associated
-          with these cases have been burned (destroyed). An email confirmation
-          with these details and next steps on arranging delivery / storage at
-          WineTrust has been emailed to you.
-        </Text>
-        <Box py="10">
-          <Table variant="simple">
-            <Thead>
-              <Tr>
-                <Th></Th>
-                <Th></Th>
-                <Th>Redeemed</Th>
-                <Th>Delivered to</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {rows.map((a: Row) => (
-                <TableRow key={a.productIdentifier} asset={a} units={a.units} />
-              ))}
-            </Tbody>
-          </Table>
-        </Box>
-        <Box justifyContent="left">
-          <Text>Tokens redeemed:</Text>
+    <VStack width="60%">
+      <Heading size="lg" marginBottom="3rem">
+        Redemption Confirmed
+      </Heading>
+
+      <Table variant="simple">
+        <Thead>
+          <Tr>
+            <Th></Th>
+            <Th style={{ textAlign: "center" }}>Item</Th>
+            <Th style={{ textAlign: "center" }}>Quantity Redeemed</Th>
+            <Th style={{ textAlign: "center" }}>Delivered to</Th>
+            <Th style={{ textAlign: "center" }}>Transaction Record</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
           {rows.map((a: Row) => (
-            <Text>{a.txHash}</Text>
+            <TableRow
+              key={a.productIdentifier}
+              asset={a}
+              units={a.units}
+              hash={a.txHash}
+            />
           ))}
-        </Box>
-      </VStack>
-    </Flex>
+        </Tbody>
+      </Table>
+
+      <Text
+        width="60%"
+        fontSize="xs"
+        fontWeight="thin"
+        alignSelf="flex-end"
+        paddingTop="1rem"
+        textAlign="right"
+      >
+        These cases will now be delivered to a WineTrust warehouse and will no
+        longer be part of the WineBit ecosystem. The unique tokens associated
+        with these cases have been burned (destroyed). An email confirmation
+        with these details and next steps on arranging delivery / storage at
+        WineTrust has been emailed to you.
+      </Text>
+    </VStack>
   );
 }
 
