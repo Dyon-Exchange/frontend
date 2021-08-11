@@ -13,9 +13,13 @@ import {
 export default function Chart({
   data,
   legend = true,
+  height = 400,
+  width = "95%",
 }: {
   data: any; //PriceEvent[];
-  legend: boolean;
+  legend?: boolean;
+  height?: number;
+  width?: string;
 }) {
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -37,7 +41,7 @@ export default function Chart({
 
   return (
     <>
-      <ResponsiveContainer width="95%" height={legend ? 400 : 200}>
+      <ResponsiveContainer width={width} height={height}>
         <LineChart
           data={data.slice(data.length >= 24 ? data.length - 25 : 0)}
           margin={{
@@ -60,7 +64,9 @@ export default function Chart({
                   return "";
                 }
               }}
-            ></XAxis>
+            >
+              <Label position="insideBottom">Time</Label>
+            </XAxis>
           )}
           {legend && (
             <YAxis dataKey="price" tickFormatter={(price: any) => `$${price}`}>
@@ -83,7 +89,6 @@ export default function Chart({
           />
         </LineChart>
       </ResponsiveContainer>
-      {legend && <Text>Time</Text>}
     </>
   );
 }

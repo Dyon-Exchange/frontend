@@ -9,11 +9,14 @@ import {
   Td,
   chakra,
   Progress,
+  Stack,
 } from "@chakra-ui/react";
 import { NavLink, useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { UserAsset } from "../index.d";
 import { toCurrency } from "../formatting";
+import { data } from "../dummydata";
+import Chart from "../components/Chart";
 
 const TableRow = (props: { userAsset: UserAsset }) => {
   const history = useHistory();
@@ -75,73 +78,150 @@ const Portfolio = () => {
   const { cashBalance, assets, portfolioValue } = useContext(UserContext);
 
   return (
-    <VStack spacing="15px" py="10">
-      <Box style={{ width: "65%", paddingLeft: "5%" }}>
+    <Stack marginTop="16" marginX="16" marginBottom="32">
+      <Stack>
         <Heading size="lg">My portfolio</Heading>
-        <Text py="2" style={{ fontSize: 30 }}>
-          {toCurrency(portfolioValue)}
-        </Text>
-        <Box style={{ background: "#D3D3D3", width: "40%", borderRadius: 10 }}>
-          <Text py="3%" px="5%" style={{ fontWeight: "bold" }}>
+        <Stack isInline alignItems="flex-end">
+          <Text fontSize="30">{toCurrency(portfolioValue)}</Text>
+          <Text paddingBottom="2">USD</Text>
+        </Stack>
+      </Stack>
+      <Stack isInline>
+        <Chart data={data} width="80%" />
+
+        <Stack
+          backgroundColor="#f2f2f2"
+          width="20%"
+          borderRadius="10"
+          spacing={8}
+        >
+          <Heading fontWeight="bold" size="sm" padding="4">
             Quick links
-          </Text>
+          </Heading>
           <NavLink to="/completedorders">
-            <Text py="1%" px="5%" style={{ fontSize: 14 }}>
+            <Text
+              px="4"
+              style={{ fontSize: 14 }}
+              textDecoration="underline"
+              fontWeight="bold"
+            >
               Completed transactions
             </Text>
           </NavLink>
           <NavLink to="/pendingorders">
-            <Text pb="3%" px="5%" style={{ fontSize: 14 }}>
+            <Text
+              px="4"
+              style={{ fontSize: 14 }}
+              textDecoration="underline"
+              fontWeight="bold"
+            >
               Pending orders
             </Text>
           </NavLink>
-        </Box>
-      </Box>
+        </Stack>
+      </Stack>
+      <Stack>
+        <Heading size="md" marginTop="16">
+          Trading Balances
+        </Heading>
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              <Th></Th>
+              <Th style={{ textAlign: "center" }}>Asset</Th>
+              <Th style={{ textAlign: "center" }}>Current price</Th>
+              <Th style={{ textAlign: "center" }}>My balance</Th>
+              <Th style={{ textAlign: "center" }}>Value</Th>
+              <Th style={{ textAlign: "center" }}>Trading portfolio</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            <Tr>
+              <Td style={{ textAlign: "center" }}>USD Cash</Td>
+              <Td></Td>
+              <Td style={{ textAlign: "center" }}>-</Td>
+              <Td style={{ textAlign: "center" }}>{toCurrency(cashBalance)}</Td>
+              <Td style={{ textAlign: "center" }}>-</Td>
+              <Td style={{ textAlign: "center" }}>
+                <Progress value={(cashBalance / portfolioValue) * 100} />
+                <Text style={{ fontSize: 14, paddingTop: "3%" }}>
+                  {((cashBalance / portfolioValue) * 100).toFixed(0)}%
+                </Text>
+              </Td>
+            </Tr>
+            {assets.map((a) => (
+              <TableRow userAsset={a} key={a.asset.productIdentifier} />
+            ))}
+          </Tbody>
+        </Table>
+      </Stack>
+    </Stack>
+    // <VStack width="65%" spacing="15px" py="10">
+    //   <Box>
+    //     <Heading size="lg">My portfolio</Heading>
+    //     <Text py="2" style={{ fontSize: 30 }}>
+    //       {toCurrency(portfolioValue)}
+    //     </Text>
+    // <Box style={{ background: "#f2f2f2", width: "40%", borderRadius: 10 }}>
+    //   <Text py="3%" px="5%" style={{ fontWeight: "bold" }}>
+    //     Quick links
+    //   </Text>
+    //   <NavLink to="/completedorders">
+    //     <Text py="1%" px="5%" style={{ fontSize: 14 }}>
+    //       Completed transactions
+    //     </Text>
+    //   </NavLink>
+    //   <NavLink to="/pendingorders">
+    //     <Text pb="3%" px="5%" style={{ fontSize: 14 }}>
+    //       Pending orders
+    //     </Text>
+    //   </NavLink>
+    // </Box>
+    //   </Box>
 
-      <Box
-        style={{
-          width: "65%",
-          paddingLeft: "5%",
-          marginTop: "2%",
-        }}
-      >
-        <Heading size="lg">Balances</Heading>
-        <Box py="10">
-          <Table variant="simple">
-            <Thead>
-              <Tr>
-                <Th></Th>
-                <Th style={{ textAlign: "center" }}>Asset</Th>
-                <Th style={{ textAlign: "center" }}>Current price</Th>
-                <Th style={{ textAlign: "center" }}>My balance</Th>
-                <Th style={{ textAlign: "center" }}>Value</Th>
-                <Th style={{ textAlign: "center" }}>Trading portfolio</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              <Tr>
-                <Td style={{ textAlign: "center" }}>USD Cash</Td>
-                <Td></Td>
-                <Td style={{ textAlign: "center" }}>-</Td>
-                <Td style={{ textAlign: "center" }}>
-                  {toCurrency(cashBalance)}
-                </Td>
-                <Td style={{ textAlign: "center" }}>-</Td>
-                <Td style={{ textAlign: "center" }}>
-                  <Progress value={(cashBalance / portfolioValue) * 100} />
-                  <Text style={{ fontSize: 14, paddingTop: "3%" }}>
-                    {((cashBalance / portfolioValue) * 100).toFixed(0)}%
-                  </Text>
-                </Td>
-              </Tr>
-              {assets.map((a) => (
-                <TableRow userAsset={a} key={a.asset.productIdentifier} />
-              ))}
-            </Tbody>
-          </Table>
-        </Box>
-      </Box>
-    </VStack>
+    //   <Box
+    //     style={{
+    //       paddingLeft: "5%",
+    //       marginTop: "2%",
+    //     }}
+    //   >
+    //     <Heading size="lg">Balances</Heading>
+    //     <Box py="10">
+    // <Table variant="simple">
+    //   <Thead>
+    //     <Tr>
+    //       <Th></Th>
+    //       <Th style={{ textAlign: "center" }}>Asset</Th>
+    //       <Th style={{ textAlign: "center" }}>Current price</Th>
+    //       <Th style={{ textAlign: "center" }}>My balance</Th>
+    //       <Th style={{ textAlign: "center" }}>Value</Th>
+    //       <Th style={{ textAlign: "center" }}>Trading portfolio</Th>
+    //     </Tr>
+    //   </Thead>
+    //   <Tbody>
+    //     <Tr>
+    //       <Td style={{ textAlign: "center" }}>USD Cash</Td>
+    //       <Td></Td>
+    //       <Td style={{ textAlign: "center" }}>-</Td>
+    //       <Td style={{ textAlign: "center" }}>
+    //         {toCurrency(cashBalance)}
+    //       </Td>
+    //       <Td style={{ textAlign: "center" }}>-</Td>
+    //       <Td style={{ textAlign: "center" }}>
+    //         <Progress value={(cashBalance / portfolioValue) * 100} />
+    //         <Text style={{ fontSize: 14, paddingTop: "3%" }}>
+    //           {((cashBalance / portfolioValue) * 100).toFixed(0)}%
+    //         </Text>
+    //       </Td>
+    //     </Tr>
+    //     {assets.map((a) => (
+    //       <TableRow userAsset={a} key={a.asset.productIdentifier} />
+    //     ))}
+    //   </Tbody>
+    // </Table>
+    //     </Box>
+    //   </Box>
+    // </VStack>
   );
 };
 
