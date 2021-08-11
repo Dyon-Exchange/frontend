@@ -43,7 +43,7 @@ const TableRow = (props: { userAsset: UserAsset }) => {
           "-"}
       </Td>
       <Td style={{ textAlign: "center" }}>
-        <Text>{props.userAsset.quantity || "-"}</Text>
+        <Text>{props.userAsset.quantity.toFixed(2) || "-"}</Text>
       </Td>
       <Td style={{ textAlign: "center" }}>
         <Text>
