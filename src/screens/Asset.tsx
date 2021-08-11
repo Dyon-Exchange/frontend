@@ -12,6 +12,7 @@ import {
   Th,
   Td,
   Spinner,
+  Stack,
 } from "@chakra-ui/react";
 import assetApi from "../api/asset";
 import orderApi from "../api/order";
@@ -23,66 +24,76 @@ import { UserContext } from "../contexts/UserContext";
 
 function AboutTable() {
   return (
-    <HStack width="90%" style={{ backgroundColor: "lightgrey" }}>
-      <Table style={{ fontWeight: "bold" }} variant="unstyled">
+    <Stack isInline width="100%" spacing={4} justify="space-around">
+      <Table
+        style={{
+          maxWidth: "45%",
+          backgroundColor: "#f2f2f2",
+        }}
+        variant="unstyled"
+      >
         <Tr>
-          <Td>Year</Td>
+          <Td fontWeight="bold">Year</Td>
           <Td>2009</Td>
         </Tr>
         <Tr>
-          <Td>Colour</Td>
+          <Td fontWeight="bold">Colour</Td>
           <Td>Red</Td>
         </Tr>
         <Tr>
-          <Td>Country</Td>
+          <Td fontWeight="bold">Country</Td>
           <Td>France</Td>
         </Tr>
         <Tr>
-          <Td>Region</Td>
+          <Td fontWeight="bold">Region</Td>
           <Td>Bordeaux</Td>
         </Tr>
         <Tr>
-          <Td>Sub Region</Td>
+          <Td fontWeight="bold">Sub Region</Td>
           <Td>Pauillac</Td>
         </Tr>
         <Tr>
-          <Td>Unit Size</Td>
+          <Td fontWeight="bold">Unit Size</Td>
           <Td>(6x75cl)</Td>
         </Tr>
       </Table>
       <Table
-        style={{ fontWeight: "bold" }}
+        style={{
+          maxWidth: "45%",
+          backgroundColor: "#f2f2f2",
+          height: "100%",
+        }}
         variant="unstyled"
         alignSelf="start"
       >
         <Tr>
-          <Td>Wine Advocate</Td>
+          <Td fontWeight="bold">Wine Advocate</Td>
           <Td>98-100</Td>
         </Tr>
         <Tr>
-          <Td>Decanter</Td>
+          <Td fontWeight="bold">Decanter</Td>
           <Td>98-100</Td>
         </Tr>
         <Tr>
-          <Td>James Suckling</Td>
+          <Td fontWeight="bold">James Suckling</Td>
           <Td>99</Td>
         </Tr>
         <Tr>
-          <Td>Jeb Dunnuck</Td>
+          <Td fontWeight="bold">Jeb Dunnuck</Td>
           <Td>98</Td>
         </Tr>
         <Tr>
-          <Td>Vinous</Td>
+          <Td fontWeight="bold">Vinous</Td>
           <Td>96</Td>
         </Tr>
       </Table>
       ;
-    </HStack>
+    </Stack>
   );
 }
 
 const AssetScreen = (props: any) => {
-  const { assets } = useContext(UserContext);
+  const { assets, userLimitOrders, userMarketOrders } = useContext(UserContext);
   const [asset, setAsset] = useState<Asset | undefined>();
   const [quantity, setQuantity] = useState(0);
   const [priceEventsData, setPriceEventsData] = useState([]);
@@ -90,9 +101,7 @@ const AssetScreen = (props: any) => {
     buy: [],
     sell: [],
   });
-  const [rows, setRows] = useState<{ b: OrderBookOrder; s: OrderBookOrder }[]>(
-    []
-  );
+  const [rows, setRows] = useState<OrderBookOrder[]>([]);
 
   const [color, setColor] = useState("green");
   const [prelude, setPrelude] = useState("-");
@@ -128,25 +137,15 @@ const AssetScreen = (props: any) => {
 
   useEffect(() => {
     let interval = setInterval(async () => {
-      const r: any[] = [];
       setOrders(await orderApi.getOrders(props.match.params.id));
-      const length =
-        orders.buy.length > orders.sell.length
-          ? orders.buy.length
-          : orders.sell.length;
-      for (let i = 0; i < length; i++) {
-        const b = orders.buy.pop();
-        const s = orders.sell.pop();
-        r.push({ s, b });
-      }
-      setRows(r);
+      setRows(Object.values(orders).flat());
     }, 1 * 1000);
     return () => clearInterval(interval);
   });
 
   return (
     <Flex style={{ paddingTop: "5%", paddingLeft: "2%" }}>
-      <VStack style={{ width: "80%" }}>
+      <VStack style={{ width: "100%" }}>
         <HStack width="100%" style={{ alignItems: "start" }}>
           <VStack style={{ flex: 3 }}>
             <HStack
@@ -232,7 +231,7 @@ const AssetScreen = (props: any) => {
         {quantity > 0 && (
           <Box width="100%" pt="2%" pl="2%">
             <Heading size="md" style={{ paddingBottom: "1%" }}>
-              My {asset?.name} {asset?.year}
+              My Holdings
             </Heading>
             <Table variant="simple">
               <Thead>
@@ -257,37 +256,219 @@ const AssetScreen = (props: any) => {
             </Table>
           </Box>
         )}
-
+        {(userLimitOrders || userMarketOrders) && (
+          <Box width="100%" pt="2%" pl="2%" pb="5%">
+            <Heading size="md" style={{ paddingBottom: "1%" }}>
+              My Orders
+            </Heading>
+            {userMarketOrders.length > 0 && (
+              <>
+                <Heading size="sm" paddingBottom="1%">
+                  Market Orders
+                </Heading>
+                <Table variant="simple" marginBottom="8">
+                  <Thead>
+                    <Tr>
+                      <Th style={{ textAlign: "center" }}>Date</Th>
+                      <Th style={{ textAlign: "center" }}>Side</Th>
+                      <Th style={{ textAlign: "center" }}>Price</Th>
+                      <Th style={{ textAlign: "center" }}>Quantity</Th>
+                      <Th style={{ textAlign: "center" }}>Value</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {userLimitOrders
+                      .sort(
+                        (a, b) => a.createdAt.valueOf() - b.createdAt.valueOf()
+                      )
+                      .map((el) => (
+                        <Tr>
+                          <Td style={{ textAlign: "center" }}>
+                            {el && new Date(el.createdAt).toLocaleDateString()}
+                          </Td>
+                          <Td style={{ textAlign: "center" }}>
+                            {el && el.side.toUpperCase()}
+                          </Td>
+                          <Td style={{ textAlign: "center" }}>
+                            {(el &&
+                              new Intl.NumberFormat("en-AU", {
+                                currency: "AUD",
+                                style: "currency",
+                              }).format(el.price)) ||
+                              "-"}
+                          </Td>
+                          <Td style={{ textAlign: "center" }}>
+                            {el && el.quantity}
+                          </Td>
+                          <Td style={{ textAlign: "center" }}>
+                            $
+                            {(el &&
+                              (Number(el.price) * Number(el.quantity)).toFixed(
+                                2
+                              )) ||
+                              "-"}
+                          </Td>
+                        </Tr>
+                      ))}
+                  </Tbody>
+                </Table>
+              </>
+            )}
+            {userLimitOrders.length > 0 && (
+              <>
+                <Heading size="sm" paddingBottom="1%" marginTop="30px">
+                  Limit Orders
+                </Heading>
+                <Table variant="simple">
+                  <Thead>
+                    <Tr>
+                      <Th style={{ textAlign: "center" }}>Date</Th>
+                      <Th style={{ textAlign: "center" }}>Side</Th>
+                      <Th style={{ textAlign: "center" }}>Price</Th>
+                      <Th style={{ textAlign: "center" }}>Quantity</Th>
+                      <Th style={{ textAlign: "center" }}>Value</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {userLimitOrders
+                      .sort(
+                        (a, b) =>
+                          Number(a.price) * Number(a.quantity) -
+                          Number(b.price) * Number(b.quantity)
+                      )
+                      .map((el) => (
+                        <Tr>
+                          <Td style={{ textAlign: "center" }}>
+                            {el && new Date(el.createdAt).toLocaleDateString()}
+                          </Td>
+                          <Td style={{ textAlign: "center" }}>
+                            {el && el.side.toUpperCase()}
+                          </Td>
+                          <Td style={{ textAlign: "center" }}>
+                            {(el &&
+                              new Intl.NumberFormat("en-AU", {
+                                currency: "AUD",
+                                style: "currency",
+                              }).format(el.price)) ||
+                              "-"}
+                          </Td>
+                          <Td style={{ textAlign: "center" }}>
+                            {el && el.quantity}
+                          </Td>
+                          <Td style={{ textAlign: "center" }}>
+                            $
+                            {(el &&
+                              (Number(el.price) * Number(el.quantity)).toFixed(
+                                2
+                              )) ||
+                              "-"}
+                          </Td>
+                        </Tr>
+                      ))}
+                  </Tbody>
+                </Table>
+              </>
+            )}
+          </Box>
+        )}
         <Box width="100%" pt="2%" pl="2%" pb="5%">
           <Heading size="md" style={{ paddingBottom: "1%" }}>
-            Orders
+            Orderbook
+          </Heading>
+          <Heading size="sm" paddingBottom="1%">
+            Buy Orders
           </Heading>
           <Table variant="simple">
             <Thead>
               <Tr>
-                <Th style={{ textAlign: "center" }}></Th>
-                <Th style={{ textAlign: "center" }}>Buy</Th>
-                <Th style={{ textAlign: "center" }}></Th>
-                <Th style={{ textAlign: "center" }}>Sell</Th>
+                <Th style={{ textAlign: "center" }}>Date</Th>
+                <Th style={{ textAlign: "center" }}>Side</Th>
+                <Th style={{ textAlign: "center" }}>Price</Th>
+                <Th style={{ textAlign: "center" }}>Quantity</Th>
+                <Th style={{ textAlign: "center" }}>Value</Th>
               </Tr>
             </Thead>
             <Tbody>
-              {rows.map((r) => (
-                <Tr>
-                  <Td style={{ textAlign: "center" }}>
-                    {r.b && new Date(r.b.timestamp).toLocaleString()}
-                  </Td>
-                  <Td style={{ textAlign: "center" }}>
-                    {r.b && `$${Number(r.b.price).toFixed(2)}`}
-                  </Td>
-                  <Td style={{ textAlign: "center" }}>
-                    {r.s && new Date(r.s.timestamp).toLocaleString()}
-                  </Td>
-                  <Td style={{ textAlign: "center" }}>
-                    {r.s && `$${Number(r.s.price).toFixed(2)}`}
-                  </Td>
-                </Tr>
-              ))}
+              {rows
+                .filter((el) => !!el && el.side !== "sell")
+                .sort(
+                  (a, b) =>
+                    Number(a.price) * Number(a.quantity) -
+                    Number(b.price) * Number(b.quantity)
+                )
+                .map((r) => (
+                  <Tr>
+                    <Td style={{ textAlign: "center" }}>
+                      {r && new Date(r.timestamp).toLocaleDateString()}
+                    </Td>
+                    <Td style={{ textAlign: "center" }}>
+                      {r && r.side.toUpperCase().concat("\u00A0")}
+                    </Td>
+                    <Td style={{ textAlign: "center" }}>
+                      {(r &&
+                        new Intl.NumberFormat("en-AU", {
+                          currency: "AUD",
+                          style: "currency",
+                        }).format(r.price)) ||
+                        "-"}
+                    </Td>
+                    <Td style={{ textAlign: "center" }}>{r && r.quantity}</Td>
+                    <Td style={{ textAlign: "center" }}>
+                      $
+                      {(r &&
+                        (Number(r.price) * Number(r.quantity)).toFixed(2)) ||
+                        "-"}
+                    </Td>
+                  </Tr>
+                ))}
+            </Tbody>
+          </Table>
+          <Heading size="sm" paddingBottom="1%" marginTop="30px">
+            Sell Orders
+          </Heading>
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th style={{ textAlign: "center" }}>Date</Th>
+                <Th style={{ textAlign: "center" }}>Side</Th>
+                <Th style={{ textAlign: "center" }}>Price</Th>
+                <Th style={{ textAlign: "center" }}>Quantity</Th>
+                <Th style={{ textAlign: "center" }}>Value</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {rows
+                .filter((el) => !!el && el.side !== "buy")
+                .sort(
+                  (a, b) =>
+                    Number(b.price) * Number(b.quantity) -
+                    Number(a.price) * Number(a.quantity)
+                )
+                .map((r) => (
+                  <Tr>
+                    <Td style={{ textAlign: "center" }}>
+                      {r && new Date(r.timestamp).toLocaleDateString()}
+                    </Td>
+                    <Td style={{ textAlign: "center" }}>
+                      {r && r.side.toUpperCase()}
+                    </Td>
+                    <Td style={{ textAlign: "center" }}>
+                      {(r &&
+                        new Intl.NumberFormat("en-AU", {
+                          currency: "AUD",
+                          style: "currency",
+                        }).format(r.price)) ||
+                        "-"}
+                    </Td>
+                    <Td style={{ textAlign: "center" }}>{r && r.quantity}</Td>
+                    <Td style={{ textAlign: "center" }}>
+                      $
+                      {(r &&
+                        (Number(r.price) * Number(r.quantity)).toFixed(2)) ||
+                        "-"}
+                    </Td>
+                  </Tr>
+                ))}
             </Tbody>
           </Table>
         </Box>
