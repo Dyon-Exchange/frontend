@@ -72,3 +72,18 @@ export const data = [
     __v: 0,
   },
 ];
+
+export const redeemed = [
+  {
+    productIdentifier: "101187220001200750",
+    units: 3,
+    txHash:
+      "0xf86a13cc6d7aa1161e77e87fd79d59b2e5fe89da68cff8005b3ea2ca6d058f5f",
+  },
+  {
+    productIdentifier: "101187220001200750",
+    units: 3,
+    txHash:
+      "0xf86a13cc6d7aa1161e77e87fd79d59b2e5fe89da68cff8005b3ea2ca6d058f5f",
+  },
+];

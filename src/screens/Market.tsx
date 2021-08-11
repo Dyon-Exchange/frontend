@@ -137,17 +137,14 @@ const Market = () => {
           </Text>
           <Text>USD</Text>
         </HStack>
-        {/* <Text style={{ color: "red" }}>-$2,877.12 (-3.40%)</Text> */}
+
+        <Chart data={data} legend={false} />
         <NavLink
           to="/portfolio"
           style={{ alignSelf: "center", paddingTop: "10px" }}
         >
           <Button>View my portfolio</Button>
         </NavLink>
-        <Heading size="md" paddingTop="15px">
-          Portfolio Value
-        </Heading>
-        <Chart data={data} noLegend />
       </VStack>
 
       <VStack py="10" alignContent="center">

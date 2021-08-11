@@ -12,10 +12,10 @@ import {
 
 export default function Chart({
   data,
-  noLegend,
+  legend = true,
 }: {
   data: any; //PriceEvent[];
-  noLegend?: boolean;
+  legend: boolean;
 }) {
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -37,7 +37,7 @@ export default function Chart({
 
   return (
     <>
-      <ResponsiveContainer width="95%" height={400}>
+      <ResponsiveContainer width="95%" height={legend ? 400 : 200}>
         <LineChart
           data={data.slice(data.length >= 24 ? data.length - 25 : 0)}
           margin={{
@@ -47,35 +47,33 @@ export default function Chart({
             bottom: 5,
           }}
         >
-          {!noLegend && (
-            <>
-              <XAxis
-                dataKey="time"
-                tickFormatter={(date: string, i: number) => {
-                  if (i % 2 === 0) {
-                    return new Date(date).toLocaleDateString("en-AU", {
-                      month: "numeric",
-                      day: "numeric",
-                    });
-                  } else {
-                    return "";
-                  }
-                }}
-              ></XAxis>
-              <YAxis
-                dataKey="price"
-                tickFormatter={(price: any) => `$${price}`}
-              >
-                <Label
-                  angle={270}
-                  position="left"
-                  style={{ textAnchor: "middle" }}
-                >
-                  Price
-                </Label>
-              </YAxis>
-            </>
+          {legend && (
+            <XAxis
+              dataKey="time"
+              tickFormatter={(date: string, i: number) => {
+                if (i % 2 === 0) {
+                  return new Date(date).toLocaleDateString("en-AU", {
+                    month: "numeric",
+                    day: "numeric",
+                  });
+                } else {
+                  return "";
+                }
+              }}
+            ></XAxis>
           )}
+          {legend && (
+            <YAxis dataKey="price" tickFormatter={(price: any) => `$${price}`}>
+              <Label
+                angle={270}
+                position="left"
+                style={{ textAnchor: "middle" }}
+              >
+                Price
+              </Label>
+            </YAxis>
+          )}
+
           <Tooltip content={<CustomTooltip />} />
           <Line
             type="monotone"
@@ -85,7 +83,7 @@ export default function Chart({
           />
         </LineChart>
       </ResponsiveContainer>
-      {!noLegend && <Text>Time</Text>}
+      {legend && <Text>Time</Text>}
     </>
   );
 }

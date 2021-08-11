@@ -290,21 +290,23 @@ const AssetScreen = (props: any) => {
                             {el && el.side.toUpperCase()}
                           </Td>
                           <Td style={{ textAlign: "center" }}>
-                            {el &&
+                            {(el &&
                               new Intl.NumberFormat("en-AU", {
                                 currency: "AUD",
                                 style: "currency",
-                              }).format(el.price)}
+                              }).format(el.price)) ||
+                              "-"}
                           </Td>
                           <Td style={{ textAlign: "center" }}>
                             {el && el.quantity}
                           </Td>
                           <Td style={{ textAlign: "center" }}>
                             $
-                            {el &&
+                            {(el &&
                               (Number(el.price) * Number(el.quantity)).toFixed(
                                 2
-                              )}
+                              )) ||
+                              "-"}
                           </Td>
                         </Tr>
                       ))}
@@ -314,7 +316,7 @@ const AssetScreen = (props: any) => {
             )}
             {userLimitOrders.length > 0 && (
               <>
-                <Heading size="sm" paddingBottom="1%">
+                <Heading size="sm" paddingBottom="1%" marginTop="30px">
                   Limit Orders
                 </Heading>
                 <Table variant="simple">
@@ -343,21 +345,23 @@ const AssetScreen = (props: any) => {
                             {el && el.side.toUpperCase()}
                           </Td>
                           <Td style={{ textAlign: "center" }}>
-                            {el &&
+                            {(el &&
                               new Intl.NumberFormat("en-AU", {
                                 currency: "AUD",
                                 style: "currency",
-                              }).format(el.price)}
+                              }).format(el.price)) ||
+                              "-"}
                           </Td>
                           <Td style={{ textAlign: "center" }}>
                             {el && el.quantity}
                           </Td>
                           <Td style={{ textAlign: "center" }}>
                             $
-                            {el &&
+                            {(el &&
                               (Number(el.price) * Number(el.quantity)).toFixed(
                                 2
-                              )}
+                              )) ||
+                              "-"}
                           </Td>
                         </Tr>
                       ))}
@@ -401,21 +405,25 @@ const AssetScreen = (props: any) => {
                       {r && r.side.toUpperCase().concat("\u00A0")}
                     </Td>
                     <Td style={{ textAlign: "center" }}>
-                      {r &&
+                      {(r &&
                         new Intl.NumberFormat("en-AU", {
                           currency: "AUD",
                           style: "currency",
-                        }).format(r.price)}
+                        }).format(r.price)) ||
+                        "-"}
                     </Td>
                     <Td style={{ textAlign: "center" }}>{r && r.quantity}</Td>
                     <Td style={{ textAlign: "center" }}>
-                      ${r && (Number(r.price) * Number(r.quantity)).toFixed(2)}
+                      $
+                      {(r &&
+                        (Number(r.price) * Number(r.quantity)).toFixed(2)) ||
+                        "-"}
                     </Td>
                   </Tr>
                 ))}
             </Tbody>
           </Table>
-          <Heading size="sm" paddingBottom="1%">
+          <Heading size="sm" paddingBottom="1%" marginTop="30px">
             Sell Orders
           </Heading>
           <Table variant="simple">
@@ -445,15 +453,19 @@ const AssetScreen = (props: any) => {
                       {r && r.side.toUpperCase()}
                     </Td>
                     <Td style={{ textAlign: "center" }}>
-                      {r &&
+                      {(r &&
                         new Intl.NumberFormat("en-AU", {
                           currency: "AUD",
                           style: "currency",
-                        }).format(r.price)}
+                        }).format(r.price)) ||
+                        "-"}
                     </Td>
                     <Td style={{ textAlign: "center" }}>{r && r.quantity}</Td>
                     <Td style={{ textAlign: "center" }}>
-                      ${r && (Number(r.price) * Number(r.quantity)).toFixed(2)}
+                      $
+                      {(r &&
+                        (Number(r.price) * Number(r.quantity)).toFixed(2)) ||
+                        "-"}
                     </Td>
                   </Tr>
                 ))}
