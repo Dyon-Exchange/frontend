@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Flex, Box, Heading, VStack } from "@chakra-ui/layout";
+import { Heading, VStack } from "@chakra-ui/layout";
 import {
   Table,
   Thead,
@@ -10,6 +10,7 @@ import {
   Button,
   chakra,
   Text,
+  Stack,
 } from "@chakra-ui/react";
 import { UserContext } from "../../contexts/UserContext";
 import { Asset } from "../../index.d";
@@ -27,8 +28,9 @@ function TableRow(props: { asset: Asset; units: number }) {
       </Td>
       <Td style={{ textAlign: "center" }}>{units}</Td>
       <Td style={{ textAlign: "center" }}>
-        {asset.bidMarketPrice &&
-          toCurrency(Number(units) * asset.bidMarketPrice)}
+        {(asset.bidMarketPrice &&
+          toCurrency(Number(units) * asset.bidMarketPrice)) ||
+          "-"}
       </Td>
     </Tr>
   );
@@ -48,41 +50,51 @@ function Confirm(props: {
   );
 
   return (
-    <Flex flexDirection="row" justifyContent="center" width="50%">
-      <VStack width="100%">
-        <Heading size="lg">Units being redeemed</Heading>
-        <Text width="50%" py="10">
-          These cases will now be delivered to a WineTrust warehouse and will no
-          longer be part of the WineBit ecosystem. The unique tokens associated
-          with these cases will be burned (destroyed). This action cannot be
-          undone.
-        </Text>
-        <Box py="10">
-          <Table variant="simple">
-            <Thead>
-              <Tr>
-                <Th style={{ textAlign: "center" }}></Th>
-                <Th style={{ textAlign: "center" }}></Th>
-                <Th style={{ textAlign: "center" }}>Being redeemed</Th>
-                <Th style={{ textAlign: "center" }}>Market Value</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {rows.map((a: Asset) => (
-                <TableRow
-                  key={a.productIdentifier}
-                  units={Number(toRedeem[a.productIdentifier])}
-                  asset={a}
-                />
-              ))}
-            </Tbody>
-          </Table>
-        </Box>
-        <Button my="10" onClick={() => click()} isLoading={loading}>
+    <VStack width="75%">
+      <Heading size="lg">Confirm redemption request</Heading>
+      <Stack paddingY="10">
+        <Table variant="simple" marginBottom="1rem">
+          <Thead>
+            <Tr>
+              <Th style={{ textAlign: "center" }}></Th>
+              <Th style={{ textAlign: "center" }}>Item</Th>
+              <Th style={{ textAlign: "center" }}>Quantity to be redeemed</Th>
+              <Th style={{ textAlign: "center" }}>Market Value</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {rows.map((a: Asset) => (
+              <TableRow
+                key={a.productIdentifier}
+                units={Number(toRedeem[a.productIdentifier])}
+                asset={a}
+              />
+            ))}
+          </Tbody>
+        </Table>
+        <Button
+          onClick={() => click()}
+          isLoading={loading}
+          alignSelf="flex-end"
+          loadingText="Redeeming"
+        >
           Confirm Redemption
         </Button>
-      </VStack>
-    </Flex>
+        <Text
+          width="60%"
+          fontSize="xs"
+          fontWeight="thin"
+          alignSelf="flex-end"
+          paddingTop="1rem"
+          textAlign="right"
+        >
+          On confirmation these cases will be delivered to a WineTrust warehouse
+          and will no longer be part of the WineBit ecosystem. The unique tokens
+          associated with these cases will be burned (destroyed). This action
+          cannot be undone.
+        </Text>
+      </Stack>
+    </VStack>
   );
 }
 

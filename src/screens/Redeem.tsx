@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Flex } from "@chakra-ui/layout";
-
+// import { redeemed as dummyRedeem } from "../dummydata";
 import Confirm from "../components/Redeem/Confirm";
 import Select from "../components/Redeem/Select";
 import Complete from "../components/Redeem/Complete";

@@ -15,6 +15,8 @@ import { NavLink, useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { Asset } from "../index.d";
 import { toCurrency } from "../formatting";
+import Chart from "../components/Chart";
+import { data } from "../dummydata";
 
 const ChangeCell = (props: { change: number }) => {
   const red = "#FF0000";
@@ -135,7 +137,8 @@ const Market = () => {
           </Text>
           <Text>USD</Text>
         </HStack>
-        {/* <Text style={{ color: "red" }}>-$2,877.12 (-3.40%)</Text> */}
+
+        <Chart data={data} legend={false} />
         <NavLink
           to="/portfolio"
           style={{ alignSelf: "center", paddingTop: "10px" }}

@@ -38,18 +38,20 @@ const TableRow = (props: { userAsset: UserAsset }) => {
         {props.userAsset.asset.name} {props.userAsset.asset.year}
       </Td>
       <Td style={{ textAlign: "center" }}>
-        {props.userAsset.asset.askMarketPrice &&
-          toCurrency(props.userAsset.asset.askMarketPrice)}
+        {(props.userAsset.asset.askMarketPrice &&
+          toCurrency(props.userAsset.asset.askMarketPrice)) ||
+          "-"}
       </Td>
       <Td style={{ textAlign: "center" }}>
-        <Text>{props.userAsset.quantity}</Text>
+        <Text>{props.userAsset.quantity || "-"}</Text>
       </Td>
       <Td style={{ textAlign: "center" }}>
         <Text>
-          {props.userAsset.asset.askMarketPrice &&
+          {(props.userAsset.asset.askMarketPrice &&
             toCurrency(
               props.userAsset.asset.askMarketPrice * props.userAsset.quantity
-            )}
+            )) ||
+            "-"}
         </Text>
       </Td>
       <Td style={{ textAlign: "center" }}>
@@ -120,11 +122,11 @@ const Portfolio = () => {
               <Tr>
                 <Td style={{ textAlign: "center" }}>USD Cash</Td>
                 <Td></Td>
-                <Td></Td>
+                <Td style={{ textAlign: "center" }}>-</Td>
                 <Td style={{ textAlign: "center" }}>
                   {toCurrency(cashBalance)}
                 </Td>
-                <Td></Td>
+                <Td style={{ textAlign: "center" }}>-</Td>
                 <Td style={{ textAlign: "center" }}>
                   <Progress value={(cashBalance / portfolioValue) * 100} />
                   <Text style={{ fontSize: 14, paddingTop: "3%" }}>
