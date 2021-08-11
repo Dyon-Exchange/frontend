@@ -1,8 +1,7 @@
 import React, { useContext, useState } from "react";
-import { Flex, VStack, Heading } from "@chakra-ui/layout";
+import { VStack, Heading } from "@chakra-ui/layout";
 import {
   Text,
-  Box,
   Table,
   Thead,
   Tbody,

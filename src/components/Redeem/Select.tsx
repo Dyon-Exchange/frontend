@@ -13,7 +13,6 @@ import {
   NumberInput,
   NumberInputField,
   Text,
-  FormErrorMessage,
 } from "@chakra-ui/react";
 import { UserAsset } from "../../index.d";
 import { UserContext } from "../../contexts/UserContext";
