@@ -15,6 +15,8 @@ import { NavLink, useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { Asset } from "../index.d";
 import { toCurrency } from "../formatting";
+import Chart from "../components/Chart";
+import { data } from "../dummydata";
 
 const ChangeCell = (props: { change: number }) => {
   const red = "#FF0000";
@@ -142,6 +144,10 @@ const Market = () => {
         >
           <Button>View my portfolio</Button>
         </NavLink>
+        <Heading size="md" paddingTop="15px">
+          Portfolio Value
+        </Heading>
+        <Chart data={data} noLegend />
       </VStack>
 
       <VStack py="10" alignContent="center">
