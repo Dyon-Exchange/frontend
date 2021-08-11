@@ -33,7 +33,7 @@ export default function Chart({ data }: any) {
     <>
       <ResponsiveContainer width="95%" height={400}>
         <LineChart
-          data={data}
+          data={data.slice(data.length - 25)}
           margin={{
             top: 5,
             right: 30,
@@ -45,7 +45,7 @@ export default function Chart({ data }: any) {
             dataKey="time"
             tickFormatter={(date: string, i: number) => {
               if (i % 2 === 0) {
-                return new Date(date).toLocaleDateString("en", {
+                return new Date(date).toLocaleDateString("en-AU", {
                   month: "numeric",
                   day: "numeric",
                 });
