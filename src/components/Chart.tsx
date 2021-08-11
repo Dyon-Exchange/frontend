@@ -10,7 +10,13 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export default function Chart({ data }: any) {
+export default function Chart({
+  data,
+  legend = true,
+}: {
+  data: any; //PriceEvent[];
+  legend: boolean;
+}) {
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -31,9 +37,9 @@ export default function Chart({ data }: any) {
 
   return (
     <>
-      <ResponsiveContainer width="95%" height={400}>
+      <ResponsiveContainer width="95%" height={legend ? 400 : 200}>
         <LineChart
-          data={data}
+          data={data.slice(data.length >= 24 ? data.length - 25 : 0)}
           margin={{
             top: 5,
             right: 30,
@@ -41,24 +47,33 @@ export default function Chart({ data }: any) {
             bottom: 5,
           }}
         >
-          <XAxis
-            dataKey="time"
-            tickFormatter={(date: string, i: number) => {
-              if (i % 2 === 0) {
-                return new Date(date).toLocaleDateString("en", {
-                  month: "numeric",
-                  day: "numeric",
-                });
-              } else {
-                return "";
-              }
-            }}
-          ></XAxis>
-          <YAxis dataKey="price" tickFormatter={(price: any) => `$${price}`}>
-            <Label angle={270} position="left" style={{ textAnchor: "middle" }}>
-              Price
-            </Label>
-          </YAxis>
+          {legend && (
+            <XAxis
+              dataKey="time"
+              tickFormatter={(date: string, i: number) => {
+                if (i % 2 === 0) {
+                  return new Date(date).toLocaleDateString("en-AU", {
+                    month: "numeric",
+                    day: "numeric",
+                  });
+                } else {
+                  return "";
+                }
+              }}
+            ></XAxis>
+          )}
+          {legend && (
+            <YAxis dataKey="price" tickFormatter={(price: any) => `$${price}`}>
+              <Label
+                angle={270}
+                position="left"
+                style={{ textAnchor: "middle" }}
+              >
+                Price
+              </Label>
+            </YAxis>
+          )}
+
           <Tooltip content={<CustomTooltip />} />
           <Line
             type="monotone"
@@ -68,7 +83,7 @@ export default function Chart({ data }: any) {
           />
         </LineChart>
       </ResponsiveContainer>
-      <Text>Time</Text>
+      {legend && <Text>Time</Text>}
     </>
   );
 }

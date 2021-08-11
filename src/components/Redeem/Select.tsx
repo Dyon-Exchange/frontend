@@ -12,6 +12,7 @@ import {
   chakra,
   NumberInput,
   NumberInputField,
+  Text,
 } from "@chakra-ui/react";
 import { UserAsset } from "../../index.d";
 import { UserContext } from "../../contexts/UserContext";
@@ -55,7 +56,11 @@ const TableRow = (props: {
           value={units}
           max={Math.floor(r.quantity)}
           onChange={(e) => {
-            setUnits(e);
+            if (r.quantity < Number(e)) {
+              setUnits(Math.floor(r.quantity).toString());
+            } else {
+              setUnits(e);
+            }
             if (Number(e) === 0) {
               setChecked(false);
             } else {
@@ -69,14 +74,12 @@ const TableRow = (props: {
         </NumberInput>
       </Td>
       <Td style={{ textAlign: "center" }}>
-        {r.asset.bidMarketPrice &&
-          toCurrency(Number(units) * r.asset.bidMarketPrice)}
+        {(r.asset.bidMarketPrice &&
+          toCurrency(Number(units) * r.asset.bidMarketPrice)) ||
+          "-"}
       </Td>
       <Td style={{ textAlign: "center" }}>
         <Checkbox isChecked={checked} onChange={() => setChecked(!checked)} />
-      </Td>
-      <Td style={{ fontSize: 13, textAlign: "center" }}>
-        Units will be delivered to WineTrust account
       </Td>
     </Tr>
   );
@@ -111,8 +114,11 @@ function Select(props: {
       <VStack width="100%">
         <HStack justifyContent="space-between" width="100%">
           <Heading size="lg">Redeem</Heading>
-          <Button onClick={() => setStage("Confirm")}>View Redemption</Button>
+          <Button onClick={() => setStage("Confirm")}>
+            Redeem Selected Items
+          </Button>
         </HStack>
+
         <Box py="10">
           <Table variant="simple">
             <Thead>
@@ -122,7 +128,6 @@ function Select(props: {
                 <Th style={{ textAlign: "center" }}>Total Units Owned</Th>
                 <Th style={{ textAlign: "center" }}>Units to redeem</Th>
                 <Th style={{ textAlign: "center" }}>Market Value</Th>
-                <Th></Th>
                 <Th></Th>
               </Tr>
             </Thead>
@@ -138,6 +143,9 @@ function Select(props: {
             </Tbody>
           </Table>
         </Box>
+        <Text fontSize="sm" alignSelf="flex-end" fontWeight="thin">
+          Units will be delivered to WineTrust account
+        </Text>
       </VStack>
     </Flex>
   );
