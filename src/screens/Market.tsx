@@ -17,6 +17,7 @@ import { Asset } from "../index.d";
 import { toCurrency } from "../formatting";
 import Chart from "../components/Chart";
 import { data } from "../dummydata";
+import { determineContractSize } from "../helpers/determineContractSize";
 
 const ChangeCell = (props: { change: number }) => {
   const red = "#FF0000";
@@ -47,6 +48,11 @@ const TableRow = (props: { asset: Asset }) => {
     history.push(`/asset/${props.asset.productIdentifier}`);
   };
 
+  console.log("asset is :");
+  console.log(props.asset);
+
+  const contractSize = determineContractSize(props.asset.productIdentifier);
+
   return (
     <Tr onClick={handleRowClick} style={{ cursor: "pointer" }}>
       <Td>
@@ -56,9 +62,11 @@ const TableRow = (props: { asset: Asset }) => {
           style={{ height: 50, width: 50 }}
         />
       </Td>
+
       <Td>
         {props.asset.name} {props.asset.year}
       </Td>
+      <Td>{contractSize}</Td>
       <Td>{props.asset.sell && `${toCurrency(props.asset.sell)}`}</Td>
       <Td>{props.asset.buy && `${toCurrency(props.asset.buy)}`}</Td>
       <ChangeCell change={props.asset.changePercentage} />
@@ -127,6 +135,8 @@ const Market = () => {
     }
   }, [tableFilter, allAssets]);
 
+  console.log(allAssets);
+
   return (
     <Flex flexDirection="row" justifyContent="center">
       <VStack px="10" py="10" alignItems="flex-start">
@@ -176,6 +186,7 @@ const Market = () => {
               <Tr>
                 <Th></Th>
                 <Th></Th>
+                <Th>Contract Size</Th>
                 <Th>Sell</Th>
                 <Th>Buy</Th>
                 <Th>Change</Th>
