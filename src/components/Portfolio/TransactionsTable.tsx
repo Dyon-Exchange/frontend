@@ -1,5 +1,5 @@
-import React from "react";
+// import React from "react";
 
-const TransactionsTable = ({}:) => {};
+// const TransactionsTable = ({}:) => {};
 
-export default TransactionsTable;
+// export default TransactionsTable;
