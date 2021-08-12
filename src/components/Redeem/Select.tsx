@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Flex, Box, HStack, Heading, VStack } from "@chakra-ui/layout";
+import { Flex, Box, Heading, VStack } from "@chakra-ui/layout";
 import {
   Table,
   Thead,
@@ -112,13 +112,7 @@ function Select(props: {
   return (
     <Flex flexDirection="row" justifyContent="center">
       <VStack width="100%">
-        <HStack justifyContent="space-between" width="100%">
-          <Heading size="lg">Redeem</Heading>
-          <Button onClick={() => setStage("Confirm")}>
-            Redeem Selected Items
-          </Button>
-        </HStack>
-
+        <Heading size="lg">Redeem</Heading>
         <Box py="10">
           <Table variant="simple">
             <Thead>
@@ -143,6 +137,9 @@ function Select(props: {
             </Tbody>
           </Table>
         </Box>
+        <Button onClick={() => setStage("Confirm")} alignSelf="flex-end">
+          Redeem Selected Items
+        </Button>
         <Text fontSize="sm" alignSelf="flex-end" fontWeight="thin">
           Units will be delivered to WineTrust account
         </Text>
