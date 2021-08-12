@@ -21,6 +21,7 @@ import Trade from "../components/Trade";
 import Chart from "../components/Chart";
 import { toCurrency } from "../formatting";
 import { UserContext } from "../contexts/UserContext";
+import OrderBook from "../components/OrderBook";
 
 function AboutTable() {
   return (
@@ -278,6 +279,10 @@ const AssetScreen = (props: any) => {
                   </Thead>
                   <Tbody>
                     {userLimitOrders
+                      .filter(
+                        (el) =>
+                          el.status !== "COMPLETE" && el.status !== "CANCELED"
+                      )
                       .sort(
                         (a, b) => a.createdAt.valueOf() - b.createdAt.valueOf()
                       )
@@ -331,6 +336,10 @@ const AssetScreen = (props: any) => {
                   </Thead>
                   <Tbody>
                     {userLimitOrders
+                      .filter(
+                        (el) =>
+                          el.status !== "COMPLETE" && el.status !== "CANCELED"
+                      )
                       .sort(
                         (a, b) =>
                           Number(a.price) * Number(a.quantity) -
@@ -371,107 +380,12 @@ const AssetScreen = (props: any) => {
             )}
           </Box>
         )}
-        <Box width="100%" pt="2%" pl="2%" pb="5%">
+        <Stack width="100%" pt="2%" pl="2%" pb="5%" spacing={4}>
           <Heading size="md" style={{ paddingBottom: "1%" }}>
             Orderbook
           </Heading>
-          <Heading size="sm" paddingBottom="1%">
-            Buy Orders
-          </Heading>
-          <Table variant="simple">
-            <Thead>
-              <Tr>
-                <Th style={{ textAlign: "center" }}>Date</Th>
-                <Th style={{ textAlign: "center" }}>Side</Th>
-                <Th style={{ textAlign: "center" }}>Price</Th>
-                <Th style={{ textAlign: "center" }}>Quantity</Th>
-                <Th style={{ textAlign: "center" }}>Value</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {rows
-                .filter((el) => !!el && el.side !== "sell")
-                .sort(
-                  (a, b) =>
-                    Number(a.price) * Number(a.quantity) -
-                    Number(b.price) * Number(b.quantity)
-                )
-                .map((r) => (
-                  <Tr>
-                    <Td style={{ textAlign: "center" }}>
-                      {r && new Date(r.timestamp).toLocaleDateString()}
-                    </Td>
-                    <Td style={{ textAlign: "center" }}>
-                      {r && r.side.toUpperCase().concat("\u00A0")}
-                    </Td>
-                    <Td style={{ textAlign: "center" }}>
-                      {(r &&
-                        new Intl.NumberFormat("en-AU", {
-                          currency: "AUD",
-                          style: "currency",
-                        }).format(r.price)) ||
-                        "-"}
-                    </Td>
-                    <Td style={{ textAlign: "center" }}>{r && r.quantity}</Td>
-                    <Td style={{ textAlign: "center" }}>
-                      $
-                      {(r &&
-                        (Number(r.price) * Number(r.quantity)).toFixed(2)) ||
-                        "-"}
-                    </Td>
-                  </Tr>
-                ))}
-            </Tbody>
-          </Table>
-          <Heading size="sm" paddingBottom="1%" marginTop="30px">
-            Sell Orders
-          </Heading>
-          <Table variant="simple">
-            <Thead>
-              <Tr>
-                <Th style={{ textAlign: "center" }}>Date</Th>
-                <Th style={{ textAlign: "center" }}>Side</Th>
-                <Th style={{ textAlign: "center" }}>Price</Th>
-                <Th style={{ textAlign: "center" }}>Quantity</Th>
-                <Th style={{ textAlign: "center" }}>Value</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {rows
-                .filter((el) => !!el && el.side !== "buy")
-                .sort(
-                  (a, b) =>
-                    Number(b.price) * Number(b.quantity) -
-                    Number(a.price) * Number(a.quantity)
-                )
-                .map((r) => (
-                  <Tr>
-                    <Td style={{ textAlign: "center" }}>
-                      {r && new Date(r.timestamp).toLocaleDateString()}
-                    </Td>
-                    <Td style={{ textAlign: "center" }}>
-                      {r && r.side.toUpperCase()}
-                    </Td>
-                    <Td style={{ textAlign: "center" }}>
-                      {(r &&
-                        new Intl.NumberFormat("en-AU", {
-                          currency: "AUD",
-                          style: "currency",
-                        }).format(r.price)) ||
-                        "-"}
-                    </Td>
-                    <Td style={{ textAlign: "center" }}>{r && r.quantity}</Td>
-                    <Td style={{ textAlign: "center" }}>
-                      $
-                      {(r &&
-                        (Number(r.price) * Number(r.quantity)).toFixed(2)) ||
-                        "-"}
-                    </Td>
-                  </Tr>
-                ))}
-            </Tbody>
-          </Table>
-        </Box>
+          <OrderBook orders={rows} />
+        </Stack>
       </VStack>
     </Flex>
   );
