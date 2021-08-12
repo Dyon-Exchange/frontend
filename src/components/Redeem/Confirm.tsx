@@ -51,7 +51,7 @@ function Confirm(props: {
 
   return (
     <VStack width="75%">
-      <Heading size="lg">Confirm redemption request</Heading>
+      <Heading size="lg">Confirm Redemption Request</Heading>
       <Stack paddingY="10">
         <Table variant="simple" marginBottom="1rem">
           <Thead>
