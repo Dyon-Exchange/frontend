@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Heading, VStack, Text, Box } from "@chakra-ui/layout";
+import { Heading, Text } from "@chakra-ui/layout";
 import {
   Table,
   Thead,
