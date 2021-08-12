@@ -278,6 +278,10 @@ const AssetScreen = (props: any) => {
                   </Thead>
                   <Tbody>
                     {userLimitOrders
+                      .filter(
+                        (el) =>
+                          el.status !== "COMPLETE" && el.status !== "CANCELED"
+                      )
                       .sort(
                         (a, b) => a.createdAt.valueOf() - b.createdAt.valueOf()
                       )
@@ -331,6 +335,10 @@ const AssetScreen = (props: any) => {
                   </Thead>
                   <Tbody>
                     {userLimitOrders
+                      .filter(
+                        (el) =>
+                          el.status !== "COMPLETE" && el.status !== "CANCELED"
+                      )
                       .sort(
                         (a, b) =>
                           Number(a.price) * Number(a.quantity) -
