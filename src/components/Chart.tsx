@@ -81,7 +81,7 @@ export default function Chart({
 
           <Tooltip content={<CustomTooltip />} />
           <Line
-            type="monotone"
+            type="linear"
             dataKey="price"
             stroke="#8884d8"
             activeDot={{ r: 8 }}
