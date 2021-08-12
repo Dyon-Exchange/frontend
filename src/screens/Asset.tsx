@@ -22,6 +22,7 @@ import Chart from "../components/Chart";
 import { toCurrency } from "../formatting";
 import { UserContext } from "../contexts/UserContext";
 import OrderBook from "../components/OrderBook";
+import { determineContractSize } from "../helpers/determineContractSize";
 
 function AboutTable() {
   return (
@@ -163,7 +164,13 @@ const AssetScreen = (props: any) => {
                       src={asset?.image}
                       style={{ height: 50, width: 50 }}
                     />
-                    <Heading size="lg">{asset?.name}</Heading>
+                    <Box>
+                      <Heading size="lg">{asset?.name}</Heading>
+                      <Text fontSize="xs">
+                        {asset &&
+                          determineContractSize(asset.productIdentifier)}
+                      </Text>
+                    </Box>
                   </HStack>
                   <HStack width="100%">
                     <Text style={{ fontSize: 30 }}>
