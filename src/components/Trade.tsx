@@ -229,7 +229,7 @@ const Trade = (props: {
       </HStack>
 
       <Text style={{ fontSize: 16, fontWeight: "bold" }} py="2">
-        How many units?
+        How many cases?
       </Text>
       <NumberInput
         precision={2}
