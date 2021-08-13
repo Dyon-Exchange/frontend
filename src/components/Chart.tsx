@@ -47,7 +47,7 @@ export default function Chart({
             top: 5,
             right: 30,
             left: 20,
-            bottom: 5,
+            bottom: 15,
           }}
         >
           {legend && (
@@ -64,7 +64,12 @@ export default function Chart({
                 }
               }}
             >
-              <Label position="insideBottom">Time</Label>
+              <Label
+                style={{ transform: `translate(0px, 20px)` }}
+                position="insideBottom"
+              >
+                Time
+              </Label>
             </XAxis>
           )}
           {legend && (
@@ -81,7 +86,7 @@ export default function Chart({
 
           <Tooltip content={<CustomTooltip />} />
           <Line
-            type="monotone"
+            type="linear"
             dataKey="price"
             stroke="#8884d8"
             activeDot={{ r: 8 }}
