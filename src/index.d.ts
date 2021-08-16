@@ -14,6 +14,7 @@ export type OrderBookOrder = {
 export type GetOrdersResponse = {
   buy: OrderBookOrder[];
   sell: OrderBookOrder[];
+  error?: string;
 };
 
 interface Order {

@@ -15,6 +15,7 @@ import {
 import { UserContext } from "../../contexts/UserContext";
 import { Asset } from "../../index.d";
 import { toCurrency } from "../../formatting";
+import { determineContractSize } from "../../helpers/determineContractSize";
 
 function TableRow(props: { asset: Asset; units: number }) {
   const { asset, units } = props;
@@ -25,6 +26,10 @@ function TableRow(props: { asset: Asset; units: number }) {
       </Td>
       <Td style={{ textAlign: "center" }}>
         {asset.name} {asset.year}
+      </Td>
+      <Td style={{ textAlign: "center" }}>
+        {asset.productIdentifier &&
+          determineContractSize(asset.productIdentifier)}
       </Td>
       <Td style={{ textAlign: "center" }}>{units}</Td>
       <Td style={{ textAlign: "center" }}>
@@ -58,6 +63,7 @@ function Confirm(props: {
             <Tr>
               <Th style={{ textAlign: "center" }}></Th>
               <Th style={{ textAlign: "center" }}>Item</Th>
+              <Th style={{ textAlign: "center" }}>Contract Size</Th>
               <Th style={{ textAlign: "center" }}>Quantity to be redeemed</Th>
               <Th style={{ textAlign: "center" }}>Market Value</Th>
             </Tr>

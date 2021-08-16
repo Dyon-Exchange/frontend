@@ -18,14 +18,19 @@ import { UserAsset } from "../../index.d";
 import { UserContext } from "../../contexts/UserContext";
 import { toCurrency } from "../../formatting";
 import { RedeemStage } from "../../screens/Redeem";
+import { determineContractSize } from "../../helpers/determineContractSize";
 
-const TableRow = (props: {
+interface ITableRowProps {
   r: UserAsset;
   setToRedeem: (id: string, quantity: string) => void;
   removeToRedeemAsset: (id: string) => void;
-}) => {
-  const { r, setToRedeem, removeToRedeemAsset } = props;
+}
 
+const TableRow: React.FC<ITableRowProps> = ({
+  r,
+  setToRedeem,
+  removeToRedeemAsset,
+}) => {
   const [checked, setChecked] = useState(false);
   const [units, setUnits] = useState(Math.floor(r.quantity).toString());
 
@@ -51,6 +56,10 @@ const TableRow = (props: {
       </Td>
       <Td style={{ textAlign: "center" }}>{r.quantity}</Td>
       <Td style={{ textAlign: "center" }}>
+        {r.asset.productIdentifier &&
+          determineContractSize(r.asset.productIdentifier)}
+      </Td>
+      <Td style={{ textAlign: "center" }}>
         <NumberInput
           precision={0}
           value={units}
@@ -73,6 +82,7 @@ const TableRow = (props: {
           <NumberInputField style={{ textAlign: "center" }} />
         </NumberInput>
       </Td>
+
       <Td style={{ textAlign: "center" }}>
         {(r.asset.bidMarketPrice &&
           toCurrency(Number(units) * r.asset.bidMarketPrice)) ||
@@ -120,6 +130,7 @@ function Select(props: {
                 <Th style={{ textAlign: "center" }}></Th>
                 <Th style={{ textAlign: "center" }}></Th>
                 <Th style={{ textAlign: "center" }}>Total Units Owned</Th>
+                <Th style={{ textAlign: "center" }}>Contract Size</Th>
                 <Th style={{ textAlign: "center" }}>Units to redeem</Th>
                 <Th style={{ textAlign: "center" }}>Market Value</Th>
                 <Th></Th>

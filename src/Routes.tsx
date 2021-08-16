@@ -20,31 +20,36 @@ import Redeem from "./screens/Redeem";
 export default function Routes() {
   const { token } = useContext(UserContext);
 
+  // if you haven't signed in, renders sign in component
+  if (!token) {
+    return (
+      <Router>
+        <Header />
+        <Switch>
+          <Route exact path="/signin" component={SignIn}></Route>
+          <Route path="/">
+            <Redirect to="/signin" />
+          </Route>
+        </Switch>
+      </Router>
+    );
+  }
+  // Otherwise load routes
   return (
     <Router>
-      {token ? <SignedInHeader /> : <Header />}
+      <SignedInHeader />
       <Switch>
-        {token ? (
-          <>
-            <Route exact path="/">
-              <Redirect to="/market" />
-            </Route>
-            <Route path="/market" component={Market} />
-            <Route path="/portfolio" component={Portfolio} />
-            <Route path="/mint" component={Mint} />
-            <Route path="/asset/:id" component={Asset} />
-            <Route path="/pendingorders" component={PendingOrders} />
-            <Route path="/completedorders" component={CompletedOrders} />
-            <Route path="/redeem" component={Redeem} />
-          </>
-        ) : (
-          <>
-            <Route exact path="/signin" component={SignIn}></Route>
-            <Route path="/">
-              <Redirect to="/signin" />
-            </Route>
-          </>
-        )}
+        <Route path="/market" component={Market} />
+        <Route path="/portfolio" component={Portfolio} />
+        <Route path="/mint" component={Mint} />
+        <Route path="/asset/:id" component={Asset} />
+        <Route path="/pendingorders" component={PendingOrders} />
+        <Route path="/completedorders" component={CompletedOrders} />
+        <Route path="/redeem" component={Redeem} />
+        {/* Catches 404 routes and sends you to market page */}
+        <Route>
+          <Redirect to="/market" />
+        </Route>
       </Switch>
     </Router>
   );
