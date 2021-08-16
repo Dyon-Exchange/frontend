@@ -66,9 +66,16 @@ const orders = {
   getOrders: async function (
     productIdentifier: string
   ): Promise<GetOrdersResponse> {
-    const { data } = await instance.get(
-      `/order/orderbook/${productIdentifier}`
-    );
+    let data: GetOrdersResponse;
+    try {
+      ({ data } = await instance.get(`/order/orderbook/${productIdentifier}`));
+    } catch (err) {
+      return {
+        buy: [],
+        sell: [],
+        error: err.message,
+      };
+    }
     return data;
   },
 };
