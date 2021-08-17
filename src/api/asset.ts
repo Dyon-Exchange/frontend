@@ -1,4 +1,4 @@
-import { Asset, UserAsset } from "../index.d";
+import { Asset, AssetDetails, UserAsset } from "../index.d";
 import instance from "./instance";
 
 const assetApi = {
@@ -12,9 +12,7 @@ const assetApi = {
   /**
       Get data for one asset
    */
-  getAssetData: async (
-    productIdentifier: string
-  ): Promise<{ asset: Asset; priceEvents: any }> => {
+  getAssetData: async (productIdentifier: string): Promise<AssetDetails> => {
     const { data } = await instance.get(`/asset/data/${productIdentifier}`);
     return data;
   },

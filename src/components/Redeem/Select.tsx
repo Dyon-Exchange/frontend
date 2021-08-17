@@ -17,7 +17,7 @@ import {
 import { UserAsset } from "../../index.d";
 import { UserContext } from "../../contexts/UserContext";
 import { toCurrency } from "../../formatting";
-import { RedeemStage } from "../../screens/Redeem";
+import { RedeemStage } from "../../pages/Redeem";
 import { determineContractSize } from "../../helpers/determineContractSize";
 
 interface ITableRowProps {

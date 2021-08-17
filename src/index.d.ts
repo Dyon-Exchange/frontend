@@ -38,6 +38,12 @@ export interface MarketOrder extends Order {
   price?: number;
 }
 
+export type PriceEvent = {
+  time: Date;
+  price: number;
+  productIdentifier: string;
+};
+
 export type Asset = {
   productIdentifier: string;
   year: string;
@@ -55,7 +61,14 @@ export type Asset = {
   marketCap: number;
   changePercentage: number;
   changeAmount: number;
+  // Can be  added on front end on market page
+  lastPriceAction?: number;
 };
+
+export interface AssetDetails {
+  asset: Asset;
+  priceEvents: Array<PriceEvent>;
+}
 
 export type Token = {
   productCode: string;
@@ -72,9 +85,3 @@ export interface UserAsset {
   asset: Asset;
   portfolioShare: number;
 }
-
-export type PriceEvent = {
-  time: Date;
-  price: number;
-  productIdentifier: string;
-};

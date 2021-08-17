@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { Asset } from "../../index.d";
 import { UserContext } from "../../contexts/UserContext";
-import { Redeemed } from "../../screens/Redeem";
+import { Redeemed } from "../../pages/Redeem";
 
 const TableRow = (props: { asset: Asset; units: number; hash: string }) => {
   const { asset, units, hash } = props;

@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { NavLink, useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
-import { UserAsset } from "../index.d";
+import { UserAsset } from "..";
 import { toCurrency } from "../formatting";
 import { data } from "../dummydata";
 import Chart from "../components/Chart";

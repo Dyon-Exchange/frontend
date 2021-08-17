@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import assetApi from "../api/asset";
 import orderApi from "../api/order";
-import { Asset, GetOrdersResponse, OrderBookOrder } from "../index.d";
+import { Asset, GetOrdersResponse, OrderBookOrder } from "..";
 import Trade from "../components/Trade";
 import Chart from "../components/Chart";
 import { toCurrency } from "../formatting";
