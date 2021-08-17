@@ -7,6 +7,7 @@ import {
   Tooltip,
   Label,
   ResponsiveContainer,
+  CartesianGrid,
 } from "recharts";
 
 export default function Chart({
@@ -14,11 +15,13 @@ export default function Chart({
   legend = true,
   height = 400,
   width = "95%",
+  showGrid = true,
 }: {
   data: any; //PriceEvent[];
   legend?: boolean;
   height?: number;
   width?: string;
+  showGrid?: boolean;
 }) {
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -50,6 +53,7 @@ export default function Chart({
             bottom: 15,
           }}
         >
+          {showGrid && <CartesianGrid strokeDasharray="3 3" />}
           {legend && (
             <XAxis
               dataKey="time"

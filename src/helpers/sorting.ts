@@ -1,4 +1,5 @@
 import { Asset } from "../index.d";
+const abs = Math.abs;
 
 export const sortRecentlyAdded = (a: Asset, b: Asset) => {
   return a.createdAt < b.createdAt ? 1 : -1;
@@ -9,7 +10,7 @@ export const sortTopTraded = (a: Asset, b: Asset) => {
 };
 
 export const sortTopMovers = (a: Asset, b: Asset) => {
-  return a.changePercentage < b.changePercentage ? 1 : -1;
+  return abs(a.changePercentage) < abs(b.changePercentage) ? 1 : -1;
 };
 
 export const sortAll = (a: Asset, b: Asset) => {

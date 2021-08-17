@@ -187,8 +187,7 @@ const Market = () => {
           </Text>
           <Text>USD</Text>
         </HStack>
-
-        <Chart data={data} legend={false} />
+        <Chart data={data} legend={false} showGrid={false} />
         <NavLink
           to="/portfolio"
           style={{ alignSelf: "center", paddingTop: "10px" }}
