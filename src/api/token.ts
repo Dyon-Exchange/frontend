@@ -1,6 +1,6 @@
 import { Asset, Token } from "../index.d";
 import instance from "./instance";
-import { Redeemed } from "../screens/Redeem";
+import { Redeemed } from "../pages/Redeem";
 
 const tokens = {
   /*

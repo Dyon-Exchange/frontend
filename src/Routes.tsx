@@ -7,15 +7,15 @@ import {
 } from "react-router-dom";
 import SignedInHeader from "./components/Header";
 import Header from "./components/PreSignInHeader";
-import { SignIn } from "./screens/SignIn";
+import { SignIn } from "./pages/SignIn";
 import { UserContext } from "./contexts/UserContext";
-import Market from "./screens/Market";
-import Mint from "./screens/Mint";
-import Portfolio from "./screens/Portfolio";
-import Asset from "./screens/Asset";
-import PendingOrders from "./screens/PendingOrders";
-import CompletedOrders from "./screens/CompletedOrders";
-import Redeem from "./screens/Redeem";
+import Market from "./pages/Market";
+import Mint from "./pages/Mint";
+import Portfolio from "./pages/Portfolio";
+import Asset from "./pages/Asset";
+import PendingOrders from "./pages/PendingOrders";
+import CompletedOrders from "./pages/CompletedOrders";
+import Redeem from "./pages/Redeem";
 
 export default function Routes() {
   const { token } = useContext(UserContext);

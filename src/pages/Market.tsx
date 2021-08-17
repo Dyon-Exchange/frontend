@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { HStack, VStack, Heading, Box, Flex } from "@chakra-ui/layout";
 import {
   Table,
@@ -13,23 +13,34 @@ import {
 } from "@chakra-ui/react";
 import { NavLink, useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
-import { Asset } from "../index.d";
+import { Asset, AssetDetails } from "../index.d";
 import { toCurrency } from "../formatting";
 import Chart from "../components/Chart";
 import { data } from "../dummydata";
 import { determineContractSize } from "../helpers/determineContractSize";
+import assetApi from "../api/asset";
+import {
+  sortAll,
+  sortRecentlyAdded,
+  sortTopMovers,
+  sortTopTraded,
+} from "../helpers/sorting";
 
-const ChangeCell = (props: { change: number }) => {
+interface ChangeCellProps {
+  change: number;
+}
+
+const ChangeCell: FC<ChangeCellProps> = ({ change }) => {
   const red = "#FF0000";
   const green = "#90EE90";
   const black = "#000000";
   let prelude = "";
   let color = "";
 
-  if (props.change > 0) {
+  if (change > 0) {
     color = green;
     prelude = "+";
-  } else if (props.change < 0) {
+  } else if (change < 0) {
     color = red;
   } else {
     color = black;
@@ -37,39 +48,39 @@ const ChangeCell = (props: { change: number }) => {
 
   return (
     <Td style={{ color, fontWeight: "bold" }}>
-      {props.change && `${prelude}${props.change}%`}
+      {change && `${prelude}${change}%`}
     </Td>
   );
 };
 
-const TableRow = (props: { asset: Asset }) => {
+interface TableRowProps {
+  asset: Asset;
+}
+
+const TableRow: FC<TableRowProps> = (props) => {
+  const { asset } = props;
   const history = useHistory();
   const handleRowClick = () => {
-    history.push(`/asset/${props.asset.productIdentifier}`);
+    history.push(`/asset/${asset.productIdentifier}`);
   };
 
-  console.log("asset is :");
-  console.log(props.asset);
-
-  const contractSize = determineContractSize(props.asset.productIdentifier);
+  const contractSize = determineContractSize(asset.productIdentifier);
 
   return (
     <Tr onClick={handleRowClick} style={{ cursor: "pointer" }}>
       <Td>
         <chakra.img
-          src={props.asset.image}
+          src={asset.image}
           {...props}
           style={{ height: 50, width: 50 }}
         />
       </Td>
-
       <Td>
-        {props.asset.name} {props.asset.year}
+        {asset.name} {asset.year}
       </Td>
       <Td>{contractSize}</Td>
-      <Td>{props.asset.sell && `${toCurrency(props.asset.sell)}`}</Td>
-      <Td>{props.asset.buy && `${toCurrency(props.asset.buy)}`}</Td>
-      <ChangeCell change={props.asset.changePercentage} />
+      <Td>{asset.lastPriceAction && `${toCurrency(asset.lastPriceAction)}`}</Td>
+      <ChangeCell change={asset.changePercentage} />
       <Td>
         <Button>View details</Button>
       </Td>
@@ -79,22 +90,26 @@ const TableRow = (props: { asset: Asset }) => {
 
 type TableFilter = "All" | "Top Movers" | "Recently Added" | "Top Traded";
 
-const TableHeaderButton = (props: {
+interface TableHeaderButtonProps {
   filter: TableFilter;
   func: Function;
   currentFilter: TableFilter;
+}
+
+const TableHeaderButton: FC<TableHeaderButtonProps> = ({
+  filter,
+  func,
+  currentFilter,
 }) => {
   return (
     <Button
       px="5"
       mx="5"
-      backgroundColor={
-        props.filter === props.currentFilter ? "black" : undefined
-      }
-      color={props.filter === props.currentFilter ? "white" : undefined}
-      onClick={() => props.func(props.filter)}
+      backgroundColor={filter === currentFilter ? "black" : undefined}
+      color={filter === currentFilter ? "white" : undefined}
+      onClick={() => func(filter)}
     >
-      {props.filter}
+      {filter}
     </Button>
   );
 };
@@ -105,37 +120,62 @@ const Market = () => {
   const [tableFilter, setTableFilter] = useState<TableFilter>("All");
 
   const [assetRows, setAssetRows] = useState<Asset[]>([]);
-
-  const sortRecentlyAdded = (a: Asset, b: Asset) => {
-    return a.createdAt < b.createdAt ? 1 : -1;
-  };
-
-  const sortTopTraded = (a: Asset, b: Asset) => {
-    return a.volume < b.volume ? 1 : -1;
-  };
-
-  const sortTopMovers = (a: Asset, b: Asset) => {
-    return a.changePercentage < b.changePercentage ? 1 : -1;
-  };
-
-  const sortAll = (a: Asset, b: Asset) => {
-    if (a.name > b.name) return 1;
-    return -1;
-  };
-
+  /**
+   * Updates the assets array with the most recent trade price
+   * then inserts into rows
+   */
   useEffect(() => {
-    if (tableFilter === "Recently Added") {
-      setAssetRows([...allAssets].sort(sortRecentlyAdded));
-    } else if (tableFilter === "Top Traded") {
-      setAssetRows([...allAssets].sort(sortTopTraded));
-    } else if (tableFilter === "Top Movers") {
-      setAssetRows([...allAssets].sort(sortTopMovers));
-    } else {
-      setAssetRows([...allAssets].sort(sortAll));
-    }
-  }, [tableFilter, allAssets]);
+    /**
+     * Code extracted to function to prevent DRY violation
+     * Sets the data for each row of the table
+     * @param assets An array of Asset objects
+     */
+    const updateRows = (assets: Array<Asset>) => {
+      if (tableFilter === "Recently Added") {
+        setAssetRows([...assets].sort(sortRecentlyAdded));
+      } else if (tableFilter === "Top Traded") {
+        setAssetRows([...assets].sort(sortTopTraded));
+      } else if (tableFilter === "Top Movers") {
+        setAssetRows([...assets].sort(sortTopMovers));
+      } else {
+        setAssetRows([...assets].sort(sortAll));
+      }
+    };
 
-  console.log(allAssets);
+    /**
+     * Gets additional price data for each row from the server
+     */
+    const fetchRowUpdates = async () => {
+      if (!allAssets) {
+        updateRows([]);
+      } else {
+        // get latest price data for each asset
+        let promises: Array<Promise<AssetDetails>> = [];
+        allAssets.forEach((asset) => {
+          const promise = assetApi.getAssetData(asset.productIdentifier);
+          promises.push(promise);
+        });
+        // wait for all promises to resolve before continuing
+        const transformedAssets = await Promise.all(promises);
+        // update each asset with most recent price action
+        const modifiedAssets: Array<Asset> = transformedAssets.map(
+          (assetDetails: AssetDetails) => {
+            // If the asset has not been traded there is no price
+            if (!assetDetails.priceEvents.length) return assetDetails.asset;
+            // Other wise update the asset with last price action and return
+            let newAsset: Asset = assetDetails.asset;
+            const lastPriceIndex = assetDetails.priceEvents.length - 1;
+            newAsset.lastPriceAction =
+              assetDetails.priceEvents[lastPriceIndex].price;
+            return newAsset;
+          }
+        );
+
+        updateRows(modifiedAssets);
+      }
+    };
+    fetchRowUpdates();
+  }, [tableFilter, allAssets]);
 
   return (
     <Flex flexDirection="row" justifyContent="center">
@@ -187,8 +227,7 @@ const Market = () => {
                 <Th></Th>
                 <Th></Th>
                 <Th>Contract Size</Th>
-                <Th>Sell</Th>
-                <Th>Buy</Th>
+                <Th>Price</Th>
                 <Th>Change</Th>
                 <Th></Th>
                 <Th></Th>

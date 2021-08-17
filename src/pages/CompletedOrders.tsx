@@ -3,7 +3,7 @@ import { VStack, HStack, Heading, Box } from "@chakra-ui/layout";
 import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
 
-import { LimitOrder, Asset, MarketOrder } from "../index.d";
+import { LimitOrder, Asset, MarketOrder } from "..";
 import { toCurrency } from "../formatting";
 import { UserContext } from "../contexts/UserContext";
 
