@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { VStack, HStack, Heading, Box } from "@chakra-ui/layout";
 import { Button, Container } from "@chakra-ui/react";
-import { OrderSide, LimitOrder } from "..";
+import { OrderSide, LimitOrder } from "../index.d";
 import { UserContext } from "../contexts/UserContext";
 import OrderTable from "../components/common/OrderTable";
 import { useLocation } from "react-router-dom";
@@ -28,9 +28,6 @@ const PendingOrders = () => {
       )
     );
   }, [showOrderSide, userLimitOrders]);
-
-  console.log("user limit orders:");
-  console.log(orders);
 
   return (
     <Container maxW="container.xl">
@@ -64,7 +61,7 @@ const PendingOrders = () => {
         </HStack>
 
         <Box py="5%">
-          {orders.length > 0 && <OrderTable orders={orders} />}
+          {orders.length > 0 && <OrderTable type="pending" orders={orders} />}
           {orders.length === 0 && (
             <Heading size="md">
               You have no pending {showOrderSide === "ASK" ? "sell" : "buy"}{" "}
