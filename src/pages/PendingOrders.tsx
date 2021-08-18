@@ -61,7 +61,7 @@ const PendingOrders = () => {
         </HStack>
 
         <Box py="5%">
-          {orders.length > 0 && <OrderTable orders={orders} />}
+          {orders.length > 0 && <OrderTable type="pending" orders={orders} />}
           {orders.length === 0 && (
             <Heading size="md">
               You have no pending {showOrderSide === "ASK" ? "sell" : "buy"}{" "}

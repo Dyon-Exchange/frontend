@@ -162,7 +162,7 @@ const Market = () => {
           (assetDetails: AssetDetails) => {
             // If the asset has not been traded there is no price
             if (!assetDetails.priceEvents.length) return assetDetails.asset;
-            // Other wise update the asset with last price action and return
+            // Otherwise update the asset with last price action and return
             let newAsset: Asset = assetDetails.asset;
             const lastPriceIndex = assetDetails.priceEvents.length - 1;
             newAsset.lastPriceAction =
@@ -170,7 +170,6 @@ const Market = () => {
             return newAsset;
           }
         );
-
         updateRows(modifiedAssets);
       }
     };

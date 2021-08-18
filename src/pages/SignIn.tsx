@@ -98,13 +98,12 @@ export const SignIn = () => {
                       border="none"
                       {...register("email", { required: true })}
                     >
-                      <option value="jeremy@dyon.com">jeremy@dyon.com</option>
-                      <option value="conor@labrys.io">conor@labrys.io</option>
-                      <option value="matilda@labrys.io">
-                        matilda@labrys.io
-                      </option>
+                      <option value="joel@dyon.cc">joel@dyon.cc</option>
+                      <option value="maria@dyon.cc">maria@dyon.cc</option>
+                      <option value="jeremy@dyon.cc">jeremy@dyon.cc</option>
                       <option value="bob@dyon.com">bob@dyon.com</option>
-                      <option value="alice@dyon.com">alice@dyon.com</option>
+                      <option value="alice@dyon.cc">alice@dyon.cc</option>
+                      <option value="JQ@dyon.com">JQ@dyon.com</option>
                     </Select>
                   </InputGroup>
                 </Stack>

@@ -12,7 +12,7 @@ import {
   Stack,
   Container,
 } from "@chakra-ui/react";
-import { NavLink, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { LimitOrder, UserAsset } from "../index.d";
 import { toCurrency } from "../formatting";
@@ -171,7 +171,7 @@ const Portfolio = () => {
           <Heading size="md" marginTop="16">
             Order History
           </Heading>
-          <OrderTable orders={orders} />
+          <OrderTable type={"completed"} orders={orders} />
         </Stack>
       </Stack>
     </Container>

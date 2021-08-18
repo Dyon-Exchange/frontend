@@ -1,5 +1,4 @@
 import {
-  Table,
   Thead,
   Tr,
   Th,
@@ -12,20 +11,24 @@ import {
 import React, { FC, useContext, useState } from "react";
 import { IoMdCloseCircle } from "react-icons/io";
 import { useHistory } from "react-router-dom";
-import { LimitOrder, Asset } from "../../index.d";
+import { LimitOrder, Asset, MarketOrder } from "../../index.d";
 import { UserContext } from "../../contexts/UserContext";
 import { toCurrency } from "../../formatting";
 import { formatDate } from "../../helpers/formatDate";
 import orderApi from "../../api/order";
+import BaseTable from "./BaseTable";
+
+type OrderStatus = "completed" | "pending";
 
 interface TableRowProps {
-  order: LimitOrder;
+  order: LimitOrder | MarketOrder;
+  status: OrderStatus;
 }
 
-const TableRow: FC<TableRowProps> = ({ order }) => {
+const TableRow: FC<TableRowProps> = ({ order, status }) => {
   const [loading, setLoading] = useState(false);
   const { allAssets, methods } = useContext(UserContext);
-  const { price, quantity, filled } = order;
+  const { price, quantity, filled, updatedAt } = order;
   const asset: Asset = allAssets.filter(
     (a) => order.productIdentifier === a.productIdentifier
   )[0];
@@ -77,27 +80,33 @@ const TableRow: FC<TableRowProps> = ({ order }) => {
       {/* All orders in this table are limit orders */}
       <Td textAlign="center">{quantity ?? "-"}</Td>
       <Td textAlign="center">{filled.toFixed(0) ?? "-"}</Td>
-      <Td textAlign="center">{toCurrency(price) ?? "-"}</Td>
-      <Td textAlign="center">{toCurrency(quantity * price)}</Td>
-      <Td>
-        <Flex justifyContent="center">
-          {loading ? (
-            <Spinner />
-          ) : (
-            <IoMdCloseCircle size="20" onClick={cancelOrder} />
-          )}
-        </Flex>
-      </Td>
+      <Td textAlign="center">{price ? toCurrency(price) : "-"}</Td>
+      <Td textAlign="center">{price ? toCurrency(quantity * price) : "-"}</Td>
+      {status === "pending" && (
+        <Td>
+          <Flex justifyContent="center">
+            {loading ? (
+              <Spinner />
+            ) : (
+              <IoMdCloseCircle size="20" onClick={cancelOrder} />
+            )}
+          </Flex>
+        </Td>
+      )}
+      {status === "completed" && (
+        <Td textAlign="center">{formatDate(new Date(updatedAt))}</Td>
+      )}
     </Tr>
   );
 };
 
 interface OrderTableProps {
-  orders: Array<LimitOrder>;
+  orders: Array<LimitOrder | MarketOrder>;
+  type: OrderStatus;
 }
 
-const OrderTable: FC<OrderTableProps> = ({ orders }) => (
-  <Table variant={"striped"} size={"sm"}>
+const OrderTable: FC<OrderTableProps> = ({ orders, type }) => (
+  <BaseTable>
     <Thead>
       <Tr>
         <Th></Th>
@@ -106,17 +115,20 @@ const OrderTable: FC<OrderTableProps> = ({ orders }) => (
         <Th textAlign="center">Type</Th>
         <Th textAlign="center">Volume</Th>
         <Th textAlign="center">Filled</Th>
-        <Th textAlign="center">Price</Th>
+        <Th textAlign="center">
+          {type === "completed" ? "Avg. Price" : "Price"}
+        </Th>
         <Th textAlign="center">Order Total</Th>
-        <Th textAlign="center">Cancel Order</Th>
+        {type === "pending" && <Th textAlign="center">Cancel Order</Th>}
+        {type === "completed" && <Th textAlign="center">Settle Date</Th>}
       </Tr>
     </Thead>
     <Tbody>
       {orders.map((o, i) => (
-        <TableRow order={o} key={i} />
+        <TableRow status={type} order={o} key={`${o.productIdentifier}${i}`} />
       ))}
     </Tbody>
-  </Table>
+  </BaseTable>
 );
 
 export default OrderTable;

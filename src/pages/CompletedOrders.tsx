@@ -3,7 +3,7 @@ import { VStack, HStack, Heading, Box } from "@chakra-ui/layout";
 import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
 
-import { LimitOrder, Asset, MarketOrder } from "..";
+import { LimitOrder, Asset, MarketOrder } from "../index.d";
 import { toCurrency } from "../formatting";
 import { UserContext } from "../contexts/UserContext";
 
@@ -55,6 +55,9 @@ const CompletedOrders = function () {
     });
     setOrders(all);
   }, [userLimitOrders, userMarketOrders]);
+
+  console.log("orders:");
+  console.log(orders);
 
   return (
     <VStack py="5%" width="100%">
