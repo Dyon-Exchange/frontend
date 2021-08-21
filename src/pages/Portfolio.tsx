@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Heading, Text } from "@chakra-ui/layout";
+import { filter } from "lodash";
 import {
   Table,
   Thead,
@@ -12,13 +13,15 @@ import {
   Stack,
   Container,
 } from "@chakra-ui/react";
-import { useHistory } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { LimitOrder, UserAsset } from "../index.d";
 import { toCurrency } from "../formatting";
 import { data } from "../dummydata";
 import Chart from "../components/Chart";
 import OrderTable from "../components/common/OrderTable";
+
+import { sortOrdersRecentlyUpdated } from "../helpers/sorting";
 
 const TableRow = (props: { userAsset: UserAsset }) => {
   const history = useHistory();
@@ -80,6 +83,22 @@ const Portfolio = () => {
   const { cashBalance, assets, portfolioValue } = useContext(UserContext);
   const [orders, setOrders] = useState<LimitOrder[]>([]);
   const { userLimitOrders } = useContext(UserContext);
+  const { userMarketOrders } = useContext(UserContext);
+
+  const completedOrders = useMemo(() => {
+    const completedLimit = filter(
+      userLimitOrders,
+      (order) => order.status === "COMPLETE"
+    );
+    const completedMarket = filter(
+      userMarketOrders,
+      (order) => order.status === "COMPLETE"
+    );
+
+    return [...completedLimit, ...completedMarket].sort(
+      sortOrdersRecentlyUpdated
+    );
+  }, [userLimitOrders, userMarketOrders]);
 
   useEffect(() => {
     setOrders(userLimitOrders.filter((o) => o.status === "PENDING"));
@@ -96,9 +115,9 @@ const Portfolio = () => {
           </Stack>
         </Stack>
         <Stack isInline>
-          <Chart data={data} />
+          <Chart width="80%" data={data} />
 
-          {/* <Stack
+          <Stack
             backgroundColor="#f2f2f2"
             width="20%"
             borderRadius="10"
@@ -127,7 +146,7 @@ const Portfolio = () => {
                 Pending orders
               </Text>
             </NavLink>
-          </Stack> */}
+          </Stack>
         </Stack>
         <Stack>
           <Heading size="md" marginTop="16">
@@ -171,7 +190,7 @@ const Portfolio = () => {
           <Heading size="md" marginTop="16">
             Order History
           </Heading>
-          <OrderTable type={"completed"} orders={orders} />
+          <OrderTable type={"completed"} orders={completedOrders} />
         </Stack>
       </Stack>
     </Container>

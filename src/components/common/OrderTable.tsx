@@ -21,34 +21,59 @@ import BaseTable from "./BaseTable";
 type OrderStatus = "completed" | "pending";
 
 interface TableRowProps {
-  order: LimitOrder | MarketOrder;
-  status: OrderStatus;
+  order: LimitOrder & MarketOrder;
+  type: OrderStatus;
 }
 
-const TableRow: FC<TableRowProps> = ({ order, status }) => {
+const TableRow: FC<TableRowProps> = ({ order, type }) => {
   const [loading, setLoading] = useState(false);
   const { allAssets, methods } = useContext(UserContext);
-  const { price, quantity, filled, updatedAt } = order;
+  const {
+    price,
+    quantity,
+    status,
+    filled,
+    updatedAt,
+    filledPriceAverage,
+    filledPriceTotal,
+  } = order;
   const asset: Asset = allAssets.filter(
     (a) => order.productIdentifier === a.productIdentifier
   )[0];
 
-  const cancelOrder = async () => {
-    setLoading(true);
-    try {
-      await orderApi.cancelOrder(order.orderId);
-      methods.refreshUserOrders();
-    } catch (e) {
-      window.alert("There was an error canceling your order");
-    } finally {
-      setLoading(false);
-    }
-  };
+  /**
+   * In case of future programmer error, if orders are completed and the button is rendered,
+   * function is set to return void
+   *
+   */
+  const cancelOrder =
+    order.status === "COMPLETE"
+      ? () => {
+          return;
+        }
+      : async () => {
+          setLoading(true);
+          try {
+            await orderApi.cancelOrder(order.orderId);
+            methods.refreshUserOrders();
+          } catch (e) {
+            window.alert("There was an error canceling your order");
+          } finally {
+            setLoading(false);
+          }
+        };
 
   const history = useHistory();
   const handleRowClick = () => {
     history.push(`/asset/${asset.productIdentifier}`);
   };
+
+  const renderPrice = (() => {
+    if (status === "CANCELED") {
+      return filledPriceAverage === 0 ? filledPriceTotal : filledPriceAverage;
+    }
+    return price;
+  })();
 
   return (
     <Tr>
@@ -76,13 +101,15 @@ const TableRow: FC<TableRowProps> = ({ order, status }) => {
       <Td textAlign="center">
         {asset ? formatDate(new Date(asset.createdAt)) : "-"}
       </Td>
-      <Td textAlign="center">Limit Order</Td>{" "}
       {/* All orders in this table are limit orders */}
+      <Td textAlign="center">Limit Order</Td>
       <Td textAlign="center">{quantity ?? "-"}</Td>
-      <Td textAlign="center">{filled.toFixed(0) ?? "-"}</Td>
-      <Td textAlign="center">{price ? toCurrency(price) : "-"}</Td>
-      <Td textAlign="center">{price ? toCurrency(quantity * price) : "-"}</Td>
-      {status === "pending" && (
+      <Td textAlign="center">{filled.toFixed(2) ?? "-"}</Td>
+      <Td textAlign="center">{renderPrice ? toCurrency(renderPrice) : "-"}</Td>
+      <Td textAlign="center">
+        {renderPrice ? toCurrency(quantity * renderPrice) : "-"}
+      </Td>
+      {type === "pending" && (
         <Td>
           <Flex justifyContent="center">
             {loading ? (
@@ -93,7 +120,7 @@ const TableRow: FC<TableRowProps> = ({ order, status }) => {
           </Flex>
         </Td>
       )}
-      {status === "completed" && (
+      {type === "completed" && (
         <Td textAlign="center">{formatDate(new Date(updatedAt))}</Td>
       )}
     </Tr>
@@ -101,7 +128,7 @@ const TableRow: FC<TableRowProps> = ({ order, status }) => {
 };
 
 interface OrderTableProps {
-  orders: Array<LimitOrder | MarketOrder>;
+  orders: Array<LimitOrder & MarketOrder>;
   type: OrderStatus;
 }
 
@@ -125,7 +152,7 @@ const OrderTable: FC<OrderTableProps> = ({ orders, type }) => (
     </Thead>
     <Tbody>
       {orders.map((o, i) => (
-        <TableRow status={type} order={o} key={`${o.productIdentifier}${i}`} />
+        <TableRow type={type} order={o} key={`${o.productIdentifier}${i}`} />
       ))}
     </Tbody>
   </BaseTable>

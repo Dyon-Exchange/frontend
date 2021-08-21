@@ -101,9 +101,9 @@ export const SignIn = () => {
                       <option value="joel@dyon.cc">joel@dyon.cc</option>
                       <option value="maria@dyon.cc">maria@dyon.cc</option>
                       <option value="jeremy@dyon.cc">jeremy@dyon.cc</option>
-                      <option value="bob@dyon.com">bob@dyon.com</option>
+                      <option value="bob@dyon.cc">bob@dyon.cc</option>
                       <option value="alice@dyon.cc">alice@dyon.cc</option>
-                      <option value="JQ@dyon.com">JQ@dyon.com</option>
+                      <option value="JQ@dyon.cc">JQ@dyon.cc</option>
                     </Select>
                   </InputGroup>
                 </Stack>

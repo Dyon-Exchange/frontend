@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import { LimitOrder, Asset, MarketOrder } from "../index.d";
 import { toCurrency } from "../formatting";
 import { UserContext } from "../contexts/UserContext";
+import { sortOrdersRecentlyUpdated } from "../helpers/sorting";
 
 const TableRow = (props: { order: LimitOrder | MarketOrder }) => {
   const { allAssets } = useContext(UserContext);
@@ -46,13 +47,7 @@ const CompletedOrders = function () {
       (o) => o.status === "COMPLETE"
     );
     const all = [...limitOrders, ...marketOrders];
-    all.sort((a: MarketOrder | LimitOrder, b: MarketOrder | LimitOrder) => {
-      if (a.createdAt < b.createdAt) {
-        return 1;
-      } else {
-        return -1;
-      }
-    });
+    all.sort(sortOrdersRecentlyUpdated);
     setOrders(all);
   }, [userLimitOrders, userMarketOrders]);
 
