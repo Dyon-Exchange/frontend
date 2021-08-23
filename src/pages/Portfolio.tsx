@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { NavLink, useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
-import { LimitOrder, UserAsset } from "../index.d";
+import { LimitOrder, MarketOrder, UserAsset } from "../index.d";
 import { toCurrency } from "../formatting";
 import { data } from "../dummydata";
 import Chart from "../components/Chart";
@@ -81,7 +81,7 @@ const TableRow = (props: { userAsset: UserAsset }) => {
 
 const Portfolio = () => {
   const { cashBalance, assets, portfolioValue } = useContext(UserContext);
-  const [orders, setOrders] = useState<LimitOrder[]>([]);
+  // const [orders, setOrders] = useState<LimitOrder[]>([]);
   const { userLimitOrders } = useContext(UserContext);
   const { userMarketOrders } = useContext(UserContext);
 
@@ -97,12 +97,12 @@ const Portfolio = () => {
 
     return [...completedLimit, ...completedMarket].sort(
       sortOrdersRecentlyUpdated
-    );
+    ) as (LimitOrder & MarketOrder)[];
   }, [userLimitOrders, userMarketOrders]);
 
-  useEffect(() => {
-    setOrders(userLimitOrders.filter((o) => o.status === "PENDING"));
-  }, [userLimitOrders]);
+  // useEffect(() => {
+  //   setOrders(userLimitOrders.filter((o) => o.status === "PENDING"));
+  // }, [userLimitOrders]);
 
   return (
     <Container maxW="container.xl">

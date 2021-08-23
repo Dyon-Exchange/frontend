@@ -120,9 +120,9 @@ const TableHeaderButton: FC<TableHeaderButtonProps> = ({
 const Market = () => {
   const {
     data: unformattedAssets,
-    isLoading: isAssetsLoading,
-    refetch: refetchAssets,
-    isFetching: isAssetsFetching,
+    // isLoading: isAssetsLoading,
+    // refetch: refetchAssets,
+    // isFetching: isAssetsFetching,
     fetchNextPage,
   } = useInfiniteQuery("all-assets", assetApi.get, {
     getNextPageParam: (prevPage: any, pages) => prevPage.nextStart,

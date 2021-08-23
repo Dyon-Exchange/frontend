@@ -1,11 +1,6 @@
 import { Asset, AssetDetails, UserAsset } from "../index.d";
 import instance from "./instance";
 
-interface InfiniteQueryParams {
-  pageParam?: number;
-  limit: number;
-}
-
 const assetApi = {
   /**
    * Get all assets

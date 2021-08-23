@@ -1,6 +1,6 @@
 import React, { createContext, ReactChild, useEffect, useState } from "react";
 import useLocalStorage from "react-use-localstorage";
-import { Asset, UserAsset, LimitOrder, MarketOrder } from "../index.d";
+import { UserAsset, LimitOrder, MarketOrder } from "../index.d";
 import user from "../api/user";
 import assetApi from "../api/asset";
 import orderApi from "../api/order";
