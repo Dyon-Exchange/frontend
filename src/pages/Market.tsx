@@ -154,7 +154,6 @@ const Market = () => {
    * then inserts into rows
    */
   useEffect(() => {
-    // @ts-ignore
     if (!assets) setAssetRows([]);
 
     if (tableFilter === "Recently Added") {

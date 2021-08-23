@@ -14,7 +14,6 @@ const assetApi = {
   get: async ({ pageParam = 0, limit = 3 }: any): Promise<any> => {
     // TODO - remove any
     try {
-      // @ts-ignore
       const { data } = await instance.get("/asset/", {
         params: { limit, start: pageParam },
       });
