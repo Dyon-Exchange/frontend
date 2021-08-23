@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Heading, VStack } from "@chakra-ui/layout";
 import {
   Table,
@@ -12,10 +12,10 @@ import {
   Text,
   Stack,
 } from "@chakra-ui/react";
-import { UserContext } from "../../contexts/UserContext";
 import { Asset } from "../../index.d";
 import { toCurrency } from "../../formatting";
 import { determineContractSize } from "../../helpers/determineContractSize";
+import assetApi from "../../api/asset";
 
 function TableRow(props: { asset: Asset; units: number }) {
   const { asset, units } = props;
@@ -47,12 +47,18 @@ function Confirm(props: {
   loading: boolean;
 }) {
   const { loading, toRedeem, click } = props;
-  const { allAssets } = useContext(UserContext);
+  const [assets, setAssets] = useState<Asset[]>([]);
+  console.log(toRedeem);
 
-  // Fill rows array by filtering all assets to only the ones that we want to redeem
-  const [rows] = useState<Asset[]>(
-    allAssets.filter((a) => toRedeem[a.productIdentifier])
-  );
+  useEffect(() => {
+    const prodIds = Object.keys(toRedeem);
+    console.log(prodIds);
+    const getAssets = async () => {
+      const assets = await assetApi.getMany(prodIds);
+      setAssets([...assets]);
+    };
+    getAssets();
+  }, [toRedeem]);
 
   return (
     <VStack width="75%">
@@ -69,7 +75,7 @@ function Confirm(props: {
             </Tr>
           </Thead>
           <Tbody>
-            {rows.map((a: Asset) => (
+            {assets.map((a: Asset) => (
               <TableRow
                 key={a.productIdentifier}
                 units={Number(toRedeem[a.productIdentifier])}

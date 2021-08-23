@@ -1,7 +1,6 @@
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { HStack, VStack, Heading, Box, Flex } from "@chakra-ui/layout";
 import {
-  Table,
   Thead,
   Tbody,
   Tr,
@@ -10,10 +9,12 @@ import {
   Button,
   chakra,
   Text,
+  Tfoot,
 } from "@chakra-ui/react";
+import { flatten } from "lodash";
 import { NavLink, useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
-import { Asset, AssetDetails } from "../index.d";
+import { Asset } from "../index.d";
 import { toCurrency } from "../formatting";
 import Chart from "../components/Chart";
 import { data } from "../dummydata";
@@ -25,6 +26,8 @@ import {
   sortTopMovers,
   sortTopTraded,
 } from "../helpers/sorting";
+import { useInfiniteQuery } from "react-query";
+import BaseTable from "../components/common/BaseTable";
 
 interface ChangeCellProps {
   change: number;
@@ -82,7 +85,7 @@ const TableRow: FC<TableRowProps> = (props) => {
       <Td>{asset.lastPriceAction && `${toCurrency(asset.lastPriceAction)}`}</Td>
       <ChangeCell change={asset.changePercentage} />
       <Td>
-        <Button>View details</Button>
+        <Button variant="ghost">View details</Button>
       </Td>
     </Tr>
   );
@@ -115,7 +118,33 @@ const TableHeaderButton: FC<TableHeaderButtonProps> = ({
 };
 
 const Market = () => {
-  const { allAssets, portfolioValue } = useContext(UserContext);
+  const {
+    data: unformattedAssets,
+    isLoading: isAssetsLoading,
+    refetch: refetchAssets,
+    isFetching: isAssetsFetching,
+    fetchNextPage,
+  } = useInfiniteQuery("all-assets", assetApi.get, {
+    getNextPageParam: (prevPage: any, pages) => prevPage.nextStart,
+  });
+
+  const [allLoaded, setAllLoaded] = useState<boolean>(false);
+
+  const assets = useMemo(() => {
+    if (!unformattedAssets) return [];
+    const assets = flatten(
+      unformattedAssets.pages.map((page: any) => page.assets)
+    );
+
+    // check if there are more yet to be loaded
+    const total = unformattedAssets.pages[0].total;
+
+    const allLoaded = assets.length === total;
+    if (allLoaded) setAllLoaded(true);
+    return assets;
+  }, [unformattedAssets]);
+
+  const { portfolioValue } = useContext(UserContext);
 
   const [tableFilter, setTableFilter] = useState<TableFilter>("All");
 
@@ -125,56 +154,19 @@ const Market = () => {
    * then inserts into rows
    */
   useEffect(() => {
-    /**
-     * Code extracted to function to prevent DRY violation
-     * Sets the data for each row of the table
-     * @param assets An array of Asset objects
-     */
-    const updateRows = (assets: Array<Asset>) => {
-      if (tableFilter === "Recently Added") {
-        setAssetRows([...assets].sort(sortRecentlyAdded));
-      } else if (tableFilter === "Top Traded") {
-        setAssetRows([...assets].sort(sortTopTraded));
-      } else if (tableFilter === "Top Movers") {
-        setAssetRows([...assets].sort(sortTopMovers));
-      } else {
-        setAssetRows([...assets].sort(sortAll));
-      }
-    };
+    // @ts-ignore
+    if (!assets) setAssetRows([]);
 
-    /**
-     * Gets additional price data for each row from the server
-     */
-    const fetchRowUpdates = async () => {
-      if (!allAssets) {
-        updateRows([]);
-      } else {
-        // get latest price data for each asset
-        let promises: Array<Promise<AssetDetails>> = [];
-        allAssets.forEach((asset) => {
-          const promise = assetApi.getAssetData(asset.productIdentifier);
-          promises.push(promise);
-        });
-        // wait for all promises to resolve before continuing
-        const transformedAssets = await Promise.all(promises);
-        // update each asset with most recent price action
-        const modifiedAssets: Array<Asset> = transformedAssets.map(
-          (assetDetails: AssetDetails) => {
-            // If the asset has not been traded there is no price
-            if (!assetDetails.priceEvents.length) return assetDetails.asset;
-            // Otherwise update the asset with last price action and return
-            let newAsset: Asset = assetDetails.asset;
-            const lastPriceIndex = assetDetails.priceEvents.length - 1;
-            newAsset.lastPriceAction =
-              assetDetails.priceEvents[lastPriceIndex].price;
-            return newAsset;
-          }
-        );
-        updateRows(modifiedAssets);
-      }
-    };
-    fetchRowUpdates();
-  }, [tableFilter, allAssets]);
+    if (tableFilter === "Recently Added") {
+      setAssetRows([...assets].sort(sortRecentlyAdded));
+    } else if (tableFilter === "Top Traded") {
+      setAssetRows([...assets].sort(sortTopTraded));
+    } else if (tableFilter === "Top Movers") {
+      setAssetRows([...assets].sort(sortTopMovers));
+    } else {
+      setAssetRows([...assets].sort(sortAll));
+    }
+  }, [tableFilter, assets]);
 
   return (
     <Flex flexDirection="row" justifyContent="center">
@@ -219,7 +211,7 @@ const Market = () => {
           />
         </HStack>
         <Box py="10">
-          <Table variant="simple">
+          <BaseTable>
             <Thead>
               <Tr>
                 <Th></Th>
@@ -236,7 +228,16 @@ const Market = () => {
                 <TableRow asset={a} key={a.productIdentifier} />
               ))}
             </Tbody>
-          </Table>
+            <Tfoot>
+              {!allLoaded && (
+                <Flex justifyContent="center" alignItems="center">
+                  <Button onClick={(e) => fetchNextPage()} opacity="50%">
+                    Load more
+                  </Button>
+                </Flex>
+              )}
+            </Tfoot>
+          </BaseTable>
         </Box>
       </VStack>
     </Flex>

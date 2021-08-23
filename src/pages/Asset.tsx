@@ -16,7 +16,12 @@ import {
 } from "@chakra-ui/react";
 import assetApi from "../api/asset";
 import orderApi from "../api/order";
-import { Asset, GetOrdersResponse, OrderBookOrder } from "..";
+import {
+  Asset,
+  GetOrdersResponse,
+  OrderBookOrder,
+  PriceEvent,
+} from "../index.d";
 import Trade from "../components/Trade";
 import Chart from "../components/Chart";
 import { toCurrency } from "../formatting";
@@ -98,7 +103,7 @@ const AssetScreen = (props: any) => {
   const { assets, userLimitOrders, userMarketOrders } = useContext(UserContext);
   const [asset, setAsset] = useState<Asset | undefined>();
   const [quantity, setQuantity] = useState(0);
-  const [priceEventsData, setPriceEventsData] = useState([]);
+  const [priceEventsData, setPriceEventsData] = useState<PriceEvent[]>([]);
   const [orders, setOrders] = useState<GetOrdersResponse>({
     buy: [],
     sell: [],
@@ -140,6 +145,7 @@ const AssetScreen = (props: any) => {
   useEffect(() => {
     let interval = setInterval(async () => {
       setOrders(await orderApi.getOrders(props.match.params.id));
+      //@ts-ignore
       setRows(Object.values(orders).flat());
     }, 1 * 1000);
     return () => clearInterval(interval);

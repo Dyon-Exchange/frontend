@@ -12,7 +12,6 @@ interface IUserContext {
   fullName: string;
   cashBalance: number;
   portfolioValue: number;
-  allAssets: Asset[];
   assets: UserAsset[];
   userLimitOrders: LimitOrder[];
   userMarketOrders: MarketOrder[];
@@ -35,7 +34,6 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
   const [fullName, setFullName] = useState("");
   const [cashBalance, setCashBalance] = useState(0);
   const [portfolioValue, setPortfolioValue] = useState(0);
-  const [allAssets, setAllAssets] = useState<Asset[]>([]);
   const [assets, setAssets] = useState<UserAsset[]>([]);
   const [userLimitOrders, setUserLimitOrders] = useState<LimitOrder[]>([]);
   const [userMarketOrders, setUserMarketOrders] = useState<MarketOrder[]>([]);
@@ -72,11 +70,6 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
       setCashBalance(cashBalance);
     })();
 
-    (async () => {
-      const a = await assetApi.get();
-      setAllAssets(a);
-    })();
-
     const { assets, portfolioBalance } = await assetApi.getUserAssets();
     setAssets(assets);
     setPortfolioValue(portfolioBalance);
@@ -109,7 +102,6 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
         fullName,
         cashBalance,
         portfolioValue,
-        allAssets,
         userLimitOrders,
         userMarketOrders,
         assets,
