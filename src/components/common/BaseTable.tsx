@@ -1,7 +1,7 @@
 import { Table } from "@chakra-ui/react";
-import React from "react";
+import React, { FC } from "react";
 
-const BaseTable: React.FC = ({ children }) => (
+const BaseTable: FC = ({ children }) => (
   <Table variant={"striped"} size={"sm"}>
     {children}
   </Table>

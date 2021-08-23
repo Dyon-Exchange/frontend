@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { VStack, Heading } from "@chakra-ui/layout";
 import {
   Text,
@@ -12,8 +12,9 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { Asset } from "../../index.d";
-import { UserContext } from "../../contexts/UserContext";
 import { Redeemed } from "../../pages/Redeem";
+import { map } from "lodash";
+import assetApi from "../../api/asset";
 
 const TableRow = (props: { asset: Asset; units: number; hash: string }) => {
   const { asset, units, hash } = props;
@@ -42,24 +43,35 @@ const TableRow = (props: { asset: Asset; units: number; hash: string }) => {
 
 interface Row extends Asset, Redeemed {}
 
-function Complete(props: { redeemed: Redeemed[] }) {
-  const { redeemed } = props;
-  const { allAssets } = useContext(UserContext);
+interface CompleteProps {
+  redeemed: Redeemed[];
+}
 
-  // Fill rows array by merging Asset and Redeem arrays
-  const [rows] = useState<Row[]>(() => {
-    const arr: Row[] = [];
+const Complete: FC<CompleteProps> = ({ redeemed }) => {
+  const [assets, setAssets] = useState<Asset[]>([]);
 
-    allAssets.forEach(function (a) {
+  useEffect(() => {
+    const getAssets = async () => {
+      const prodIds = map(redeemed, (prod) => prod.productIdentifier);
+      const assets = await assetApi.getMany(prodIds);
+      setAssets([...assets]);
+    };
+    getAssets();
+  }, [redeemed]);
+
+  const rows = useMemo(() => {
+    let rows: Row[] = [];
+    if (!assets.length) return rows;
+    assets.forEach(function (a) {
       const index = redeemed.findIndex(
         (r) => r.productIdentifier === a.productIdentifier
       );
       if (index !== -1) {
-        arr.push({ ...a, ...redeemed[index] });
+        rows.push({ ...a, ...redeemed[index] });
       }
     });
-    return arr;
-  });
+    return rows;
+  }, [redeemed, assets]);
 
   return (
     <VStack width="60%">
@@ -105,6 +117,6 @@ function Complete(props: { redeemed: Redeemed[] }) {
       </Text>
     </VStack>
   );
-}
+};
 
 export default Complete;
