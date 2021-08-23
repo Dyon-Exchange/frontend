@@ -11,7 +11,7 @@ const assetApi = {
    * Get all assets
    * Paginated data
    */
-  get: async ({ pageParam = 0, limit = 3 }: any): Promise<any> => {
+  get: async ({ pageParam = 0, limit = 6 }: any): Promise<any> => {
     // TODO - remove any
     try {
       const { data } = await instance.get("/asset/", {
