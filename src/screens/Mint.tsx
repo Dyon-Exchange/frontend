@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   Heading,
   Flex,
@@ -9,11 +8,13 @@ import {
   Stack,
   VStack,
 } from "@chakra-ui/react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import tokenApi from "../api/token";
-import asset from "../api/asset";
 
-export const Mint = () => {
+import asset from "../api/asset";
+import tokenApi from "../api/token";
+
+const Mint = () => {
   const { handleSubmit, register } = useForm();
   const [loading, setLoading] = useState(false);
   const [imageForm, setImageForm] = useState(false);
@@ -22,7 +23,7 @@ export const Mint = () => {
   const onSubmit = async (data: any) => {
     setLoading(true);
     try {
-      const { asset, txHash } = await tokenApi.put(
+      const { asset: _asset, txHash } = await tokenApi.put(
         data.productCode,
         data.caseId,
         data.locationId,
@@ -32,7 +33,7 @@ export const Mint = () => {
         data.name,
         data.supply
       );
-      setProductIdentifier(asset.productIdentifier);
+      setProductIdentifier(_asset.productIdentifier);
       setTxHash(txHash);
       setImageForm(true);
     } catch (e) {
@@ -117,7 +118,7 @@ export const Mint = () => {
                         border="none"
                         placeholder="Product Code"
                         {...register("productCode")}
-                      ></Input>
+                      />
                       <Input
                         id="caseId"
                         type="text"

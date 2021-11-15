@@ -1,4 +1,3 @@
-import { Asset, Token } from "../index.d";
 import instance from "./instance";
 
 const tokens = {
@@ -11,7 +10,7 @@ const tokens = {
     year: string,
     name: string,
     supply: number
-  ): Promise<{ asset: Asset; token: Token; txHash: string }> => {
+  ): Promise<{ asset: any; token: any; txHash: string }> => {
     const response = await instance.put("/token/", {
       productCode,
       caseId,

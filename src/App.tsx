@@ -1,7 +1,8 @@
-import * as React from "react";
 import { ChakraProvider, theme } from "@chakra-ui/react";
+import React from "react";
+
+import { UserContextProvider } from "./contexts/UserContext";
 import Routes from "./Routes";
-import UserContextProvider from "./contexts/UserContext";
 
 export const App = () => (
   <ChakraProvider theme={theme}>

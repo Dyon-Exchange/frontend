@@ -1,4 +1,3 @@
-import React, { useState, useContext, useEffect } from "react";
 import { VStack, HStack, Heading, Box } from "@chakra-ui/layout";
 import {
   Button,
@@ -10,25 +9,26 @@ import {
   Td,
   chakra,
 } from "@chakra-ui/react";
+import React, { useState, useContext, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 
-import { toCurrency } from "../formatting";
 import orderApi from "../api/order";
-import { OrderSide, Asset, LimitOrder } from "../index.d";
 import { UserContext } from "../contexts/UserContext";
+import { toCurrency } from "../formatting";
+import { LimitOrder, Asset, OrderSide } from "../index.d";
 
-const TableRow = (props: { order: LimitOrder }) => {
+const TableRow = ({ order }: { order: LimitOrder }) => {
   const [loading, setLoading] = useState(false);
   const { allAssets, methods } = useContext(UserContext);
 
   const asset: Asset = allAssets.filter(
-    (a) => props.order.productIdentifier === a.productIdentifier
+    (a) => order.productIdentifier === a.productIdentifier
   )[0];
 
   const cancelOrder = async () => {
     setLoading(true);
     try {
-      await orderApi.cancelOrder(props.order.orderId);
+      await orderApi.cancelOrder(order.orderId);
       methods.refreshUserOrders();
     } catch (e) {
       window.alert("There was an error canceling your order");
@@ -56,10 +56,10 @@ const TableRow = (props: { order: LimitOrder }) => {
       >
         {asset?.name} {asset?.year}
       </Td>
-      <Td> {props.order.filled}</Td>
-      <Td>{props.order.quantity}</Td>
-      <Td>{toCurrency(props.order.price)}</Td>
-      <Td>{toCurrency(props.order.price * props.order.quantity)}</Td>
+      <Td> {order.filled}</Td>
+      <Td>{order.quantity}</Td>
+      <Td>{toCurrency(order.price)}</Td>
+      <Td>{toCurrency(order.price * order.quantity)}</Td>
       <Td>
         <Button onClick={cancelOrder} isLoading={loading}>
           Cancel Order
@@ -80,7 +80,11 @@ const PendingOrders = () => {
     const query = new URLSearchParams(location.search);
     const side = query.get("side");
     if (side && ["buy", "sell"].includes(side)) {
-      side === "buy" ? setShowOrderSide("BID") : setShowOrderSide("ASK");
+      if (side === "buy") {
+        setShowOrderSide("BID");
+      } else {
+        setShowOrderSide("ASK");
+      }
     }
   }, [location.search]);
 
@@ -127,18 +131,18 @@ const PendingOrders = () => {
           <Table>
             <Thead>
               <Tr>
-                <Th></Th>
-                <Th></Th>
+                <Th />
+                <Th />
                 <Th>Filled</Th>
                 <Th>Quantity to {showOrderSide === "ASK" ? "sell" : "buy"}</Th>
                 <Th>Order Price</Th>
                 <Th>Order Total</Th>
-                <Th></Th>
+                <Th />
               </Tr>
             </Thead>
             <Tbody>
-              {orders.map((o, i) => (
-                <TableRow order={o} key={i} />
+              {orders.map((o) => (
+                <TableRow order={o} key={o.orderId} />
               ))}
             </Tbody>
           </Table>

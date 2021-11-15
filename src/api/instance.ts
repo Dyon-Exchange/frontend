@@ -1,33 +1,32 @@
 import axios from "axios";
+
 import config from "../config";
 
 const instance = axios.create({ baseURL: config.backendUrl });
 
 instance.interceptors.request.use(
-  function (config) {
+  (axiosConfig) => {
     const token = localStorage.getItem("token");
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      // eslint-disable-next-line no-param-reassign
+      axiosConfig.headers.Authorization = `Bearer ${token}`;
     }
-    return config;
+    return axiosConfig;
   },
-  function (error) {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 instance.interceptors.response.use(
-  function (response) {
-    return response;
-  },
-  function (error) {
-    if (error.response && 401 === error.response.status) {
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
       localStorage.setItem("email", "");
       localStorage.setItem("token", "");
       localStorage.setItem("refreshToken", "");
-    } else {
-      return Promise.reject(error);
+      return Promise.resolve();
     }
+
+    return Promise.reject(error);
   }
 );
 export default instance;

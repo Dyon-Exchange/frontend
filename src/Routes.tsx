@@ -5,16 +5,17 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
+
 import SignedInHeader from "./components/Header";
 import Header from "./components/PreSignInHeader";
-import { SignIn } from "./screens/SignIn";
 import { UserContext } from "./contexts/UserContext";
+import Asset from "./screens/Asset";
+import CompletedOrders from "./screens/CompletedOrders";
 import Market from "./screens/Market";
 import Mint from "./screens/Mint";
-import Portfolio from "./screens/Portfolio";
-import Asset from "./screens/Asset";
 import PendingOrders from "./screens/PendingOrders";
-import CompletedOrders from "./screens/CompletedOrders";
+import Portfolio from "./screens/Portfolio";
+import { SignIn } from "./screens/SignIn";
 
 export default function Routes() {
   const { token } = useContext(UserContext);
@@ -40,7 +41,7 @@ export default function Routes() {
             <Route exact path="/">
               <Redirect to="/signin" />
             </Route>
-            <Route path="/signin" component={SignIn}></Route>
+            <Route path="/signin" component={SignIn} />
           </>
         )}
       </Switch>

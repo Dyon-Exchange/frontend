@@ -1,6 +1,6 @@
-export function toCurrency(num: number) {
+export function toCurrency(num: number): string {
   if (!num) {
-    return;
+    return "";
   }
 
   return num.toLocaleString("en-us", {

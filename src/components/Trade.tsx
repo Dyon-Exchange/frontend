@@ -1,4 +1,3 @@
-import React, { useState, useEffect, useContext } from "react";
 import {
   Box,
   Button,
@@ -20,21 +19,32 @@ import {
   ModalBody,
   useDisclosure,
 } from "@chakra-ui/react";
+import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
-import { toCurrency } from "../formatting";
-import { UserContext } from "../contexts/UserContext";
-import orderApi from "../api/order";
 
-const Trade = (props: {
+import orderApi from "../api/order";
+import { UserContext } from "../contexts/UserContext";
+import { toCurrency } from "../formatting";
+
+const format = (val: string) => `$${val}`;
+const parse = (val: string) => val.replace(/^\$/, "");
+
+const Trade = ({
+  productIdentifier,
+  askMarketPrice,
+  bidMarketPrice,
+  assetName,
+}: {
   productIdentifier: string;
   askMarketPrice: number;
   bidMarketPrice: number;
   assetName: string;
 }) => {
   const history = useHistory();
-  const format = (val: string) => `$` + val;
-  const parse = (val: string) => val.replace(/^\$/, "");
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { methods } = useContext(UserContext);
 
+  // state
   const [orderSide, setOrderSide] = useState<"BUY" | "SELL">("BUY");
   const [orderType, setOrderType] = useState<"MARKET" | "LIMIT">("MARKET");
   const [amount, setAmount] = useState("1.00");
@@ -50,9 +60,6 @@ const Trade = (props: {
   const [submittedText, setSubmittedText] = useState(
     "Your order has been submitted"
   );
-
-  const { isOpen, onClose, onOpen } = useDisclosure();
-  const { methods } = useContext(UserContext);
 
   const doClose = () => {
     setOrderStatus("Pending");
@@ -74,33 +81,30 @@ const Trade = (props: {
 
   useEffect(() => {
     if (orderSide === "SELL") {
-      if (props.askMarketPrice) {
-        setStepperValue(props.askMarketPrice.toFixed(2));
+      if (askMarketPrice) {
+        setStepperValue(askMarketPrice.toFixed(2));
       }
-    } else {
-      if (props.bidMarketPrice) {
-        setStepperValue(props.bidMarketPrice.toFixed(2));
-      }
+    } else if (bidMarketPrice) {
+      setStepperValue(bidMarketPrice.toFixed(2));
     }
-  }, [props.askMarketPrice, props.bidMarketPrice, orderSide]);
+  }, [askMarketPrice, bidMarketPrice, orderSide]);
 
   useEffect(() => {
-    const marketPrice =
-      orderSide === "SELL" ? props.askMarketPrice : props.bidMarketPrice;
+    const marketPrice = orderSide === "SELL" ? askMarketPrice : bidMarketPrice;
 
     if (parseFloat(stepperValue) === marketPrice) {
       setOrderType("MARKET");
     } else {
       setOrderType("LIMIT");
     }
-  }, [stepperValue, props.askMarketPrice, props.bidMarketPrice, orderSide]);
+  }, [stepperValue, askMarketPrice, bidMarketPrice, orderSide]);
 
   useEffect(() => {
-    let total = parseFloat(stepperValue) * parseFloat(amount);
-    if (Number.isNaN(total)) {
-      total = 0;
+    let _total = parseFloat(stepperValue) * parseFloat(amount);
+    if (Number.isNaN(_total)) {
+      _total = 0;
     }
-    setTotal(total);
+    setTotal(_total);
   }, [stepperValue, amount]);
 
   const submitOrder = async () => {
@@ -111,7 +115,7 @@ const Trade = (props: {
           price: parseFloat(stepperValue),
           quantity: parseFloat(amount),
           side: orderSide === "BUY" ? "BID" : "ASK",
-          productIdentifier: props.productIdentifier,
+          productIdentifier,
         });
 
         if (order.status === "COMPLETE") {
@@ -125,7 +129,7 @@ const Trade = (props: {
         const order = await orderApi.putMarketOrder({
           quantity: parseFloat(amount),
           side: orderSide === "BUY" ? "BID" : "ASK",
-          productIdentifier: props.productIdentifier,
+          productIdentifier,
         });
         if (order.status === "NOT-FILLED") {
           setOrderStatus("Error");
@@ -139,7 +143,7 @@ const Trade = (props: {
           );
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       if (e.response.status === 500) {
         setError("Could not process order.");
       } else {
@@ -195,16 +199,16 @@ const Trade = (props: {
           onClick={() =>
             setStepperValue(
               orderSide === "BUY"
-                ? props.bidMarketPrice.toFixed(2)
-                : props.askMarketPrice.toFixed(2)
+                ? bidMarketPrice.toFixed(2)
+                : askMarketPrice.toFixed(2)
             )
           }
         >
           <Text style={{ fontSize: 16 }}>
             US{" "}
             {orderSide === "BUY"
-              ? toCurrency(props.bidMarketPrice)
-              : toCurrency(props.askMarketPrice)}
+              ? toCurrency(bidMarketPrice)
+              : toCurrency(askMarketPrice)}
           </Text>
         </Button>
       </HStack>
@@ -272,7 +276,7 @@ const Trade = (props: {
           <ModalBody>
             {orderStatus === "Pending" && (
               <Text style={{ textAlign: "center" }}>
-                {orderSide} {amount} {props.assetName} at $
+                {orderSide} {amount} {assetName} at $
                 {Number(stepperValue).toFixed(2)} for ${total.toFixed(2)}
               </Text>
             )}

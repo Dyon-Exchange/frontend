@@ -1,4 +1,3 @@
-import React, { useContext } from "react";
 import { Heading, VStack, Text, Box } from "@chakra-ui/layout";
 import {
   Table,
@@ -10,15 +9,17 @@ import {
   chakra,
   Progress,
 } from "@chakra-ui/react";
+import React, { useContext } from "react";
 import { NavLink, useHistory } from "react-router-dom";
-import { UserContext } from "../contexts/UserContext";
-import { UserAsset } from "../index.d";
-import { toCurrency } from "../formatting";
 
-const TableRow = (props: { userAsset: UserAsset }) => {
+import { UserContext } from "../contexts/UserContext";
+import { toCurrency } from "../formatting";
+import { UserAsset } from "../index.d";
+
+const TableRow = ({ userAsset }: { userAsset: UserAsset }) => {
   const history = useHistory();
   const handleRowClick = () => {
-    history.push(`/asset/${props.userAsset.asset.productIdentifier}`);
+    history.push(`/asset/${userAsset.asset.productIdentifier}`);
   };
 
   return (
@@ -31,31 +32,27 @@ const TableRow = (props: { userAsset: UserAsset }) => {
             marginLeft: "auto",
             marginRight: "auto",
           }}
-          src={props.userAsset.asset.image}
+          src={userAsset.asset.image}
         />
       </Td>
       <Td style={{ textAlign: "center" }}>
-        {props.userAsset.asset.name} {props.userAsset.asset.year}
+        {userAsset.asset.name} {userAsset.asset.year}
       </Td>
       <Td style={{ textAlign: "center" }}>
-        {props.userAsset.asset.askMarketPrice &&
-          toCurrency(props.userAsset.asset.askMarketPrice)}
+        {userAsset.asset.askMarketPrice &&
+          toCurrency(userAsset.asset.askMarketPrice)}
       </Td>
       <Td style={{ textAlign: "center" }}>
-        <Text>{props.userAsset.quantity}</Text>
+        <Text>{userAsset.quantity}</Text>
         <Text>
-          {props.userAsset.asset.askMarketPrice &&
-            toCurrency(
-              props.userAsset.asset.askMarketPrice * props.userAsset.quantity
-            )}
+          {userAsset.asset.askMarketPrice &&
+            toCurrency(userAsset.asset.askMarketPrice * userAsset.quantity)}
         </Text>
       </Td>
       <Td style={{ textAlign: "center" }}>
-        <Progress value={props.userAsset.portfolioShare} />
+        <Progress value={userAsset.portfolioShare} />
         <Text style={{ fontSize: 14, paddingTop: "3%" }}>
-          {props.userAsset.portfolioShare &&
-            props.userAsset.portfolioShare.toFixed(0)}
-          %
+          {userAsset.portfolioShare && userAsset.portfolioShare.toFixed(0)}%
         </Text>
       </Td>
     </Tr>
@@ -101,7 +98,7 @@ const Portfolio = () => {
           <Table variant="striped">
             <Thead>
               <Tr>
-                <Th></Th>
+                <Th />
                 <Th style={{ textAlign: "center" }}>Asset</Th>
                 <Th style={{ textAlign: "center" }}>Current price</Th>
                 <Th style={{ textAlign: "center" }}>My balance</Th>
@@ -111,8 +108,8 @@ const Portfolio = () => {
             <Tbody>
               <Tr>
                 <Td style={{ textAlign: "center" }}>USD Cash</Td>
-                <Td></Td>
-                <Td></Td>
+                <Td />
+                <Td />
                 <Td style={{ textAlign: "center" }}>
                   {toCurrency(cashBalance)}
                 </Td>

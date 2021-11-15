@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useContext } from "react";
-import { Flex, VStack, Heading, HStack, Box } from "@chakra-ui/layout";
 import { BellIcon, StarIcon } from "@chakra-ui/icons";
+import { Flex, VStack, Heading, HStack, Box } from "@chakra-ui/layout";
 import {
   Text,
   Button,
@@ -13,15 +12,18 @@ import {
   Td,
   Spinner,
 } from "@chakra-ui/react";
-import assetApi from "../api/asset";
-import { Asset } from "../index.d";
-import Trade from "../components/Trade";
-import Chart from "../components/Chart";
-import { toCurrency } from "../formatting";
-import { UserContext } from "../contexts/UserContext";
+import React, { useEffect, useState, useContext } from "react";
 
-const AssetScreen = (props: any) => {
+import assetApi from "../api/asset";
+import Chart from "../components/Chart";
+import Trade from "../components/Trade";
+import { UserContext } from "../contexts/UserContext";
+import { toCurrency } from "../formatting";
+import { Asset } from "../index.d";
+
+const AssetScreen = ({ match }: { match: { params: { id: string } } }) => {
   const { assets } = useContext(UserContext);
+
   const [asset, setAsset] = useState<Asset | undefined>();
   const [quantity, setQuantity] = useState(0);
   const [priceEventsData, setPriceEventsData] = useState([]);
@@ -33,17 +35,19 @@ const AssetScreen = (props: any) => {
 
   useEffect(() => {
     (async () => {
-      const { asset, priceEvents } = await assetApi.getAssetData(
-        props.match.params.id
+      const { asset: _asset, priceEvents } = await assetApi.getAssetData(
+        match.params.id
       );
-      setAsset(asset);
+      setAsset(_asset);
       setPriceEventsData(priceEvents);
 
-      const a = assets.filter(
-        (a) => asset.productIdentifier === a.asset.productIdentifier
-      )[0];
+      if (!asset) return;
 
-      setQuantity(a ? a.quantity : 0);
+      const matching = assets.find(
+        (a) => asset.productIdentifier === a.asset.productIdentifier
+      );
+
+      setQuantity(matching ? matching.quantity : 0);
 
       if (asset.changePercentage > 0) {
         setColor("green");
@@ -54,7 +58,7 @@ const AssetScreen = (props: any) => {
       }
       setLoading(false);
     })();
-  }, [props.match.params.id, assets]);
+  }, [match.params.id, assets, asset]);
 
   return (
     <Flex style={{ paddingTop: "5%", paddingLeft: "2%" }}>
@@ -146,7 +150,7 @@ const AssetScreen = (props: any) => {
             <Table variant="simple">
               <Thead>
                 <Tr>
-                  <Th></Th>
+                  <Th />
                   <Th>Value</Th>
                   <Th>Units owned {asset?.unitSize}</Th>
                 </Tr>

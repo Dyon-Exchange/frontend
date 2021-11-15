@@ -1,4 +1,3 @@
-import React, { useContext, useEffect, useState } from "react";
 import { HStack, VStack, Heading, Box, Flex } from "@chakra-ui/layout";
 import {
   Table,
@@ -11,22 +10,24 @@ import {
   chakra,
   Text,
 } from "@chakra-ui/react";
+import React, { useContext, useEffect, useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
-import { UserContext } from "../contexts/UserContext";
-import { Asset } from "../index.d";
-import { toCurrency } from "../formatting";
 
-const ChangeCell = (props: { change: number }) => {
+import { UserContext } from "../contexts/UserContext";
+import { toCurrency } from "../formatting";
+import { Asset } from "../index.d";
+
+const ChangeCell = ({ change }: { change: number }) => {
   const red = "#FF0000";
   const green = "#90EE90";
   const black = "#000000";
   let prelude = "";
   let color = "";
 
-  if (props.change > 0) {
+  if (change > 0) {
     color = green;
     prelude = "+";
-  } else if (props.change < 0) {
+  } else if (change < 0) {
     color = red;
   } else {
     color = black;
@@ -34,32 +35,31 @@ const ChangeCell = (props: { change: number }) => {
 
   return (
     <Td style={{ color, fontWeight: "bold" }}>
-      {props.change && `${prelude}${props.change}%`}
+      {change && `${prelude}${change}%`}
     </Td>
   );
 };
 
-const TableRow = (props: { asset: Asset }) => {
+/**
+ * Table row component for Market
+ */
+const TableRow = ({ asset }: { asset: Asset }) => {
   const history = useHistory();
   const handleRowClick = () => {
-    history.push(`/asset/${props.asset.productIdentifier}`);
+    history.push(`/asset/${asset.productIdentifier}`);
   };
 
   return (
     <Tr onClick={handleRowClick} style={{ cursor: "pointer" }}>
       <Td>
-        <chakra.img
-          src={props.asset.image}
-          {...props}
-          style={{ height: 50, width: 50 }}
-        />
+        <chakra.img src={asset.image} style={{ height: 50, width: 50 }} />
       </Td>
       <Td>
-        {props.asset.name} {props.asset.year}
+        {asset.name} {asset.year}
       </Td>
-      <Td>{props.asset.sell && `${toCurrency(props.asset.sell)}`}</Td>
-      <Td>{props.asset.buy && `${toCurrency(props.asset.buy)}`}</Td>
-      <ChangeCell change={props.asset.changePercentage} />
+      <Td>{asset.sell && `${toCurrency(asset.sell)}`}</Td>
+      <Td>{asset.buy && `${toCurrency(asset.buy)}`}</Td>
+      <ChangeCell change={asset.changePercentage} />
       <Td>
         <Button>View details</Button>
       </Td>
@@ -69,25 +69,25 @@ const TableRow = (props: { asset: Asset }) => {
 
 type TableFilter = "All" | "Top Movers" | "Recently Added" | "Top Traded";
 
-const TableHeaderButton = (props: {
+const TableHeaderButton = ({
+  filter,
+  func,
+  currentFilter,
+}: {
   filter: TableFilter;
   func: Function;
   currentFilter: TableFilter;
-}) => {
-  return (
-    <Button
-      px="5"
-      mx="5"
-      backgroundColor={
-        props.filter === props.currentFilter ? "black" : undefined
-      }
-      color={props.filter === props.currentFilter ? "white" : undefined}
-      onClick={() => props.func(props.filter)}
-    >
-      {props.filter}
-    </Button>
-  );
-};
+}) => (
+  <Button
+    px="5"
+    mx="5"
+    backgroundColor={filter === currentFilter ? "black" : undefined}
+    color={filter === currentFilter ? "white" : undefined}
+    onClick={() => func(filter)}
+  >
+    {filter}
+  </Button>
+);
 
 const Market = () => {
   const { allAssets, portfolioValue } = useContext(UserContext);
@@ -96,17 +96,13 @@ const Market = () => {
 
   const [assetRows, setAssetRows] = useState<Asset[]>([]);
 
-  const sortRecentlyAdded = (a: Asset, b: Asset) => {
-    return a.createdAt < b.createdAt ? 1 : -1;
-  };
+  const sortRecentlyAdded = (a: Asset, b: Asset) =>
+    a.createdAt < b.createdAt ? 1 : -1;
 
-  const sortTopTraded = (a: Asset, b: Asset) => {
-    return a.volume < b.volume ? 1 : -1;
-  };
+  const sortTopTraded = (a: Asset, b: Asset) => (a.volume < b.volume ? 1 : -1);
 
-  const sortTopMovers = (a: Asset, b: Asset) => {
-    return a.changePercentage < b.changePercentage ? 1 : -1;
-  };
+  const sortTopMovers = (a: Asset, b: Asset) =>
+    a.changePercentage < b.changePercentage ? 1 : -1;
 
   const sortAll = (a: Asset, b: Asset) => {
     if (a.name > b.name) return 1;
@@ -135,7 +131,6 @@ const Market = () => {
           </Text>
           <Text>USD</Text>
         </HStack>
-        {/* <Text style={{ color: "red" }}>-$2,877.12 (-3.40%)</Text> */}
         <NavLink
           to="/portfolio"
           style={{ alignSelf: "center", paddingTop: "10px" }}
@@ -171,13 +166,13 @@ const Market = () => {
           <Table variant="simple">
             <Thead>
               <Tr>
-                <Th></Th>
-                <Th></Th>
+                <Th />
+                <Th />
                 <Th>Sell</Th>
                 <Th>Buy</Th>
                 <Th>Change</Th>
-                <Th></Th>
-                <Th></Th>
+                <Th />
+                <Th />
               </Tr>
             </Thead>
             <Tbody>

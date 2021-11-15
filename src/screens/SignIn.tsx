@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import {
   Heading,
   Flex,
@@ -15,10 +15,12 @@ import {
   Checkbox,
   Link,
 } from "@chakra-ui/react";
-import { UserContext } from "../contexts/UserContext";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+
 import logo from "../assets/dyon.png";
+import { UserContext } from "../contexts/UserContext";
 
 export const SignIn = () => {
   const { methods } = useContext(UserContext);
@@ -31,8 +33,8 @@ export const SignIn = () => {
     setLoading(true);
     try {
       await methods.login(data.email, data.password);
-      history.push(`/market`);
-    } catch (e) {
+      history.push("/market");
+    } catch (e: any) {
       if (e.response.status === 401) {
         window.alert("Your password was incorrect");
       } else if (e.response.status === 404) {

@@ -1,43 +1,45 @@
-import React, { useContext, useState, useEffect } from "react";
 import { VStack, HStack, Heading, Box } from "@chakra-ui/layout";
 import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
+import React, { useContext, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
-import { LimitOrder, Asset, MarketOrder } from "../index.d";
-import { toCurrency } from "../formatting";
 import { UserContext } from "../contexts/UserContext";
+import { toCurrency } from "../formatting";
+import { LimitOrder, MarketOrder } from "../index.d";
 
-const TableRow = (props: { order: LimitOrder | MarketOrder }) => {
+/**
+ * Row for completed orders component
+ */
+const TableRow = ({ order }: { order: LimitOrder | MarketOrder }) => {
   const { allAssets } = useContext(UserContext);
 
-  const asset: Asset = allAssets.filter(
-    (a) => props.order.productIdentifier === a.productIdentifier
-  )[0];
+  const asset = allAssets.find(
+    (a) => order.productIdentifier === a.productIdentifier
+  );
 
   const history = useHistory();
-  const handleRowClick = () => {
-    history.push(`/asset/${asset.productIdentifier}`);
-  };
+
+  if (!asset) return null;
 
   return (
-    <Tr onClick={handleRowClick} style={{ cursor: "pointer" }}>
-      <Td>{new Date(props.order.createdAt).toLocaleDateString()}</Td>
-      <Td>{new Date(props.order.updatedAt).toLocaleDateString()}</Td>
-      <Td>{props.order.side}</Td>
-      <Td>{toCurrency(props.order?.price as number)}</Td>
+    <Tr
+      onClick={() => history.push(`/asset/${asset.productIdentifier}`)}
+      style={{ cursor: "pointer" }}
+    >
+      <Td>{new Date(order.createdAt).toLocaleDateString()}</Td>
+      <Td>{new Date(order.updatedAt).toLocaleDateString()}</Td>
+      <Td>{order.side}</Td>
+      <Td>{toCurrency(order?.price as number)}</Td>
+      <Td>{order.price && toCurrency(order?.price * order.filled)}</Td>
       <Td>
-        {props.order.price &&
-          toCurrency(props.order?.price * props.order.filled)}
+        {order.quantity} {asset?.name} {asset?.year}
       </Td>
-      <Td>
-        {props.order.quantity} {asset?.name} {asset?.year}
-      </Td>
-      <Td></Td>
+      <Td />
     </Tr>
   );
 };
 
-const CompletedOrders = function () {
+const CompletedOrders = () => {
   const { userLimitOrders, userMarketOrders } = useContext(UserContext);
   const [orders, setOrders] = useState<(LimitOrder | MarketOrder)[]>([]);
 
@@ -50,9 +52,8 @@ const CompletedOrders = function () {
     all.sort((a: MarketOrder | LimitOrder, b: MarketOrder | LimitOrder) => {
       if (a.createdAt < b.createdAt) {
         return 1;
-      } else {
-        return -1;
       }
+      return -1;
     });
     setOrders(all);
   }, [userLimitOrders, userMarketOrders]);
@@ -74,12 +75,12 @@ const CompletedOrders = function () {
                 <Th>Price</Th>
                 <Th>Total</Th>
                 <Th>Amount</Th>
-                <Th></Th>
+                <Th />
               </Tr>
             </Thead>
             <Tbody>
-              {orders.map((o: MarketOrder | LimitOrder, i: number) => (
-                <TableRow order={o} key={i} />
+              {orders.map((o: MarketOrder | LimitOrder) => (
+                <TableRow order={o} key={o.orderId} />
               ))}
             </Tbody>
           </Table>

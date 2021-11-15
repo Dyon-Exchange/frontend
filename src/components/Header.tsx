@@ -1,4 +1,3 @@
-import React, { useContext } from "react";
 import {
   Box,
   Stack,
@@ -10,15 +9,24 @@ import {
   Menu,
   MenuList,
   MenuItem,
-} from "@chakra-ui/react";
-import { chakra } from "@chakra-ui/react";
-import { useHistory } from "react-router-dom";
-import logo from "../assets/dyon.png";
-import { NavLink } from "react-router-dom";
-import { BsPerson } from "react-icons/bs";
+ chakra } from "@chakra-ui/react";
+import styled from "@emotion/styled";
+import React, { useContext } from "react";
 import { BiDollar, BiTransfer } from "react-icons/bi";
-import { UserContext } from "../contexts/UserContext";
+import { BsPerson } from "react-icons/bs";
+import { useHistory , NavLink } from "react-router-dom";
+
+import logo from "../assets/dyon.png";
 import { colors } from "../config";
+import { UserContext } from "../contexts/UserContext";
+
+
+const StyledMenuItem = styled(MenuItem)`
+  &:hover {
+    background-color: white;
+    color: ${colors.brand};
+  }
+`;
 
 const Header = (props: any) => {
   const { methods, fullName } = useContext(UserContext);
@@ -96,27 +104,12 @@ const Header = (props: any) => {
             USD
           </MenuButton>
           <MenuList style={{ background: colors.brand }}>
-            <MenuItem
-              _hover={{ bg: "white", textColor: colors.brand }}
-              _focus={{ bg: "white", textColor: colors.brand }}
-            >
-              SGD
-            </MenuItem>
-            <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
-              USD
-            </MenuItem>
-            <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
-              AUD
-            </MenuItem>
-            <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
-              CAD
-            </MenuItem>
-            <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
-              EUR
-            </MenuItem>
-            <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
-              GBP
-            </MenuItem>
+            <StyledMenuItem>SGD</StyledMenuItem>
+            <StyledMenuItem>USD</StyledMenuItem>
+            <StyledMenuItem>AUD</StyledMenuItem>
+            <StyledMenuItem>CAD</StyledMenuItem>
+            <StyledMenuItem>EUR</StyledMenuItem>
+            <StyledMenuItem>GBP</StyledMenuItem>
           </MenuList>
         </Menu>
       </Box>
@@ -126,7 +119,7 @@ const Header = (props: any) => {
         mt={{ base: 4, md: 0 }}
         px="2"
       >
-        <Menu closeOnBlur={true}>
+        <Menu closeOnBlur>
           <MenuButton
             variant="outline"
             _hover={{
@@ -143,15 +136,8 @@ const Header = (props: any) => {
             Transfer
           </MenuButton>
           <MenuList style={{ background: colors.brand }}>
-            <MenuItem
-              _hover={{ bg: "white", textColor: colors.brand }}
-              _focus={{ bg: "white", textColor: colors.brand }}
-            >
-              Deposit
-            </MenuItem>
-            <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
-              Withdraw
-            </MenuItem>
+            <StyledMenuItem>Deposit</StyledMenuItem>
+            <StyledMenuItem>Withdraw</StyledMenuItem>
           </MenuList>
         </Menu>
       </Box>
@@ -184,26 +170,16 @@ const Header = (props: any) => {
               Settings
             </MenuItem>
             <NavLink to="/pendingorders">
-              <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
-                Pending Orders
-              </MenuItem>
+              <StyledMenuItem>Pending Orders</StyledMenuItem>
             </NavLink>
             <NavLink to="/completedorders">
-              <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
-                Completed Orders
-              </MenuItem>
+              <StyledMenuItem>Completed Orders</StyledMenuItem>
             </NavLink>
             <NavLink to="/redeem">
-              <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
-                Redeem
-              </MenuItem>
+              <StyledMenuItem>Redeem</StyledMenuItem>
             </NavLink>
-            <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
-              FAQ
-            </MenuItem>
-            <MenuItem _hover={{ bg: "white", textColor: colors.brand }}>
-              Legal
-            </MenuItem>
+            <StyledMenuItem>FAQ</StyledMenuItem>
+            <StyledMenuItem>Legal</StyledMenuItem>
             <MenuItem
               _hover={{ bg: "white", textColor: colors.brand }}
               onClick={logoutPress}

@@ -1,5 +1,5 @@
-import React from "react";
 import { Text } from "@chakra-ui/react";
+import React from "react";
 import {
   LineChart,
   Line,
@@ -49,11 +49,11 @@ export default function Chart({ data }: any) {
                   month: "numeric",
                   day: "numeric",
                 });
-              } else {
+              } 
                 return "";
-              }
+              
             }}
-          ></XAxis>
+          />
           <YAxis dataKey="price" tickFormatter={(price: any) => `$${price}`}>
             <Label angle={270} position="left" style={{ textAnchor: "middle" }}>
               Price

@@ -1,9 +1,11 @@
+
 import React, { createContext, ReactChild, useEffect, useState } from "react";
 import useLocalStorage from "react-use-localstorage";
-import { Asset, UserAsset, LimitOrder, MarketOrder } from "../index.d";
-import user from "../api/user";
+
 import assetApi from "../api/asset";
 import orderApi from "../api/order";
+import user from "../api/user";
+import { Asset, UserAsset, LimitOrder, MarketOrder } from "../index.d";
 
 interface IUserContext {
   token: string;
@@ -52,9 +54,9 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
     })();
   }, [token]);
 
-  const login = async (email: string, password: string) => {
-    const data = await user.login(email, password);
-    setEmail(email);
+  const login = async (_email: string, password: string) => {
+    const data = await user.login(_email, password);
+    setEmail(_email);
     setToken(data.token);
     setRefreshToken(data.refreshToken);
   };
@@ -66,19 +68,15 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
   };
 
   const refreshUserPortfolio = async () => {
-    (async () => {
-      const { fullName, cashBalance } = await user.get();
-      setFullName(fullName);
-      setCashBalance(cashBalance);
-    })();
+    const { fullName: _fullName, cashBalance: _cashBalance } = await user.get();
+    setFullName(_fullName);
+    setCashBalance(_cashBalance);
 
-    (async () => {
-      const a = await assetApi.get();
-      setAllAssets(a);
-    })();
+    setAllAssets(await assetApi.get());
 
-    const { assets, portfolioBalance } = await assetApi.getUserAssets();
-    setAssets(assets);
+    const { assets: _assets, portfolioBalance } =
+      await assetApi.getUserAssets();
+    setAssets(_assets);
     setPortfolioValue(portfolioBalance);
   };
 
@@ -89,7 +87,7 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
   };
 
   useEffect(() => {
-    let interval = setInterval(() => {
+    const interval = setInterval(() => {
       if (token === "" || !token) {
         return;
       }
@@ -97,6 +95,7 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
       refreshUserOrders();
       refreshUserPortfolio();
     }, 3 * 1000);
+
     return () => clearInterval(interval);
   });
 
@@ -125,5 +124,3 @@ export const UserContextProvider = ({ children }: { children: ReactChild }) => {
     </UserContext.Provider>
   );
 };
-
-export default UserContextProvider;

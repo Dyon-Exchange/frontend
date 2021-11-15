@@ -1,4 +1,5 @@
 import { Asset, UserAsset } from "../index.d";
+
 import instance from "./instance";
 
 const assetApi = {
@@ -27,4 +28,5 @@ const assetApi = {
     return data;
   },
 };
+
 export default assetApi;
