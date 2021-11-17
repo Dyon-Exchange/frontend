@@ -11,7 +11,7 @@ This project uses the following main libraries:
 
 ## Deployment
 
-This repo is set up to deploy through Vercel at the following domains:
+This repo is set up to deploy through Vercel at the following domains (the deployment settings can be changed in the Vercel project):
 - [Staging Vercel Deployment](https://staging.dyon.vercel.app/)
 - [Master Vercel Deployment](https://dyon.vercel.app/)
 
